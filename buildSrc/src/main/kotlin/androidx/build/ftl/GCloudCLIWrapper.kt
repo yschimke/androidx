@@ -135,16 +135,16 @@ internal class GCloudCLIWrapper(
             "--app", params.testedApk.canonicalPath,
             "--num-flaky-test-attempts", "2",
             "--results-bucket=${params.bucketName}",
-            "--results-dir=${params.resultsDir}",
+            "--results-dir=${params.resultsBucketDir}",
             "--results-history-name=${params.projectPath}"
         )
         // copy the test results from the bucket to the build folder
-        val localFolder = params.localTestResultDir
+        val localFolder = params.resultsLocalDir
         execGsUtil(
-            "cp", "-r", params.gsBucketPath() + "/*", localFolder.canonicalPath
+            "cp", "-r", params.cloudBucketPath() + "/*", localFolder.canonicalPath
         )
         // finally, write the command response into the folder as well
-        val testResultOutput = params.localTestResultDir.resolve(TEST_OUTPUT_FILE_NAME)
+        val testResultOutput = params.resultsLocalDir.resolve(TEST_OUTPUT_FILE_NAME)
         val gson = Gson()
         testResultOutput.bufferedWriter(Charsets.UTF_8).use {
             gson.toJson(
@@ -190,24 +190,24 @@ internal class GCloudCLIWrapper(
          */
         val testApk: File,
         /**
-         * The GS Bucket directory where the results will be saved
-         */
-        val resultsDir: String = makeResultsDir(projectPath),
-        /**
          * The name of the GS bucket to save the results
          */
         val bucketName: String = DEFAULT_BUCKET_NAME,
         /**
+         * The GS Bucket directory where the results will be saved
+         */
+        val resultsBucketDir: String = makeResultsDir(projectPath),
+        /**
          * The local folder where we will download the test results
          */
-        val localTestResultDir: File,
+        val resultsLocalDir: File,
     ) {
 
         /**
-         * Returns the path to the GS bucket where the test run results are saved
+         * Returns the path to the Google Cloud bucket where the test run results are saved
          */
-        fun gsBucketPath(): String {
-            return "gs://$bucketName/$resultsDir"
+        fun cloudBucketPath(): String {
+            return "gs://$bucketName/$resultsBucketDir"
         }
 
         companion object {

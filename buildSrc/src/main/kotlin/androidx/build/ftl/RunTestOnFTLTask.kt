@@ -17,6 +17,7 @@
 package androidx.build.ftl
 
 import androidx.build.getDistributionDirectory
+import androidx.build.getSupportRootFolder
 import com.android.build.gradle.api.ApkVariant
 import com.android.build.gradle.api.ApkVariantOutput
 import com.android.build.gradle.api.TestVariant
@@ -26,6 +27,7 @@ import org.gradle.api.Project
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.provider.Property
+import org.gradle.api.tasks.CacheableTask
 import org.gradle.api.tasks.Copy
 import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.OutputDirectory
@@ -48,6 +50,7 @@ import javax.inject.Inject
  * Due to the limitations of FTL, this task only support application instrumentation tests for now.
  */
 @Suppress("UnstableApiUsage") // for gradle property APIs
+@CacheableTask
 abstract class RunTestOnFTLTask @Inject constructor(
     private val workerExecutor: WorkerExecutor
 ) : DefaultTask() {
@@ -77,7 +80,7 @@ abstract class RunTestOnFTLTask @Inject constructor(
             it.testApk.set(testApk)
             it.testedApk.set(testedApk)
             it.testResults.set(testResults)
-            it.projectPath.set(project.path.replace(":", "-"))
+            it.projectPath.set(project.relativeResultPath())
         }
     }
 
@@ -104,7 +107,7 @@ abstract class RunTestOnFTLTask @Inject constructor(
                 testedApk = testedApk,
                 testApk = testApk,
                 projectPath = parameters.projectPath.get(),
-                localTestResultDir = localTestResultDir
+                resultsLocalDir = localTestResultDir
 
             )
             val result = gcloud.runTest(params)
@@ -145,7 +148,7 @@ abstract class RunTestOnFTLTask @Inject constructor(
                 it.from(testResultDir)
                 it.into(
                     project.getDistributionDirectory()
-                        .resolve("ftl-results/${project.path}/${taskName}")
+                        .resolve("ftl-results/${project.relativeResultPath()}/${taskName}")
                 )
             }
             return project.tasks.register(taskName, RunTestOnFTLTask::class.java) { task ->
@@ -172,3 +175,11 @@ abstract class RunTestOnFTLTask @Inject constructor(
         }
     }
 }
+
+/**
+ * Returns the relative path of the project wrt the support root. This path is used for both
+ * local dist path and cloud bucket paths.
+ */
+private fun Project.relativeResultPath() = projectDir.relativeTo(
+    project.getSupportRootFolder()
+).path
