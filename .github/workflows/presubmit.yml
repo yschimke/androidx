@@ -82,7 +82,7 @@ jobs:
 
       - name: "Get changed files in push or pull_request"
         id: changed-files
-        uses: androidx/changed-files-action@main
+        uses: yigit/changed-files-action@use-github-api
 
       - name: "Warn on missing updateApi"
         run: |
