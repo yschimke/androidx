@@ -3,7 +3,6 @@ on:
   push:
     branches:
       - androidx-main
-      - yigit/playground-build-needed-check
   pull_request_target:
     types: ['labeled']
 
