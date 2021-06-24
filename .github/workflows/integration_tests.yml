@@ -1,13 +1,12 @@
 name: Run Integration Tests
 on:
-  workflow_run:
-    workflows: ["AndroidX Presubmits"]
-    types: [completed]
+  push:
+    branches:
+      - yigit/use-ci-action-dist-tag
 
 jobs:
   run_integration_tests:
     runs-on: ubuntu-latest
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     name: Run integration tests on FTL
     steps:
       - name: Set up JDK 11
@@ -21,7 +20,7 @@ jobs:
       - id: run_tests
         uses: androidX/androidx-ci-action@dist-v0.01
         with:
-          run-id: ${{ github.event.workflow_run.id }}
+          target-run-id: 965174273
           gcp-token: ${{ secrets.GCP_SA_KEY }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
           output-folder: ${{ steps.dirs.outputs.output-dir }}
@@ -30,26 +29,3 @@ jobs:
         with:
           name: outputs
           path: ${{ steps.dirs.outputs.output-dir }}
-  teardown:
-    runs-on: ubuntu-latest
-    needs: [run_integration_tests]
-    if: always()
-    steps:
-      - name: Parse workflow status
-        id: workflow-status
-        run: |
-          set -x
-          if [ "${{ needs.run_integration_tests.result }}" == "success" ]                  && \
-            [ "${{ github.event.workflow_run.conclusion }}" == "success" ]
-          then
-            echo "::set-output name=result::true"
-          else
-            echo "::set-output name=result::false"
-          fi
-
-      - name: Result WebHook
-        uses: androidx/github-workflow-webhook-action@main
-        with:
-          url: 'https://androidx.dev/github/androidX/presubmit/hook'
-          secret: ${{ secrets.ANDROIDX_PRESUBMIT_HOOK_SECRET }}
-          payload: '{ "platform": "all", "token": "${{ secrets.GITHUB_TOKEN }}", "state": "completed", "success": ${{ steps.workflow-status.outputs.result }}, "src" : "workflow_run" }'

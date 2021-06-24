@@ -1,6 +1,7 @@
 name: AndroidX Presubmits
 on:
   push:
+    - no-branch # disable
   pull_request:
 
 jobs:
