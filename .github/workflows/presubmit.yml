@@ -137,7 +137,7 @@ jobs:
           - project: "navigation"
             custom-os: "macos-latest" # run one of them on a mac to ensure mac setup works
     runs-on: ${{ matrix.custom-os || matrix.os }}
-    if: ${{ matrix.project == "activity" }}
+    if: matrix.project == "activity"
     needs: [setup, lint]
     env:
       artifact-id: ${{matrix.project}}
