@@ -63,7 +63,11 @@ def addMavenRepositories(RepositoryHandler handler) {
             artifact()
         }
     }
-    if (System.getenv("ALLOW_PUBLIC_REPOS") != null || System.getProperty("ALLOW_PUBLIC_REPOS") != null) {
+    handler.maven {
+        url("https://maven.pkg.jetbrains.space/kotlin/p/kotlin/dev/")
+    }
+
+//    if (System.getenv("ALLOW_PUBLIC_REPOS") != null || System.getProperty("ALLOW_PUBLIC_REPOS") != null) {
         handler.mavenCentral()
         handler.google()
         handler.gradlePluginPortal()
@@ -71,7 +75,7 @@ def addMavenRepositories(RepositoryHandler handler) {
                url("https://maven.pkg.jetbrains.space/public/p/compose/dev")
         }
         handler.mavenLocal()
-    }
+//    }
     def androidPluginRepoOverride = System.getenv("GRADLE_PLUGIN_REPO")
     if (androidPluginRepoOverride != null) {
         for(extraRepo in androidPluginRepoOverride.split(File.pathSeparator)) {
