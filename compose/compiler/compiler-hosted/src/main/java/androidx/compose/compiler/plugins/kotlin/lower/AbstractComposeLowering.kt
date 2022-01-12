@@ -49,7 +49,6 @@ import org.jetbrains.kotlin.descriptors.ValueParameterDescriptor
 import org.jetbrains.kotlin.descriptors.annotations.Annotations
 import org.jetbrains.kotlin.descriptors.impl.AnonymousFunctionDescriptor
 import org.jetbrains.kotlin.descriptors.impl.ValueParameterDescriptorImpl
-import org.jetbrains.kotlin.fir.java.topLevelName
 import org.jetbrains.kotlin.ir.IrStatement
 import org.jetbrains.kotlin.ir.ObsoleteDescriptorBasedAPI
 import org.jetbrains.kotlin.ir.UNDEFINED_OFFSET
@@ -532,6 +531,7 @@ abstract class AbstractComposeLowering(
                     )
                 },
                 null,
+                emptyList(),
                 emptyList(),
                 kotlinType.getValueParameterTypesFromFunctionType().mapIndexed { i, t ->
                     ValueParameterDescriptorImpl(
@@ -1353,3 +1353,6 @@ fun ParameterDescriptor.index(): Int =
     }
 
 fun getUnderlyingType(irClass: IrClass) = irClass.inlineClassRepresentation!!.underlyingType
+
+fun FqName.topLevelName() =
+    asString().substringBefore(".")

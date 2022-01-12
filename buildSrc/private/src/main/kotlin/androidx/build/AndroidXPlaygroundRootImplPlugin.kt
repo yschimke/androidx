@@ -180,6 +180,9 @@ class AndroidXPlaygroundRootImplPlugin : Plugin<Project> {
                 }
             }
         }
+        maven {
+            it.url = URI("https://maven.pkg.jetbrains.space/kotlin/p/kotlin/dev/")
+        }
         google()
         mavenCentral()
         gradlePluginPortal()

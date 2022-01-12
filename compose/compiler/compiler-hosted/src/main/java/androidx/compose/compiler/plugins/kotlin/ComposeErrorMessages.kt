@@ -16,6 +16,7 @@
 
 package androidx.compose.compiler.plugins.kotlin
 
+import org.jetbrains.kotlin.diagnostics.rendering.CommonRenderers
 import org.jetbrains.kotlin.diagnostics.rendering.DefaultErrorMessages
 import org.jetbrains.kotlin.diagnostics.rendering.DiagnosticFactoryToRendererMap
 import org.jetbrains.kotlin.diagnostics.rendering.Renderers
@@ -75,7 +76,7 @@ class ComposeErrorMessages : DefaultErrorMessages.Extension {
         MAP.put(
             ComposeErrors.CONFLICTING_OVERLOADS,
             "Conflicting overloads: {0}",
-            Renderers.commaSeparated(
+            CommonRenderers.commaSeparated(
                 Renderers.FQ_NAMES_IN_TYPES_WITH_ANNOTATIONS
             )
         )
