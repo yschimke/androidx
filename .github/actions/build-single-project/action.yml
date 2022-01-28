@@ -11,6 +11,8 @@ inputs:
     description: "password for gradle cache"
   gradle-enterprise-access-key:
     description: "access key for gradle enterprise"
+  gradle-flags:
+    description: "flags to pass while invoking gradle"
 runs:
   using: "composite"
   steps:
@@ -21,6 +23,7 @@ runs:
         java-version: "8"
     - name: "set tools jar path"
       id: setup-tools-jar
+      shell: bash
       run: |
         set -x
         TOOLS_JAR=$JAVA_HOME/lib/tools.jar
@@ -46,15 +49,15 @@ runs:
         JAVA_HOME: ${{ steps.setup-java.outputs.path }}
         JAVA_TOOLS_JAR: ${{ steps.setup-tools-jar.outputs.toolsJar }}
       with:
-        arguments: tasks -PandroidXUnusedParameter=${{ env.project-root }} # add project name to cache key
-        build-root-directory: ${{ env.project-root }}
+        arguments: tasks -PandroidXUnusedParameter=${{ inputs.project-root }} # add project name to cache key
+        build-root-directory: ${{ inputs.project-root }}
         configuration-cache-enabled: false
         dependencies-cache-enabled: true
         dependencies-cache-key: |
           **/libs.versions.toml
         dependencies-cache-exact: false
-        gradle-executable: ${{ env.project-root }}/gradlew
-        wrapper-directory: ${{ env.project-root }}/gradle/wrapper
+        gradle-executable: ${{ inputs.project-root }}/gradlew
+        wrapper-directory: ${{ inputs.project-root }}/gradle/wrapper
         distributions-cache-enabled: true
     - name: "./gradlew buildOnServer zipTestConfigsWithApks test"
       uses: gradle/gradle-command-action@v1
@@ -62,26 +65,26 @@ runs:
         JAVA_HOME: ${{ steps.setup-java.outputs.path }}
         JAVA_TOOLS_JAR: ${{ steps.setup-tools-jar.outputs.toolsJar }}
       with:
-        arguments: buildOnServer zipTestConfigsWithApks test ${{ needs.setup.outputs.gradlew_flags }}
-        build-root-directory: ${{ env.project-root }}
+        arguments: buildOnServer zipTestConfigsWithApks test ${{ inputs.gradle-flags }}
+        build-root-directory: ${{ inputs.project-root }}
         configuration-cache-enabled: false
         dependencies-cache-enabled: false
         distributions-cache-enabled: false
-        gradle-executable: ${{ env.project-root }}/gradlew
-        wrapper-directory: ${{ env.project-root }}/gradle/wrapper
+        gradle-executable: ${{ inputs.project-root }}/gradlew
+        wrapper-directory: ${{ inputs.project-root }}/gradle/wrapper
 
     - name: "Upload build artifacts"
       continue-on-error: true
       if: always()
       uses: actions/upload-artifact@v2
       with:
-        name: artifacts_${{ env.artifact-id }}
+        name: artifacts_${{ inputs.project }}
         path: ~/dist
     - name: "Upload daemon logs"
       continue-on-error: true
       if: failure()
       uses: actions/upload-artifact@v2
       with:
-        name: gradle-daemon-logs_${{ env.artifact-id }}
+        name: gradle-daemon-logs_${{ inputs.project }}
         path: ~/.gradle/daemon
 

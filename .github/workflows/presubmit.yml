@@ -158,3 +158,4 @@ jobs:
           project-root: ${{matrix.project-root || matrix.project}}
           gradle-cache-password: ${{ secrets.GRADLE_BUILD_CACHE_PASSWORD }}
           gradle-enterprise-access-key: ${{ secrets.GRADLE_ENTERPRISE_ACCESS_KEY }}
+          gradle-flags: ${{ needs.setup.outputs.gradlew_flags }}
