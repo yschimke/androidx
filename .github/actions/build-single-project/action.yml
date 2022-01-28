@@ -74,14 +74,14 @@ runs:
         wrapper-directory: ${{ inputs.project-root }}/gradle/wrapper
 
     - name: "Upload build artifacts"
-      continue-on-error: true
+      # continue-on-error: true # https://github.com/actions/runner/issues/1457
       if: always()
       uses: actions/upload-artifact@v2
       with:
         name: artifacts_${{ inputs.project }}
         path: ~/dist
     - name: "Upload daemon logs"
-      continue-on-error: true
+      # continue-on-error: true # https://github.com/actions/runner/issues/1457
       if: failure()
       uses: actions/upload-artifact@v2
       with:
