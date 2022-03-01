@@ -111,14 +111,14 @@ class ComposeErrorMessages : DefaultErrorMessages.Extension {
         MAP.put(
             ComposeErrors.COMPOSE_APPLIER_CALL_MISMATCH,
             "Calling a {0} composable function where a {1} composable was expected",
-            Renderers.STRING,
-            Renderers.STRING
+            Renderers.TO_STRING,
+            Renderers.TO_STRING
         )
         MAP.put(
             ComposeErrors.COMPOSE_APPLIER_PARAMETER_MISMATCH,
             "A {0} composable parameter was provided where a {1} composable was expected",
-            Renderers.STRING,
-            Renderers.STRING
+            Renderers.TO_STRING,
+            Renderers.TO_STRING
         )
     }
 }

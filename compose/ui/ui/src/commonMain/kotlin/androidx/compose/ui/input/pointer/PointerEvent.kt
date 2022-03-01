@@ -97,7 +97,7 @@ abstract class PointerInputFilter {
      * level, so if any [PointerInputFilter]s on a Layout has [shareWithSiblings] set to `true`
      * then the Layout will share with siblings.
      */
-    @Suppress("EXPERIMENTAL_ANNOTATION_ON_WRONG_TARGET")
+    @Suppress("OPT_IN_MARKER_ON_WRONG_TARGET")
     @ExperimentalComposeUiApi
     @get:ExperimentalComposeUiApi
     open val shareWithSiblings: Boolean
@@ -348,7 +348,7 @@ inline class PointerEventType private constructor(internal val value: Int) {
          * A scroll event was sent. This can happen, for example, due to a mouse scroll wheel.
          * This event indicates that the [PointerInputChange.scrollDelta]'s [Offset] is non-zero.
          */
-        @Suppress("EXPERIMENTAL_ANNOTATION_ON_WRONG_TARGET")
+        @Suppress("OPT_IN_MARKER_ON_WRONG_TARGET")
         @ExperimentalComposeUiApi
         @get:ExperimentalComposeUiApi
         val Scroll = PointerEventType(6)
@@ -422,7 +422,7 @@ class PointerInputChange(
     // With these experimental annotations, the API can be either cleanly removed or
     // stabilized. It doesn't appear in current.txt; and in experimental_current.txt,
     // it has the same effect as a primary constructor val.
-    @Suppress("EXPERIMENTAL_ANNOTATION_ON_WRONG_TARGET")
+    @Suppress("OPT_IN_MARKER_ON_WRONG_TARGET")
     @ExperimentalComposeUiApi
     @get:ExperimentalComposeUiApi
     val historical: List<HistoricalChange>
@@ -432,7 +432,7 @@ class PointerInputChange(
     /**
      * The amount of scroll wheel movement in the horizontal and vertical directions.
      */
-    @Suppress("EXPERIMENTAL_ANNOTATION_ON_WRONG_TARGET")
+    @Suppress("OPT_IN_MARKER_ON_WRONG_TARGET")
     @ExperimentalComposeUiApi
     @get:ExperimentalComposeUiApi
     val scrollDelta: Offset
@@ -443,7 +443,7 @@ class PointerInputChange(
      * Indicates whether the change was consumed or not. Note that the change must be consumed in
      * full as there's no partial consumption system provided.
      */
-    @Suppress("EXPERIMENTAL_ANNOTATION_ON_WRONG_TARGET")
+    @Suppress("OPT_IN_MARKER_ON_WRONG_TARGET")
     @ExperimentalComposeUiApi
     @get:ExperimentalComposeUiApi
     val isConsumed: Boolean
