@@ -20,7 +20,12 @@ plugins {
 }
 
 repositories {
-    gradlePluginPortal()
+    mavenCentral()
+    gradlePluginPortal {
+        content {
+            excludeModule("org.jetbrains.kotlin", "kotlin-serialization")
+        }
+    }
 }
 
 dependencies {

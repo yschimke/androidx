@@ -22,7 +22,11 @@ buildscript {
         }
         if (System.getenv("ALLOW_PUBLIC_REPOS") != null) {
             mavenCentral()
-            gradlePluginPortal()
+            gradlePluginPortal {
+                content {
+                    excludeModule("org.jetbrains.kotlin", "kotlin-serialization")
+                }
+            }
         }
     }
 

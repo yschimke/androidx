@@ -48,7 +48,11 @@ buildscript {
                 artifact()
             }
         }
-        gradlePluginPortal()
+        gradlePluginPortal {
+            content {
+                excludeModule("org.jetbrains.kotlin", "kotlin-serialization")
+            }
+        }
     }
 
     ext.repos = [:]
