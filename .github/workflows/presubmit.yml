@@ -1,7 +1,8 @@
 name: AndroidX Presubmits
 on:
   push:
-    yigit/room-builds-in-ci
+    branches:
+      - 'yigit/room-builds-in-ci'
   pull_request:
 
 env:
