@@ -1,6 +1,7 @@
 name: AndroidX Presubmits
 on:
   push:
+    yigit/room-builds-in-ci
   pull_request:
 
 env:
@@ -23,7 +24,8 @@ jobs:
             -Dorg.gradle.internal.repository.max.retries=20                 \
             -Dorg.gradle.internal.repository.initial.backoff=500            \
             --no-configuration-cache                                        \
-            --stacktrace"
+            --stacktrace                                                    \
+            --no-daemon"
           echo "::set-output name=gradlew_flags::$GRADLEW_FLAGS"
       - name: Publish build scans link
         # No scans are produced for PRs from forked repos, so omit this notice for forked PRs.

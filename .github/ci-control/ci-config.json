@@ -12,8 +12,8 @@
         "default": false
     },
     "main" : {
-        "exclude" : [
-            "lifecycle"
+        "include" : [
+            "room"
         ],
         "default": true
     }
