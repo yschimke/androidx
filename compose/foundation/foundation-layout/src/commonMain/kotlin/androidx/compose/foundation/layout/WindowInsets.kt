@@ -18,6 +18,7 @@ package androidx.compose.foundation.layout
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -98,7 +99,7 @@ value class WindowInsetsSides private constructor(private val value: Int) {
     }
 
     companion object {
-        //    _---- allowLeft  in ltr
+        //     _---- allowLeft  in ltr
         //    /
         //    | _--- allowRight in ltr
         //    |/
@@ -173,7 +174,7 @@ value class WindowInsetsSides private constructor(private val value: Int) {
 }
 
 /**
- * Returns an [WindowInsets] that has the maximum values of this [WindowInsets] and [insets].
+ * Returns a [WindowInsets] that has the maximum values of this [WindowInsets] and [insets].
  */
 fun WindowInsets.union(insets: WindowInsets): WindowInsets = UnionInsets(this, insets)
 
@@ -204,23 +205,37 @@ fun WindowInsets.add(insets: WindowInsets): WindowInsets = AddedInsets(this, ins
 fun WindowInsets.only(sides: WindowInsetsSides): WindowInsets = LimitInsets(this, sides)
 
 /**
- * Convert an [WindowInsets] to a [PaddingValues] and uses [LocalDensity] for DP to pixel conversion.
- * [PaddingValues] can be passed to some containers to pad internal content so that it doesn't
- * overlap the insets when fully scrolled. Ensure that the insets are [consumed][consumedWindowInsets]
- * after the padding is applied if insets are to be used further down the hierarchy.
+ * Convert a [WindowInsets] to a [PaddingValues] and uses [LocalDensity] for DP to pixel
+ * conversion. [PaddingValues] can be passed to some containers to pad internal content so that
+ * it doesn't overlap the insets when fully scrolled. Ensure that the insets are
+ * [consumed][consumedWindowInsets] after the padding is applied if insets are to be used further
+ * down the hierarchy.
  *
  * @sample androidx.compose.foundation.layout.samples.paddingValuesSample
  */
+@ReadOnlyComposable
 @Composable
 fun WindowInsets.asPaddingValues(): PaddingValues = InsetsPaddingValues(this, LocalDensity.current)
 
 /**
- * Convert a [PaddingValues] to an [WindowInsets].
+ * Convert a [WindowInsets] to a [PaddingValues] and uses [density] for DP to pixel conversion.
+ * [PaddingValues] can be passed to some containers to pad internal content so that it doesn't
+ * overlap the insets when fully scrolled. Ensure that the insets are
+ * [consumed][consumedWindowInsets] after the padding is applied if insets are to be used further
+ * down the hierarchy.
+ *
+ * @sample androidx.compose.foundation.layout.samples.paddingValuesSample
+ */
+fun WindowInsets.asPaddingValues(density: Density): PaddingValues =
+    InsetsPaddingValues(this, density)
+
+/**
+ * Convert a [PaddingValues] to a [WindowInsets].
  */
 internal fun PaddingValues.asInsets(): WindowInsets = PaddingValuesInsets(this)
 
 /**
- * Create an [WindowInsets] with fixed dimensions.
+ * Create a [WindowInsets] with fixed dimensions.
  *
  * @sample androidx.compose.foundation.layout.samples.insetsInt
  */
@@ -228,7 +243,7 @@ fun WindowInsets(left: Int = 0, top: Int = 0, right: Int = 0, bottom: Int = 0): 
     FixedIntInsets(left, top, right, bottom)
 
 /**
- * Create an [WindowInsets] with fixed dimensions, using [Dp] values.
+ * Create a [WindowInsets] with fixed dimensions, using [Dp] values.
  *
  * @sample androidx.compose.foundation.layout.samples.insetsDp
  */

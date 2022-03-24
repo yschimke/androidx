@@ -58,6 +58,8 @@ dependencies {
 
         implementation("androidx.core:core:1.5.0")
         implementation('androidx.collection:collection:1.0.0')
+        // TODO(b/211779215): Consider pinning this to a specific version
+        implementation project(":customview:customview-poolingcontainer")
         implementation("androidx.savedstate:savedstate:1.1.0")
         implementation("androidx.lifecycle:lifecycle-common-java8:2.3.0")
         implementation("androidx.lifecycle:lifecycle-runtime:2.3.0")
@@ -87,6 +89,7 @@ dependencies {
         androidTestImplementation(libs.mockitoCore)
         androidTestImplementation(libs.truth)
         androidTestImplementation(libs.mockitoKotlin)
+        androidTestImplementation(libs.material)
         androidTestImplementation(project(":compose:animation:animation-core"))
         androidTestImplementation(project(":compose:foundation:foundation"))
         androidTestImplementation(project(":compose:foundation:foundation-layout"))
@@ -143,6 +146,8 @@ if(AndroidXComposePlugin.isMultiplatformEnabled(project)) {
                 implementation("androidx.autofill:autofill:1.0.0")
                 implementation(libs.kotlinCoroutinesAndroid)
 
+                // TODO(b/211779215): Consider pinning this to a specific version
+                implementation project(":customview:customview-poolingcontainer")
                 implementation("androidx.savedstate:savedstate:1.1.0")
                 implementation("androidx.lifecycle:lifecycle-common-java8:2.3.0")
                 implementation("androidx.lifecycle:lifecycle-runtime:2.3.0")
@@ -198,6 +203,7 @@ if(AndroidXComposePlugin.isMultiplatformEnabled(project)) {
                 implementation(libs.mockitoCore)
                 implementation(libs.truth)
                 implementation(libs.mockitoKotlin)
+                implementation(libs.material)
                 implementation(project(":compose:animation:animation-core"))
                 implementation(project(":compose:foundation:foundation"))
                 implementation(project(":compose:foundation:foundation-layout"))
@@ -265,6 +271,7 @@ android {
 android {
     sourceSets.androidTest.assets.srcDirs +=
             project.rootDir.absolutePath + "/../../golden/compose/ui/ui"
+    namespace "androidx.compose.ui"
 }
 
 // Diagnostics for b/188565660

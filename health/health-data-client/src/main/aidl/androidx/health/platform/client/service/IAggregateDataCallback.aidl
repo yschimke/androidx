@@ -20,6 +20,5 @@ import androidx.health.platform.client.error.ErrorStatus;
 
 oneway interface IAggregateDataCallback {
   void onSuccess(in AggregateDataResponse response) = 0;
-
   void onError(in ErrorStatus status) = 1;
 }

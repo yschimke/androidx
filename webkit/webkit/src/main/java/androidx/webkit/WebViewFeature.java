@@ -95,6 +95,7 @@ public class WebViewFeature {
             WEB_MESSAGE_LISTENER,
             DOCUMENT_START_SCRIPT,
             PROXY_OVERRIDE_REVERSE_BYPASS,
+            GET_VARIATIONS_HEADER,
     })
     @Retention(RetentionPolicy.SOURCE)
     @Target({ElementType.PARAMETER, ElementType.METHOD})
@@ -458,6 +459,12 @@ public class WebViewFeature {
      * {@link androidx.webkit.ProxyConfig.Builder#setReverseBypassEnabled(boolean)}
      */
     public static final String PROXY_OVERRIDE_REVERSE_BYPASS = "PROXY_OVERRIDE_REVERSE_BYPASS";
+
+    /**
+     * Feature for {@link #isFeatureSupported(String)}.
+     * This feature covers {@link WebViewCompat#getVariationsHeader()}.
+     */
+    public static final String GET_VARIATIONS_HEADER = "GET_VARIATIONS_HEADER";
 
     /**
      * Return whether a feature is supported at run-time. On devices running Android version {@link

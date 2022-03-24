@@ -18,11 +18,13 @@ package androidx.wear.tiles.material;
 
 import static androidx.wear.tiles.ColorBuilders.argb;
 import static androidx.wear.tiles.LayoutElementBuilders.TEXT_ALIGN_CENTER;
-import static androidx.wear.tiles.LayoutElementBuilders.TEXT_OVERFLOW_TRUNCATE;
+import static androidx.wear.tiles.LayoutElementBuilders.TEXT_OVERFLOW_ELLIPSIZE_END;
 import static androidx.wear.tiles.material.Helper.checkNotNull;
 import static androidx.wear.tiles.material.Typography.TYPOGRAPHY_DISPLAY1;
 import static androidx.wear.tiles.material.Typography.getFontStyleBuilder;
 import static androidx.wear.tiles.material.Typography.getLineHeightForTypography;
+
+import android.content.Context;
 
 import androidx.annotation.IntRange;
 import androidx.annotation.NonNull;
@@ -53,15 +55,26 @@ public class Text implements LayoutElement {
 
     /** Builder class for {@link Text}. */
     public static final class Builder implements LayoutElement.Builder {
+        @NonNull private final Context mContext;
         @NonNull private String mTextContent = "";
         @NonNull private ColorProp mColor = argb(Colors.ON_PRIMARY);
         private @TypographyName int mTypographyName = TYPOGRAPHY_DISPLAY1;
         private boolean mItalic = false;
         private int mMaxLines = 1;
         private boolean mUnderline = false;
-        private @TextAlignment int mMultilineAlignment = TEXT_ALIGN_CENTER;
+        @TextAlignment private int mMultilineAlignment = TEXT_ALIGN_CENTER;
         @NonNull private Modifiers mModifiers = new Modifiers.Builder().build();
-        private @TextOverflow int mOverflow = TEXT_OVERFLOW_TRUNCATE;
+        private @TextOverflow int mOverflow = TEXT_OVERFLOW_ELLIPSIZE_END;
+        private boolean mIsScalable = true;
+
+        /**
+         * Creates a builder for {@link Text}.
+         *
+         * @param context The application's context.
+         */
+        public Builder(@NonNull Context context) {
+            mContext = context;
+        }
 
         /** Sets the text content for the {@link Text}. */
         @NonNull
@@ -84,9 +97,13 @@ public class Text implements LayoutElement {
             return this;
         }
 
-        /**
-         * Sets the color for the {@link Text}. If not set, {@link Colors#ON_PRIMARY} will be used.
-         */
+        /** Sets whether the text size will change if user has changed default font style or not. */
+        Builder setIsScalable(boolean isScalable) {
+            this.mIsScalable = isScalable;
+            return this;
+        }
+
+        /** Sets the color for the {@link Text}. */
         @NonNull
         public Builder setColor(@NonNull ColorProp color) {
             this.mColor = color;
@@ -95,48 +112,50 @@ public class Text implements LayoutElement {
 
         /** Sets the text to be italic. */
         @NonNull
-        Builder setItalic(boolean italic) {
+        public Builder setItalic(boolean italic) {
             this.mItalic = italic;
             return this;
         }
 
         /** Sets the text to be underlined. */
         @NonNull
-        Builder setUnderline(boolean underline) {
+        public Builder setUnderline(boolean underline) {
             this.mUnderline = underline;
             return this;
         }
 
         /** Sets the maximum lines of text. If not set, 1 will be used. */
         @NonNull
-        Builder setMaxLines(@IntRange(from = 1) int maxLines) {
+        public Builder setMaxLines(@IntRange(from = 1) int maxLines) {
             this.mMaxLines = maxLines;
             return this;
         }
 
         /**
-         * Sets the mutliline alignenment for text. If not set, {@link
-         * TextAlignment#TEXT_ALIGN_CENTER} will be used.
+         * Sets the multiline alignment for text within bounds of the Text element. Note that this
+         * option has no effect for single line of text, and for that, alignment on the outer
+         * container should be used. If not set, {@link TextAlignment#TEXT_ALIGN_CENTER} will be
+         * used.
          */
         @NonNull
-        Builder setMultilineAlignment(@TextAlignment int multilineAlignment) {
+        public Builder setMultilineAlignment(@TextAlignment int multilineAlignment) {
             this.mMultilineAlignment = multilineAlignment;
             return this;
         }
 
         /** Sets the modifiers of text. */
         @NonNull
-        Builder setModifiers(@NonNull Modifiers modifiers) {
+        public Builder setModifiers(@NonNull Modifiers modifiers) {
             this.mModifiers = modifiers;
             return this;
         }
 
         /**
-         * Sets the overflow for text. If not set, {@link TextAlignment#TEXT_OVERFLOW_TRUNCATE} will
-         * be used.
+         * Sets the overflow for text. If not set, {@link TextAlignment#TEXT_OVERFLOW_ELLIPSIZE_END}
+         * will be used.
          */
         @NonNull
-        Builder setOverflow(@TextOverflow int overflow) {
+        public Builder setOverflow(@TextOverflow int overflow) {
             this.mOverflow = overflow;
             return this;
         }
@@ -149,7 +168,7 @@ public class Text implements LayoutElement {
                     new LayoutElementBuilders.Text.Builder()
                             .setText(mTextContent)
                             .setFontStyle(
-                                    getFontStyleBuilder(mTypographyName)
+                                    getFontStyleBuilder(mTypographyName, mContext, mIsScalable)
                                             .setColor(mColor)
                                             .setItalic(mItalic)
                                             .setUnderline(mUnderline)
@@ -192,7 +211,8 @@ public class Text implements LayoutElement {
     }
 
     /** Returns the multiline alignment of this Text element. */
-    public @TextAlignment int getMultilineAlignment() {
+    @TextAlignment
+    public int getMultilineAlignment() {
         return checkNotNull(mText.getMultilineAlignment()).getValue();
     }
 
@@ -203,8 +223,19 @@ public class Text implements LayoutElement {
     }
 
     /** Returns the overflow of this Text element. */
-    public @TextOverflow int getOverflow() {
+    @TextOverflow
+    public int getOverflow() {
         return checkNotNull(mText.getOverflow()).getValue();
+    }
+
+    /** Returns whether the Text is in italic. */
+    public boolean isItalic() {
+        return checkNotNull(checkNotNull(mText.getFontStyle()).getItalic()).getValue();
+    }
+
+    /** Returns whether the Text is underlined. */
+    public boolean isUnderline() {
+        return checkNotNull(checkNotNull(mText.getFontStyle()).getUnderline()).getValue();
     }
 
     /** @hide */

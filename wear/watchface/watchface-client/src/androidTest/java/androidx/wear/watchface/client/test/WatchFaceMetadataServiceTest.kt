@@ -73,10 +73,9 @@ public class WatchFaceMetadataServiceTest {
     }
 
     @Test
-    @Suppress("Deprecation") // userStyleSettings
-    public fun getSchema() {
-        val service = createWatchFaceMetadataClient(exampleWatchFaceComponentName)
-        val schema = service.getUserStyleSchema()
+    public fun userStyleSchema() {
+        val client = createWatchFaceMetadataClient(exampleWatchFaceComponentName)
+        val schema = client.getUserStyleSchema()
 
         Truth.assertThat(schema.userStyleSettings.size).isEqualTo(5)
         Truth.assertThat(schema.userStyleSettings[0].id.value).isEqualTo(
@@ -94,14 +93,15 @@ public class WatchFaceMetadataServiceTest {
         Truth.assertThat(schema.userStyleSettings[4].id.value).isEqualTo(
             "hours_draw_freq_style_setting"
         )
+
+        Truth.assertThat(client.isUserStyleSchemaStatic).isFalse()
     }
 
     @Test
-    @Suppress("Deprecation") // userStyleSettings
-    public fun getSchema_oldApi() {
+    public fun userStyleSchema_oldApi() {
         WatchFaceControlTestService.apiVersionOverride = 1
-        val service = createWatchFaceMetadataClient(exampleWatchFaceComponentName)
-        val schema = service.getUserStyleSchema()
+        val client = createWatchFaceMetadataClient(exampleWatchFaceComponentName)
+        val schema = client.getUserStyleSchema()
 
         Truth.assertThat(schema.userStyleSettings.size).isEqualTo(5)
         Truth.assertThat(schema.userStyleSettings[0].id.value).isEqualTo(
@@ -119,6 +119,8 @@ public class WatchFaceMetadataServiceTest {
         Truth.assertThat(schema.userStyleSettings[4].id.value).isEqualTo(
             "hours_draw_freq_style_setting"
         )
+
+        Truth.assertThat(client.isUserStyleSchemaStatic).isFalse()
     }
 
     @Test
@@ -183,7 +185,7 @@ public class WatchFaceMetadataServiceTest {
     }
 
     @Test
-    public fun getSchema_static_metadata() {
+    public fun userStyleSchema_static_metadata() {
         runBlocking {
             val client = WatchFaceMetadataClient.createImpl(
                 context,
@@ -200,12 +202,11 @@ public class WatchFaceMetadataServiceTest {
             )
             val schema = client.getUserStyleSchema()
 
-            Truth.assertThat(
-                @Suppress("Deprecation")
-                schema.userStyleSettings.toString()
-            ).isEqualTo(
+            Truth.assertThat(schema.userStyleSettings.toString()).isEqualTo(
                 "[{TimeStyle : minimal, seconds}]"
             )
+
+            Truth.assertThat(client.isUserStyleSchemaStatic).isTrue()
         }
     }
 

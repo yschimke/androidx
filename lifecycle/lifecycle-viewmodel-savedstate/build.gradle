@@ -28,6 +28,7 @@ android {
     buildTypes.all {
         consumerProguardFiles("proguard-rules.pro")
     }
+    namespace "androidx.lifecycle.viewmodel.savedstate"
 }
 
 dependencies {
@@ -37,6 +38,7 @@ dependencies {
     api(projectOrArtifact(":lifecycle:lifecycle-livedata-core"))
     api(projectOrArtifact(":lifecycle:lifecycle-viewmodel"))
     api(libs.kotlinStdlib)
+    api(libs.kotlinCoroutinesAndroid)
 
     androidTestImplementation projectOrArtifact(":lifecycle:lifecycle-runtime")
     androidTestImplementation projectOrArtifact(":lifecycle:lifecycle-livedata-core")

@@ -19,12 +19,10 @@ package androidx.wear.tiles.material.layouts;
 import static androidx.annotation.Dimension.DP;
 import static androidx.wear.tiles.DimensionBuilders.dp;
 import static androidx.wear.tiles.DimensionBuilders.expand;
-import static androidx.wear.tiles.LayoutElementBuilders.HORIZONTAL_ALIGN_CENTER;
-import static androidx.wear.tiles.material.Helper.isRoundDevice;
+import static androidx.wear.tiles.material.layouts.LayoutDefaults.DEFAULT_VERTICAL_SPACER_HEIGHT;
 import static androidx.wear.tiles.material.layouts.LayoutDefaults.MULTI_SLOT_LAYOUT_HORIZONTAL_SPACER_WIDTH;
-import static androidx.wear.tiles.material.layouts.LayoutDefaults.MULTI_SLOT_LAYOUT_VERTICAL_SPACER_HEIGHT;
-import static androidx.wear.tiles.material.layouts.LayoutDefaults.PRIMARY_LAYOUT_MARGIN_HORIZONTAL_ROUND_PERCENT;
-import static androidx.wear.tiles.material.layouts.LayoutDefaults.PRIMARY_LAYOUT_MARGIN_HORIZONTAL_SQUARE_PERCENT;
+
+import android.annotation.SuppressLint;
 
 import androidx.annotation.Dimension;
 import androidx.annotation.NonNull;
@@ -35,13 +33,9 @@ import androidx.wear.tiles.DeviceParametersBuilders.DeviceParameters;
 import androidx.wear.tiles.DimensionBuilders.DpProp;
 import androidx.wear.tiles.LayoutElementBuilders;
 import androidx.wear.tiles.LayoutElementBuilders.Box;
-import androidx.wear.tiles.LayoutElementBuilders.Column;
-import androidx.wear.tiles.LayoutElementBuilders.Layout;
 import androidx.wear.tiles.LayoutElementBuilders.LayoutElement;
 import androidx.wear.tiles.LayoutElementBuilders.Row;
 import androidx.wear.tiles.LayoutElementBuilders.Spacer;
-import androidx.wear.tiles.TimelineBuilders.Timeline;
-import androidx.wear.tiles.TimelineBuilders.TimelineEntry;
 import androidx.wear.tiles.proto.LayoutElementProto;
 
 import java.util.ArrayList;
@@ -72,7 +66,7 @@ public class MultiSlotLayout implements LayoutElement {
         @Nullable private LayoutElement mSecondaryLabelText = null;
         @NonNull private final List<LayoutElement> mSlotsContent = new ArrayList<>();
         @NonNull private DpProp mHorizontalSpacerWidth = MULTI_SLOT_LAYOUT_HORIZONTAL_SPACER_WIDTH;
-        @NonNull private DpProp mVerticalSpacerHeight = MULTI_SLOT_LAYOUT_VERTICAL_SPACER_HEIGHT;
+        @NonNull private DpProp mVerticalSpacerHeight = DEFAULT_VERTICAL_SPACER_HEIGHT;
 
         /**
          * Creates a builder for the {@link MultiSlotLayout}. Content inside of it can later be set
@@ -120,8 +114,7 @@ public class MultiSlotLayout implements LayoutElement {
         @NonNull
         @SuppressWarnings("MissingGetterMatchingBuilder")
         // There is no direct matching getter for this setter as the serialized format of the
-        // ProtoLayouts do not allow for a direct reconstruction of the arguments. Instead there are
-        // methods to get the contents a whole for rendering.
+        // ProtoLayouts do not allow for a direct reconstruction of the arguments. b/221427609
         public Builder addSlotContent(@NonNull LayoutElement slotContent) {
             mSlotsContent.add(slotContent);
             return this;
@@ -145,7 +138,7 @@ public class MultiSlotLayout implements LayoutElement {
         /**
          * Sets the vertical spacer height which is used as a space between all slots and primary or
          * secondary label if there is any. If not set, {@link
-         * LayoutDefaults#MULTI_SLOT_LAYOUT_VERTICAL_SPACER_HEIGHT} will be used.
+         * LayoutDefaults#DEFAULT_VERTICAL_SPACER_HEIGHT} will be used.
          */
         @NonNull
         @SuppressWarnings("MissingGetterMatchingBuilder")
@@ -159,34 +152,28 @@ public class MultiSlotLayout implements LayoutElement {
 
         @NonNull
         @Override
+        // The @Dimension(unit = DP) on mVerticalSpacerHeight.getValue() is seemingly being ignored,
+        // so lint complains that we're passing PX to something expecting DP. Just suppress the
+        // warning for now.
+        @SuppressLint("ResourceType")
         public MultiSlotLayout build() {
             PrimaryLayout.Builder layoutBuilder = new PrimaryLayout.Builder(mDeviceParameters);
+            layoutBuilder.setVerticalSpacerHeight(mVerticalSpacerHeight.getValue());
 
             if (mPrimaryChip != null) {
-                layoutBuilder.setCompactChipContent(mPrimaryChip);
+                layoutBuilder.setPrimaryChipContent(mPrimaryChip);
             }
-
-            Column.Builder innerContent =
-                    new Column.Builder()
-                            .setHeight(expand())
-                            .setWidth(expand())
-                            .setHorizontalAlignment(HORIZONTAL_ALIGN_CENTER);
 
             if (mPrimaryLabelText != null) {
-                innerContent.addContent(mPrimaryLabelText);
+                layoutBuilder.setPrimaryLabelTextContent(mPrimaryLabelText);
             }
 
-            if (mSlotsContent.size() > 0) {
-                if (mPrimaryLabelText != null) {
-                    innerContent.addContent(
-                            new Spacer.Builder().setHeight(mVerticalSpacerHeight).build());
-                }
+            if (mSecondaryLabelText != null) {
+                layoutBuilder.setSecondaryLabelTextContent(mSecondaryLabelText);
+            }
 
-                float horizontalPadding =
-                        mDeviceParameters.getScreenWidthDp()
-                                * (isRoundDevice(mDeviceParameters)
-                                        ? PRIMARY_LAYOUT_MARGIN_HORIZONTAL_ROUND_PERCENT
-                                        : PRIMARY_LAYOUT_MARGIN_HORIZONTAL_SQUARE_PERCENT);
+            if (!mSlotsContent.isEmpty()) {
+                float horizontalPadding = layoutBuilder.getHorizontalPadding();
                 DpProp rowWidth = dp(mDeviceParameters.getScreenWidthDp() - horizontalPadding * 2);
                 Row.Builder rowBuilder =
                         new Row.Builder()
@@ -210,59 +197,11 @@ public class MultiSlotLayout implements LayoutElement {
                                     .build());
                 }
 
-                innerContent.addContent(rowBuilder.build());
+                layoutBuilder.setContent(rowBuilder.build());
             }
 
-            if (mSecondaryLabelText != null) {
-                innerContent.addContent(
-                        new Spacer.Builder().setHeight(mVerticalSpacerHeight).build());
-                innerContent.addContent(mSecondaryLabelText);
-            }
-
-            layoutBuilder.setContent(innerContent.build());
             return new MultiSlotLayout(layoutBuilder.build());
         }
-    }
-
-    /** Returns the {@link Layout} object containing this layout template. */
-    @NonNull
-    public Layout toLayout() {
-        return toLayoutBuilder().build();
-    }
-
-    /** Returns the {@link Layout.Builder} object containing this layout template. */
-    @NonNull
-    public Layout.Builder toLayoutBuilder() {
-        return new Layout.Builder().setRoot(mElement);
-    }
-
-    /** Returns the {@link TimelineEntry.Builder} object containing this layout template. */
-    @NonNull
-    public TimelineEntry.Builder toTimelineEntryBuilder() {
-        return new TimelineEntry.Builder().setLayout(toLayout());
-    }
-
-    /** Returns the {@link TimelineEntry} object containing this layout template. */
-    @NonNull
-    public TimelineEntry toTimelineEntry() {
-        return toTimelineEntryBuilder().build();
-    }
-
-    /** Returns the {@link Timeline.Builder} object containing this layout template. */
-    @NonNull
-    public Timeline.Builder toTimelineBuilder() {
-        return new Timeline.Builder().addTimelineEntry(toTimelineEntry());
-    }
-
-    /** Returns the {@link Timeline} object containing this layout template. */
-    @NonNull
-    public Timeline toTimeline() {
-        return toTimelineBuilder().build();
-    }
-
-    @NonNull
-    public LayoutElement getContent() {
-        return mElement.getContent();
     }
 
     /** @hide */

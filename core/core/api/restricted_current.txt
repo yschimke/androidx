@@ -1250,6 +1250,7 @@ package androidx.core.content.pm {
     method public java.util.Set<java.lang.String!>? getCategories();
     method public CharSequence? getDisabledMessage();
     method public int getDisabledReason();
+    method @androidx.core.content.pm.ShortcutInfoCompat.Surface public int getExcludedFromSurfaces();
     method public android.os.PersistableBundle? getExtras();
     method @RestrictTo(androidx.annotation.RestrictTo.Scope.LIBRARY_GROUP_PREFIX) public androidx.core.graphics.drawable.IconCompat! getIcon();
     method public String getId();
@@ -1268,8 +1269,8 @@ package androidx.core.content.pm {
     method public boolean isDeclaredInManifest();
     method public boolean isDynamic();
     method public boolean isEnabled();
+    method public boolean isExcludedFromSurfaces(@androidx.core.content.pm.ShortcutInfoCompat.Surface int);
     method public boolean isImmutable();
-    method public boolean isIncludedIn(@androidx.core.content.pm.ShortcutInfoCompat.Surface int);
     method public boolean isPinned();
     method @RequiresApi(25) public android.content.pm.ShortcutInfo! toShortcutInfo();
     field public static final int SURFACE_LAUNCHER = 1; // 0x1
@@ -1286,7 +1287,7 @@ package androidx.core.content.pm {
     method public androidx.core.content.pm.ShortcutInfoCompat.Builder setAlwaysBadged();
     method public androidx.core.content.pm.ShortcutInfoCompat.Builder setCategories(java.util.Set<java.lang.String!>);
     method public androidx.core.content.pm.ShortcutInfoCompat.Builder setDisabledMessage(CharSequence);
-    method public androidx.core.content.pm.ShortcutInfoCompat.Builder setExcludedSurfaces(int);
+    method public androidx.core.content.pm.ShortcutInfoCompat.Builder setExcludedFromSurfaces(int);
     method public androidx.core.content.pm.ShortcutInfoCompat.Builder setExtras(android.os.PersistableBundle);
     method public androidx.core.content.pm.ShortcutInfoCompat.Builder setIcon(androidx.core.graphics.drawable.IconCompat!);
     method public androidx.core.content.pm.ShortcutInfoCompat.Builder setIntent(android.content.Intent);
@@ -1590,9 +1591,9 @@ package androidx.core.graphics {
     method @RestrictTo(androidx.annotation.RestrictTo.Scope.LIBRARY_GROUP_PREFIX) @VisibleForTesting public static void clearCache();
     method public static android.graphics.Typeface create(android.content.Context, android.graphics.Typeface?, int);
     method @RestrictTo(androidx.annotation.RestrictTo.Scope.LIBRARY_GROUP_PREFIX) public static android.graphics.Typeface? createFromFontInfo(android.content.Context, android.os.CancellationSignal?, androidx.core.provider.FontsContractCompat.FontInfo![], int);
-    method @RestrictTo(androidx.annotation.RestrictTo.Scope.LIBRARY_GROUP_PREFIX) public static android.graphics.Typeface? createFromResourcesFamilyXml(android.content.Context, androidx.core.content.res.FontResourcesParserCompat.FamilyResourceEntry, android.content.res.Resources, int, int, androidx.core.content.res.ResourcesCompat.FontCallback?, android.os.Handler?, boolean);
-    method @RestrictTo(androidx.annotation.RestrictTo.Scope.LIBRARY_GROUP_PREFIX) public static android.graphics.Typeface? createFromResourcesFontFile(android.content.Context, android.content.res.Resources, int, String!, int);
-    method @RestrictTo(androidx.annotation.RestrictTo.Scope.LIBRARY_GROUP_PREFIX) public static android.graphics.Typeface? findFromCache(android.content.res.Resources, int, int);
+    method @Deprecated @RestrictTo(androidx.annotation.RestrictTo.Scope.LIBRARY_GROUP_PREFIX) public static android.graphics.Typeface? createFromResourcesFamilyXml(android.content.Context, androidx.core.content.res.FontResourcesParserCompat.FamilyResourceEntry, android.content.res.Resources, int, int, androidx.core.content.res.ResourcesCompat.FontCallback?, android.os.Handler?, boolean);
+    method @Deprecated @RestrictTo(androidx.annotation.RestrictTo.Scope.LIBRARY_GROUP_PREFIX) public static android.graphics.Typeface? createFromResourcesFontFile(android.content.Context, android.content.res.Resources, int, String!, int);
+    method @Deprecated @RestrictTo(androidx.annotation.RestrictTo.Scope.LIBRARY_GROUP_PREFIX) public static android.graphics.Typeface? findFromCache(android.content.res.Resources, int, int);
   }
 
   @RequiresApi(26) @RestrictTo(androidx.annotation.RestrictTo.Scope.LIBRARY_GROUP_PREFIX) public class TypefaceCompatApi26Impl {
@@ -1681,7 +1682,7 @@ package androidx.core.graphics.drawable {
     method public static androidx.core.graphics.drawable.IconCompat createWithResource(android.content.Context, @DrawableRes int);
     method @RestrictTo(androidx.annotation.RestrictTo.Scope.LIBRARY_GROUP_PREFIX) public static androidx.core.graphics.drawable.IconCompat createWithResource(android.content.res.Resources?, String, @DrawableRes int);
     method @RestrictTo(androidx.annotation.RestrictTo.Scope.LIBRARY_GROUP_PREFIX) public android.graphics.Bitmap? getBitmap();
-    method @IdRes public int getResId();
+    method @DrawableRes public int getResId();
     method public String getResPackage();
     method public int getType();
     method public android.net.Uri getUri();
@@ -2704,7 +2705,9 @@ package androidx.core.view {
     method public void addMenuProvider(androidx.core.view.MenuProvider, androidx.lifecycle.LifecycleOwner);
     method public void addMenuProvider(androidx.core.view.MenuProvider, androidx.lifecycle.LifecycleOwner, androidx.lifecycle.Lifecycle.State);
     method public void onCreateMenu(android.view.Menu, android.view.MenuInflater);
+    method public void onMenuClosed(android.view.Menu);
     method public boolean onMenuItemSelected(android.view.MenuItem);
+    method public void onPrepareMenu(android.view.Menu);
     method public void removeMenuProvider(androidx.core.view.MenuProvider);
   }
 
@@ -2746,7 +2749,9 @@ package androidx.core.view {
 
   public interface MenuProvider {
     method public void onCreateMenu(android.view.Menu, android.view.MenuInflater);
+    method public default void onMenuClosed(android.view.Menu);
     method public boolean onMenuItemSelected(android.view.MenuItem);
+    method public default void onPrepareMenu(android.view.Menu);
   }
 
   public final class MotionEventCompat {

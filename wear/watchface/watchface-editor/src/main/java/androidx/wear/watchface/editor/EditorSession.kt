@@ -841,7 +841,6 @@ internal class OnWatchFaceEditorSessionImpl(
         }
     } as MutableStateFlow<UserStyle>
 
-    @Suppress("Deprecation")
     internal fun validateAndUpdateUserStyle(userStyle: UserStyle) {
         for (userStyleSetting in userStyle.keys) {
             require(userStyleSchema.userStyleSettings.contains(userStyleSetting)) {
@@ -1098,4 +1097,5 @@ internal fun extractComplicationsDataSourceInfoMap(
         { it.info }
     )
 
+@Suppress("DEPRECATION")
 internal fun Bundle.asString() = keySet().map { "$it: ${get(it)}" }

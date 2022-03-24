@@ -47,6 +47,7 @@ android {
     sourceSets {
         androidTest.assets.srcDirs += files("$projectDir/src/schemas".toString())
     }
+    namespace "androidx.work"
 }
 
 dependencies {
@@ -54,8 +55,8 @@ dependencies {
     ksp("androidx.room:room-compiler:2.4.0-rc01")
     implementation("androidx.room:room-runtime:2.4.0-rc01")
     androidTestImplementation("androidx.room:room-testing:2.4.0-rc01")
-    implementation("androidx.sqlite:sqlite:2.1.0")
-    implementation("androidx.sqlite:sqlite-framework:2.1.0")
+    implementation(projectOrArtifact(":sqlite:sqlite"))
+    implementation(projectOrArtifact(":sqlite:sqlite-framework"))
     api("androidx.annotation:annotation-experimental:1.0.0")
     api(libs.guavaListenableFuture)
     api("androidx.lifecycle:lifecycle-livedata:2.1.0")

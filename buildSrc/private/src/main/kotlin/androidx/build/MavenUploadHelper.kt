@@ -18,6 +18,9 @@ package androidx.build
 
 import androidx.build.Multiplatform.Companion.isMultiplatformEnabled
 import com.android.build.gradle.LibraryPlugin
+import com.google.gson.GsonBuilder
+import com.google.gson.JsonObject
+import com.google.gson.stream.JsonWriter
 import groovy.util.Node
 import org.gradle.api.GradleException
 import org.gradle.api.Project
@@ -34,6 +37,7 @@ import org.gradle.kotlin.dsl.findByType
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinAndroidTarget
 import java.io.File
+import java.io.StringWriter
 import org.gradle.api.publish.maven.tasks.GenerateMavenPom
 
 fun Project.configureMavenArtifactUpload(extension: AndroidXExtension) {
@@ -188,27 +192,21 @@ fun sortPomDependencies(pom: String): String {
  * Looks for a dependencies JSON element within [metadata] and sorts its contents.
  */
 fun sortGradleMetadataDependencies(metadata: String): String {
-    var sortedMetadata = metadata
-    val regex = "(?s)\"dependencies\": \\[\\n(.+?)}\\s+]".toRegex()
-
-    var results = regex.findAll(metadata)
-    results.forEach { result ->
-        val depsGroup = result.groups[1]
-        if (depsGroup != null) {
-            val depsRange = depsGroup.range
-            val deps = depsGroup.value
-            val sortedDeps = deps
-                .split("},\n")
-                .sorted()
-                .joinToString("},\n")
-
-            if (deps != sortedDeps) {
-                sortedMetadata = sortedMetadata.replaceRange(depsRange, sortedDeps)
-            }
+    val gson = GsonBuilder().create()
+    val jsonObj = gson.fromJson(metadata, JsonObject::class.java)!!
+    jsonObj.getAsJsonArray("variants").forEach { entry ->
+        (entry as? JsonObject)?.getAsJsonArray("dependencies")?.let { jsonArray ->
+            val sortedSet = jsonArray.toSortedSet(compareBy { it.toString() })
+            jsonArray.removeAll { true }
+            sortedSet.forEach { element -> jsonArray.add(element) }
         }
     }
 
-    return sortedMetadata
+    val stringWriter = StringWriter()
+    val jsonWriter = JsonWriter(stringWriter)
+    jsonWriter.setIndent("  ")
+    gson.toJson(jsonObj, jsonWriter)
+    return stringWriter.toString()
 }
 
 private fun Project.isMultiplatformPublicationEnabled(): Boolean {

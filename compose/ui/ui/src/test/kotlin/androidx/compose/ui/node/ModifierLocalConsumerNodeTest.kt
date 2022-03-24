@@ -102,7 +102,7 @@ class ModifierLocalConsumerNodeTest {
     }
 
     @Test
-    fun `detached modifier local consumer with no provider does not invoke lambda`() {
+    fun `detached modifier local consumer with no provider invokes with default providers`() {
         // Arrange.
         lateinit var receivedValue: String
         TestBox(Modifier.modifierLocalConsumer { receivedValue = ModifierLocalString.current })
@@ -113,7 +113,7 @@ class ModifierLocalConsumerNodeTest {
         detach()
 
         // Assert.
-        assertThat(receivedValue).isEmpty()
+        assertThat(receivedValue).isEqualTo(default)
     }
 
     @Test
@@ -242,7 +242,7 @@ class ModifierLocalConsumerNodeTest {
     }
 
     @Test
-    fun `detached modifier local consumer with provider does not invoke lambda`() {
+    fun `detached modifier local consumer with provider invokes with default provider`() {
         // Arrange.
         lateinit var receivedValue: String
         TestBox(
@@ -257,7 +257,7 @@ class ModifierLocalConsumerNodeTest {
         detach()
 
         // Assert.
-        assertThat(receivedValue).isEmpty()
+        assertThat(receivedValue).isEqualTo(default)
     }
 
     private fun TestBox(modifier: Modifier = Modifier) {
@@ -301,7 +301,7 @@ class ModifierLocalConsumerNodeTest {
             }
         }
 
-        override fun onRequestMeasure(layoutNode: LayoutNode) {}
+        override fun onRequestMeasure(layoutNode: LayoutNode, forceRequest: Boolean) {}
         override fun onAttach(node: LayoutNode) = node.forEachLayoutNodeWrapper { it.attach() }
         override fun onDetach(node: LayoutNode) = node.forEachLayoutNodeWrapper { it.detach() }
 
@@ -349,7 +349,7 @@ class ModifierLocalConsumerNodeTest {
 
         override fun createLayer(drawBlock: (Canvas) -> Unit, invalidateParentLayer: () -> Unit) =
             TODO("Not yet implemented")
-        override fun onRequestRelayout(layoutNode: LayoutNode) =
+        override fun onRequestRelayout(layoutNode: LayoutNode, forceRequest: Boolean) =
             TODO("Not yet implemented")
         override fun calculatePositionInWindow(localPosition: Offset) =
             TODO("Not yet implemented")

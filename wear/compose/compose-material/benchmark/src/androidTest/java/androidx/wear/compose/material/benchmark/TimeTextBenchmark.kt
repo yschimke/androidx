@@ -27,13 +27,12 @@ import androidx.compose.testutils.benchmark.benchmarkFirstMeasure
 import androidx.compose.testutils.benchmark.benchmarkLayoutPerf
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
-import androidx.wear.compose.material.CurvedText
-import androidx.wear.compose.material.ExperimentalWearMaterialApi
 import androidx.wear.compose.material.MaterialTheme
 import androidx.wear.compose.material.Text
 import androidx.wear.compose.material.TimeText
 import androidx.wear.compose.material.TimeTextDefaults
 import androidx.wear.compose.material.TimeTextDefaults.CurvedTextSeparator
+import androidx.wear.compose.material.curvedText
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -82,7 +81,6 @@ class TimeTextBenchmark {
 }
 
 internal class TimeTextTestCase : LayeredComposeTestCase() {
-    @OptIn(ExperimentalWearMaterialApi::class)
     @Composable
     override fun MeasuredContent() {
         TimeText(
@@ -100,7 +98,7 @@ internal class TimeTextTestCase : LayeredComposeTestCase() {
                 )
             },
             leadingCurvedContent = {
-                CurvedText(
+                curvedText(
                     text = "Leading content"
                 )
             },
@@ -108,7 +106,7 @@ internal class TimeTextTestCase : LayeredComposeTestCase() {
                 CurvedTextSeparator()
             },
             trailingCurvedContent = {
-                CurvedText(
+                curvedText(
                     text = "Trailing content"
                 )
             },

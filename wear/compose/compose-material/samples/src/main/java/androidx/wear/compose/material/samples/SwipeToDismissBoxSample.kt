@@ -35,29 +35,22 @@ import androidx.compose.runtime.saveable.rememberSaveableStateHolder
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.wear.compose.material.ExperimentalWearMaterialApi
 import androidx.wear.compose.material.MaterialTheme
 import androidx.wear.compose.material.SplitToggleChip
-import androidx.wear.compose.material.SwipeDismissTarget
+import androidx.wear.compose.material.SwipeToDismissValue
 import androidx.wear.compose.material.SwipeToDismissBox
 import androidx.wear.compose.material.Text
 import androidx.wear.compose.material.rememberSwipeToDismissBoxState
 
 @Sampled
 @Composable
-@ExperimentalWearMaterialApi
 fun SimpleSwipeToDismissBox(
     navigateBack: () -> Unit
 ) {
     val state = rememberSwipeToDismissBoxState()
-    LaunchedEffect(state.currentValue) {
-        if (state.currentValue == SwipeDismissTarget.Dismissal) {
-            state.snapTo(SwipeDismissTarget.Original)
-            navigateBack()
-        }
-    }
     SwipeToDismissBox(
         state = state,
+        onDismissed = navigateBack
     ) { isBackground ->
         if (isBackground) {
             Box(modifier = Modifier.fillMaxSize().background(MaterialTheme.colors.secondaryVariant))
@@ -75,7 +68,6 @@ fun SimpleSwipeToDismissBox(
 
 @Sampled
 @Composable
-@ExperimentalWearMaterialApi
 fun StatefulSwipeToDismissBox() {
     // State for managing a 2-level navigation hierarchy between
     // MainScreen and ItemScreen composables.
@@ -86,8 +78,8 @@ fun StatefulSwipeToDismissBox() {
     // Swipe gesture dismisses ItemScreen to return to MainScreen.
     val state = rememberSwipeToDismissBoxState()
     LaunchedEffect(state.currentValue) {
-        if (state.currentValue == SwipeDismissTarget.Dismissal) {
-            state.snapTo(SwipeDismissTarget.Original)
+        if (state.currentValue == SwipeToDismissValue.Dismissed) {
+            state.snapTo(SwipeToDismissValue.Default)
             showMainScreen = !showMainScreen
         }
     }

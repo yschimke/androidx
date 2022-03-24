@@ -15,7 +15,7 @@
  */
 
 /** @hide */
-@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
+@RestrictTo(RestrictTo.Scope.LIBRARY)
 package androidx.health.platform.client;
 
 import androidx.annotation.RestrictTo;

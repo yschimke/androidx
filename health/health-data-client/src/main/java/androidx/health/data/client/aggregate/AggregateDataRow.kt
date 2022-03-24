@@ -15,6 +15,8 @@
  */
 package androidx.health.data.client.aggregate
 
+import androidx.annotation.RestrictTo
+import androidx.health.data.client.metadata.DataOrigin
 import java.time.Duration
 
 /**
@@ -22,12 +24,15 @@ import java.time.Duration
  *
  * See [HealthDataClient.aggregate]
  */
+@RestrictTo(RestrictTo.Scope.LIBRARY)
 class AggregateDataRow
 internal constructor(
     // TODO(b/219327548): Accommodate optional aggregate groupBy keys (time range) when we add
     // groupBy.
     internal val longValues: Map<String, Long>,
-    internal val doubleValues: Map<String, Double>
+    internal val doubleValues: Map<String, Double>,
+    /** List of [DataOrigin]s that contributed to the aggregation result. */
+    public val dataOrigins: List<DataOrigin>
 ) {
 
     /**

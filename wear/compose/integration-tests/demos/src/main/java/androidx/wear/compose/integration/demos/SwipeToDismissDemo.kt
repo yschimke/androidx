@@ -33,8 +33,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.wear.compose.material.Chip
 import androidx.wear.compose.material.ChipDefaults
-import androidx.wear.compose.material.ExperimentalWearMaterialApi
-import androidx.wear.compose.material.SwipeDismissTarget
+import androidx.wear.compose.material.SwipeToDismissValue
 import androidx.wear.compose.material.SwipeToDismissBox
 import androidx.wear.compose.material.Text
 import androidx.wear.compose.material.rememberSwipeToDismissBoxState
@@ -46,14 +45,13 @@ import androidx.wear.compose.material.rememberSwipeToDismissBoxState
  * Uses LaunchedEffect to reset the offset of the swipe by snapping back to original position.
  */
 @Composable
-@ExperimentalWearMaterialApi
 fun SwipeToDismissDemo(
     navigateBack: () -> Unit,
     demoState: MutableState<SwipeDismissDemoState>,
 ) {
     val swipeDismissState = rememberSwipeToDismissBoxState()
     LaunchedEffect(swipeDismissState.currentValue) {
-        if (swipeDismissState.currentValue == SwipeDismissTarget.Dismissal) {
+        if (swipeDismissState.currentValue == SwipeToDismissValue.Dismissed) {
             // Swipe has been completely dismissed because the current value is the
             // 'dismiss' target. Navigate and snap back to original position.
             when (demoState.value) {
@@ -64,7 +62,7 @@ fun SwipeToDismissDemo(
                     demoState.value = SwipeDismissDemoState.List
                 }
             }
-            swipeDismissState.snapTo(SwipeDismissTarget.Original)
+            swipeDismissState.snapTo(SwipeToDismissValue.Default)
         }
     }
 
@@ -75,7 +73,7 @@ fun SwipeToDismissDemo(
             // What to show behind the content whilst swiping.
             when (demoState.value) {
                 SwipeDismissDemoState.List -> {
-                    DisplayDemoList(SwipeToDismissDemos, null, {}, {})
+                    DisplayDemoList(SwipeToDismissDemos, {})
                 }
                 SwipeDismissDemoState.Detail -> {
                     SwipeToDismissOptionsList()

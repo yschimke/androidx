@@ -67,6 +67,7 @@ import org.jetbrains.kotlin.ir.declarations.IrAttributeContainer
 import org.jetbrains.kotlin.ir.declarations.IrClass
 import org.jetbrains.kotlin.ir.declarations.IrDeclarationOrigin
 import org.jetbrains.kotlin.ir.declarations.IrField
+import org.jetbrains.kotlin.ir.declarations.IrFile
 import org.jetbrains.kotlin.ir.declarations.IrFunction
 import org.jetbrains.kotlin.ir.declarations.IrModuleFragment
 import org.jetbrains.kotlin.ir.declarations.IrProperty
@@ -80,6 +81,7 @@ import org.jetbrains.kotlin.ir.declarations.impl.IrFunctionImpl
 import org.jetbrains.kotlin.ir.declarations.impl.IrTypeParameterImpl
 import org.jetbrains.kotlin.ir.declarations.impl.IrValueParameterImpl
 import org.jetbrains.kotlin.ir.declarations.impl.IrVariableImpl
+import org.jetbrains.kotlin.ir.declarations.name
 import org.jetbrains.kotlin.ir.expressions.IrBranch
 import org.jetbrains.kotlin.ir.expressions.IrCall
 import org.jetbrains.kotlin.ir.expressions.IrConst
@@ -1377,6 +1379,14 @@ fun ParameterDescriptor.index(): Int =
     }
 
 fun getUnderlyingType(irClass: IrClass) = irClass.inlineClassRepresentation!!.underlyingType
+
+inline fun <T> includeFileNameInExceptionTrace(file: IrFile, body: () -> T): T {
+    try {
+        return body()
+    } catch (e: Exception) {
+        throw Exception("IR lowering failed at: ${file.name}", e)
+    }
+}
 
 fun FqName.topLevelName() =
     asString().substringBefore(".")

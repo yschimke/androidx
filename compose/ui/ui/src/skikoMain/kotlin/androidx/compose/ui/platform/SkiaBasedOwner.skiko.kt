@@ -278,6 +278,9 @@ internal class SkiaBasedOwner(
         onNeedRender?.invoke()
     }
 
+    var contentSize = IntSize.Zero
+        private set
+
     override fun measureAndLayout(sendPointerUpdate: Boolean) {
         measureAndLayoutDelegate.updateRootConstraints(constraints)
         if (
@@ -288,6 +291,12 @@ internal class SkiaBasedOwner(
             requestDraw()
         }
         measureAndLayoutDelegate.dispatchOnPositionedCallbacks()
+
+        // Don't use mainOwner.root.width here, as it strictly coerced by [constraints]
+        contentSize = IntSize(
+            root.children.maxOfOrNull { it.outerLayoutNodeWrapper.measuredWidth } ?: 0,
+            root.children.maxOfOrNull { it.outerLayoutNodeWrapper.measuredHeight } ?: 0,
+        )
     }
 
     override fun measureAndLayout(layoutNode: LayoutNode, constraints: Constraints) {
@@ -299,14 +308,14 @@ internal class SkiaBasedOwner(
         measureAndLayoutDelegate.forceMeasureTheSubtree(layoutNode)
     }
 
-    override fun onRequestMeasure(layoutNode: LayoutNode) {
-        if (measureAndLayoutDelegate.requestRemeasure(layoutNode)) {
+    override fun onRequestMeasure(layoutNode: LayoutNode, forceRequest: Boolean) {
+        if (measureAndLayoutDelegate.requestRemeasure(layoutNode, forceRequest)) {
             requestLayout()
         }
     }
 
-    override fun onRequestRelayout(layoutNode: LayoutNode) {
-        if (measureAndLayoutDelegate.requestRelayout(layoutNode)) {
+    override fun onRequestRelayout(layoutNode: LayoutNode, forceRequest: Boolean) {
+        if (measureAndLayoutDelegate.requestRelayout(layoutNode, forceRequest)) {
             requestLayout()
         }
     }
@@ -445,7 +454,9 @@ internal class SkiaBasedOwner(
         object : PointerIconService {
             override var current: PointerIcon
                 get() = desiredPointerIcon ?: PointerIconDefaults.Default
-                set(value) { desiredPointerIcon = value }
+                set(value) {
+                    desiredPointerIcon = value
+                }
         }
 }
 

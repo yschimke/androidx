@@ -61,7 +61,7 @@ import kotlinx.coroutines.flow.first
  * Receiver scope which is used by [ScalingLazyColumn].
  */
 @ScalingLazyScopeMarker
-public interface ScalingLazyListScope {
+public sealed interface ScalingLazyListScope {
     /**
      * Adds a single item.
      *
@@ -233,6 +233,9 @@ internal fun convertToCenterOffset(
  * configuration the edge of list items is aligned to the center of the screen. Also this example
  * shows scrolling to a clicked list item with [ScalingLazyListState.animateScrollToItem]:
  * @sample androidx.wear.compose.material.samples.ScalingLazyColumnEdgeAnchoredAndAnimatedScrollTo
+ *
+ * Example of a [ScalingLazyColumn] with snap of items to the viewport center:
+ * @sample androidx.wear.compose.material.samples.SimpleScalingLazyColumnWithSnap
  *
  * Example of a [ScalingLazyColumn] where [autoCentering] has been disabled and explicit
  * [contentPadding] provided to ensure there is space above the first and below the last list item
@@ -492,12 +495,12 @@ public object ScalingLazyColumnDefaults {
      * viewport above and below the content.
      */
     fun scalingParams(
-        edgeScale: Float = 0.5f,
+        edgeScale: Float = 0.7f,
         edgeAlpha: Float = 0.5f,
         minElementHeight: Float = 0.2f,
-        maxElementHeight: Float = 0.8f,
-        minTransitionArea: Float = 0.2f,
-        maxTransitionArea: Float = 0.6f,
+        maxElementHeight: Float = 0.6f,
+        minTransitionArea: Float = 0.35f,
+        maxTransitionArea: Float = 0.55f,
         scaleInterpolator: Easing = CubicBezierEasing(0.25f, 0.00f, 0.75f, 1.00f),
         viewportVerticalOffsetResolver: (Constraints) -> Int = { (it.maxHeight / 20f).toInt() }
     ): ScalingParams = DefaultScalingParams(

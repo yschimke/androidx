@@ -27,6 +27,7 @@ import androidx.compose.ui.geometry.MutableRect
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Canvas
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RenderEffect
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.TransformOrigin
@@ -3637,13 +3638,13 @@ private class MockOwner(
         TODO("Not yet implemented")
     }
 
-    override fun onRequestMeasure(layoutNode: LayoutNode) {
+    override fun onRequestMeasure(layoutNode: LayoutNode, forceRequest: Boolean) {
         onRequestMeasureParams += layoutNode
-        layoutNode.layoutState = LayoutNode.LayoutState.NeedsRemeasure
+        layoutNode.markMeasurePending()
     }
 
-    override fun onRequestRelayout(layoutNode: LayoutNode) {
-        layoutNode.layoutState = LayoutNode.LayoutState.NeedsRelayout
+    override fun onRequestRelayout(layoutNode: LayoutNode, forceRequest: Boolean) {
+        layoutNode.markLayoutPending()
     }
 
     override fun onAttach(node: LayoutNode) {
@@ -3691,6 +3692,8 @@ private class MockOwner(
                 shape: Shape,
                 clip: Boolean,
                 renderEffect: RenderEffect?,
+                ambientShadowColor: Color,
+                spotShadowColor: Color,
                 layoutDirection: LayoutDirection,
                 density: Density
             ) {

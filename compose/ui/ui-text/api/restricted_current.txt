@@ -4,6 +4,9 @@ package androidx.compose.ui.text {
   public final class ActualAtomicReferenceJvmKt {
   }
 
+  public final class AndroidTextStyle_androidKt {
+  }
+
   @androidx.compose.runtime.Immutable public final class AnnotatedString implements java.lang.CharSequence {
     ctor public AnnotatedString(String text, optional java.util.List<androidx.compose.ui.text.AnnotatedString.Range<androidx.compose.ui.text.SpanStyle>> spanStyles, optional java.util.List<androidx.compose.ui.text.AnnotatedString.Range<androidx.compose.ui.text.ParagraphStyle>> paragraphStyles);
     method public operator char get(int index);
@@ -550,6 +553,9 @@ package androidx.compose.ui.text.font {
   public final class AndroidFontLoader_androidKt {
   }
 
+  public final class AndroidFontResolveInterceptor_androidKt {
+  }
+
   public final class AndroidFontUtils_androidKt {
   }
 
@@ -561,6 +567,9 @@ package androidx.compose.ui.text.font {
 
   public final class DelegatingFontLoaderForDeprecatedUsage_androidKt {
     method @Deprecated public static androidx.compose.ui.text.font.FontFamily.Resolver createFontFamilyResolver(androidx.compose.ui.text.font.Font.ResourceLoader fontResourceLoader, android.content.Context context);
+  }
+
+  public final class DeviceFontFamilyNameFontKt {
   }
 
   public abstract sealed class FileBasedFontFamily extends androidx.compose.ui.text.font.FontFamily {
@@ -901,6 +910,7 @@ package androidx.compose.ui.text.input {
 
   public static final class KeyboardType.Companion {
     method public int getAscii();
+    method public int getDecimal();
     method public int getEmail();
     method public int getNumber();
     method public int getNumberPassword();
@@ -909,6 +919,7 @@ package androidx.compose.ui.text.input {
     method public int getText();
     method public int getUri();
     property public final int Ascii;
+    property public final int Decimal;
     property public final int Email;
     property public final int Number;
     property public final int NumberPassword;

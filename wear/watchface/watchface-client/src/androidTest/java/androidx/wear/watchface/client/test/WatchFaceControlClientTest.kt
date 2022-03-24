@@ -490,7 +490,6 @@ class WatchFaceControlClientTest {
     }
 
     @Test
-    @Suppress("Deprecation") // userStyleSettings
     fun headlessUserStyleSchema() {
         val headlessInstance = service.createHeadlessWatchFaceClient(
             "id",
@@ -532,7 +531,6 @@ class WatchFaceControlClientTest {
             )!!.toBundle()
         )
 
-        @Suppress("Deprecation")
         assertThat(headlessInstance.userStyleSchema.userStyleSettings.size).isEqualTo(5)
     }
 
@@ -1513,6 +1511,34 @@ class WatchFaceControlClientTest {
             .isEqualTo(Color.valueOf(Color.BLACK))
 
         interactiveInstance.close()
+    }
+
+    @Test
+    fun computeUserStyleSchemaDigestHash() {
+        val headlessInstance1 = service.createHeadlessWatchFaceClient(
+            "id",
+            exampleCanvasAnalogWatchFaceComponentName,
+            DeviceConfig(
+                false,
+                false,
+                0,
+                0
+            ),
+            400,
+            400
+        )!!
+
+        val headlessInstance2 = service.createHeadlessWatchFaceClient(
+            "id",
+            exampleOpenGLWatchFaceComponentName,
+            deviceConfig,
+            400,
+            400
+        )!!
+
+        assertThat(headlessInstance1.getUserStyleSchemaDigestHash()).isNotEqualTo(
+            headlessInstance2.getUserStyleSchemaDigestHash()
+        )
     }
 }
 

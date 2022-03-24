@@ -22,6 +22,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredSize
@@ -30,6 +31,7 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -47,7 +49,7 @@ import kotlin.reflect.KClass
 /**
  * Generic demo with a [title] that will be displayed in the list of demos.
  */
-sealed class Demo(val title: String) {
+sealed class Demo(val title: String, val description: String? = null) {
     override fun toString() = title
 }
 
@@ -76,8 +78,9 @@ class DemoCategory(
  */
 class ComposableDemo(
     title: String,
+    description: String? = null,
     val content: @Composable (navigateBack: () -> Unit) -> Unit,
-) : Demo(title)
+) : Demo(title, description)
 
 /**
  * A simple [Icon] with default size
@@ -151,14 +154,16 @@ fun TextIcon(
 }
 
 @Composable
-fun Centralize(content: @Composable () -> Unit) {
+fun Centralize(modifier: Modifier = Modifier, content: @Composable ColumnScope.() -> Unit) {
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        content()
-    }
+        horizontalAlignment = Alignment.CenterHorizontally,
+        content = content)
 }
 
 public val DemoListTag = "DemoListTag"
+
+public val AlternatePrimaryColor1 = Color(0x7F, 0xCF, 0xFF)
+public val AlternatePrimaryColor2 = Color(0xD0, 0xBC, 0xFF)
+public val AlternatePrimaryColor3 = Color(0x6D, 0xD5, 0x8C)

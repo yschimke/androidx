@@ -54,6 +54,7 @@ import androidx.annotation.VisibleForTesting
 import androidx.compose.runtime.collection.mutableVectorOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.referentialEqualityPolicy
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.InternalComposeUiApi
@@ -75,7 +76,7 @@ import androidx.compose.ui.focus.FocusDirection.Companion.Right
 import androidx.compose.ui.focus.FocusDirection.Companion.Up
 import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.focus.FocusManagerImpl
-import androidx.compose.ui.focus.FocusTag
+import androidx.compose.ui.focus.focusRect
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Canvas
 import androidx.compose.ui.graphics.CanvasHolder
@@ -115,7 +116,6 @@ import androidx.compose.ui.input.pointer.ProcessResult
 import androidx.compose.ui.input.rotary.RotaryScrollEvent
 import androidx.compose.ui.input.rotary.onRotaryScrollEvent
 import androidx.compose.ui.layout.RootMeasurePolicy
-import androidx.compose.ui.layout.boundsInRoot
 import androidx.compose.ui.node.InternalCoreApi
 import androidx.compose.ui.node.LayoutNode
 import androidx.compose.ui.node.LayoutNode.UsageByParent
@@ -224,6 +224,7 @@ internal class AndroidComposeView(context: Context) :
 
     override val root = LayoutNode().also {
         it.measurePolicy = RootMeasurePolicy
+        // Composed modifiers cannot be added here directly
         it.modifier = Modifier
             .then(semanticsModifier)
             .then(rotaryInputModifier)
@@ -245,6 +246,7 @@ internal class AndroidComposeView(context: Context) :
 
     // OwnedLayers that are dirty and should be redrawn.
     private val dirtyLayers = mutableListOf<OwnedLayer>()
+
     // OwnerLayers that invalidated themselves during their last draw. They will be redrawn
     // during the next AndroidComposeView dispatchDraw pass.
     private var postponedDirtyLayers: MutableList<OwnedLayer>? = null
@@ -327,6 +329,7 @@ internal class AndroidComposeView(context: Context) :
     private val viewToWindowMatrix = Matrix()
     private val windowToViewMatrix = Matrix()
     private val tmpCalculationMatrix = Matrix()
+
     @VisibleForTesting
     internal var lastMatrixRecalculationAnimationTime = -1L
     private var forceUseMatrixCache = false
@@ -379,7 +382,20 @@ internal class AndroidComposeView(context: Context) :
     @Suppress("DEPRECATION", "OverridingDeprecatedMember")
     override val fontLoader: Font.ResourceLoader = AndroidFontResourceLoader(context)
 
-    override val fontFamilyResolver: FontFamily.Resolver = createFontFamilyResolver(context)
+    // Backed by mutableStateOf so that the local provider recomposes when it changes
+    // FontFamily.Resolver is not guaranteed to be stable or immutable, hence referential check
+    override var fontFamilyResolver: FontFamily.Resolver by mutableStateOf(
+        createFontFamilyResolver(context),
+        referentialEqualityPolicy()
+    )
+        private set
+
+    // keeps track of changes in font weight adjustment to update fontFamilyResolver
+    private var currentFontWeightAdjustment: Int =
+        context.resources.configuration.fontWeightAdjustmentCompat
+
+    private val Configuration.fontWeightAdjustmentCompat: Int
+        get() = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) fontWeightAdjustment else 0
 
     // Backed by mutableStateOf so that the ambient provider recomposes when it changes
     override var layoutDirection by mutableStateOf(
@@ -537,7 +553,7 @@ internal class AndroidComposeView(context: Context) :
      * system for accurate focus searching and so ViewRootImpl will scroll correctly.
      */
     override fun getFocusedRect(rect: Rect) {
-        _focusManager.getActiveFocusModifier()?.focusNode?.boundsInRoot()?.let {
+        _focusManager.getActiveFocusModifier()?.focusRect()?.let {
             rect.left = it.left.roundToInt()
             rect.top = it.top.roundToInt()
             rect.right = it.right.roundToInt()
@@ -724,14 +740,14 @@ internal class AndroidComposeView(context: Context) :
         measureAndLayoutDelegate.forceMeasureTheSubtree(layoutNode)
     }
 
-    override fun onRequestMeasure(layoutNode: LayoutNode) {
-        if (measureAndLayoutDelegate.requestRemeasure(layoutNode)) {
+    override fun onRequestMeasure(layoutNode: LayoutNode, forceRequest: Boolean) {
+        if (measureAndLayoutDelegate.requestRemeasure(layoutNode, forceRequest)) {
             scheduleMeasureAndLayout(layoutNode)
         }
     }
 
-    override fun onRequestRelayout(layoutNode: LayoutNode) {
-        if (measureAndLayoutDelegate.requestRelayout(layoutNode)) {
+    override fun onRequestRelayout(layoutNode: LayoutNode, forceRequest: Boolean) {
+        if (measureAndLayoutDelegate.requestRelayout(layoutNode, forceRequest)) {
             scheduleMeasureAndLayout()
         }
     }
@@ -1077,11 +1093,11 @@ internal class AndroidComposeView(context: Context) :
     }
 
     override fun dispatchGenericMotionEvent(event: MotionEvent) = when (event.actionMasked) {
-            ACTION_SCROLL -> when {
-                event.isFromSource(SOURCE_ROTARY_ENCODER) -> handleRotaryEvent(event)
-                else -> handleMotionEvent(event).dispatchedToAPointerInputModifier
-            }
-            else -> super.dispatchGenericMotionEvent(event)
+        ACTION_SCROLL -> when {
+            event.isFromSource(SOURCE_ROTARY_ENCODER) -> handleRotaryEvent(event)
+            else -> handleMotionEvent(event).dispatchedToAPointerInputModifier
+        }
+        else -> super.dispatchGenericMotionEvent(event)
     }
 
     // TODO(shepshapard): Test this method.
@@ -1124,7 +1140,8 @@ internal class AndroidComposeView(context: Context) :
         val axisValue = -event.getAxisValue(AXIS_SCROLL)
         val rotaryEvent = RotaryScrollEvent(
             verticalScrollPixels = axisValue * getScaledVerticalScrollFactor(config, context),
-            horizontalScrollPixels = axisValue * getScaledHorizontalScrollFactor(config, context)
+            horizontalScrollPixels = axisValue * getScaledHorizontalScrollFactor(config, context),
+            uptimeMillis = event.eventTime
         )
         return _focusManager.getActiveFocusModifier()?.propagateRotaryEvent(rotaryEvent) ?: false
     }
@@ -1409,6 +1426,10 @@ internal class AndroidComposeView(context: Context) :
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
         density = Density(context)
+        if (newConfig.fontWeightAdjustmentCompat != currentFontWeightAdjustment) {
+            currentFontWeightAdjustment = newConfig.fontWeightAdjustmentCompat
+            fontFamilyResolver = createFontFamilyResolver(context)
+        }
         configurationChangeObserver(newConfig)
     }
 
@@ -1596,6 +1617,7 @@ internal class AndroidComposeView(context: Context) :
     override fun shouldDelayChildPressedState(): Boolean = false
 
     companion object {
+        private const val FocusTag = "Compose Focus"
         private const val MaximumLayerCacheSize = 10
         private var systemPropertiesClass: Class<*>? = null
         private var getBooleanMethod: Method? = null

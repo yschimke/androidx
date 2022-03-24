@@ -46,7 +46,6 @@ import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
 
-@ExperimentalWearMaterialApi
 class SwipeToDismissBoxTest {
     @get:Rule
     val rule = createComposeRule()
@@ -106,7 +105,7 @@ class SwipeToDismissBoxTest {
             val state = rememberSwipeToDismissBoxState()
             LaunchedEffect(state.currentValue) {
                 dismissed =
-                    state.currentValue == SwipeDismissTarget.Dismissal
+                    state.currentValue == SwipeToDismissValue.Dismissed
             }
             SwipeToDismissBox(
                 state = state,
@@ -131,9 +130,9 @@ class SwipeToDismissBoxTest {
             val state = rememberSwipeToDismissBoxState()
             val holder = rememberSaveableStateHolder()
             LaunchedEffect(state.currentValue) {
-                if (state.currentValue == SwipeDismissTarget.Dismissal) {
+                if (state.currentValue == SwipeToDismissValue.Dismissed) {
                     showCounterForContent.value = !showCounterForContent.value
-                    state.snapTo(SwipeDismissTarget.Original)
+                    state.snapTo(SwipeToDismissValue.Default)
                 }
             }
             SwipeToDismissBox(
@@ -182,7 +181,8 @@ class SwipeToDismissBoxTest {
         rule.setContentWithTheme {
             val outerState = rememberSwipeToDismissBoxState()
             LaunchedEffect(outerState.currentValue) {
-                outerDismissed = outerState.currentValue == SwipeDismissTarget.Dismissal
+                outerDismissed =
+                    outerState.currentValue == SwipeToDismissValue.Dismissed
             }
             SwipeToDismissBox(
                 state = outerState,
@@ -192,7 +192,8 @@ class SwipeToDismissBoxTest {
                 Text("Outer", color = MaterialTheme.colors.onPrimary)
                 val innerState = rememberSwipeToDismissBoxState()
                 LaunchedEffect(innerState.currentValue) {
-                    innerDismissed = innerState.currentValue == SwipeDismissTarget.Dismissal
+                    innerDismissed =
+                        innerState.currentValue == SwipeToDismissValue.Dismissed
                 }
                 SwipeToDismissBox(
                     state = innerState,
@@ -250,13 +251,34 @@ class SwipeToDismissBoxTest {
     fun displays_content_during_swipe() =
         verifyPartialSwipe(expectedMessage = CONTENT_MESSAGE)
 
+    @Test
+    fun calls_ondismissed_after_swipe_when_supplied() {
+        var dismissed = false
+        rule.setContentWithTheme {
+            val state = rememberSwipeToDismissBoxState()
+            SwipeToDismissBox(
+                state = state,
+                onDismissed = { dismissed = true },
+                modifier = Modifier.testTag(TEST_TAG),
+            ) {
+                Text(CONTENT_MESSAGE, color = MaterialTheme.colors.onPrimary)
+            }
+        }
+
+        rule.onNodeWithTag(TEST_TAG).performTouchInput({ swipeRight() })
+
+        rule.runOnIdle {
+            assertEquals(true, dismissed)
+        }
+    }
+
     private fun verifySwipe(gesture: TouchInjectionScope.() -> Unit, expectedToDismiss: Boolean) {
         var dismissed = false
         rule.setContentWithTheme {
             val state = rememberSwipeToDismissBoxState()
             LaunchedEffect(state.currentValue) {
                 dismissed =
-                    state.currentValue == SwipeDismissTarget.Dismissal
+                    state.currentValue == SwipeToDismissValue.Dismissed
             }
             SwipeToDismissBox(
                 state = state,
@@ -298,7 +320,7 @@ class SwipeToDismissBoxTest {
     }
 
     @Composable
-    fun messageContent() {
+    private fun messageContent() {
         Column(
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,

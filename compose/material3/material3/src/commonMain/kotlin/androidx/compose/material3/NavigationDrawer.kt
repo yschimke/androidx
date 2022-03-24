@@ -36,8 +36,6 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.selection.selectable
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.tokens.NavigationDrawerTokens
 import androidx.compose.material3.tokens.PaletteTokens
 import androidx.compose.runtime.Composable
@@ -52,13 +50,11 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
-import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.dismiss
 import androidx.compose.ui.semantics.onClick
@@ -261,7 +257,7 @@ fun ModalNavigationDrawer(
     modifier: Modifier = Modifier,
     drawerState: DrawerState = rememberDrawerState(DrawerValue.Closed),
     gesturesEnabled: Boolean = true,
-    drawerShape: Shape = RoundedCornerShape(0.dp, 16.dp, 16.dp, 0.dp),
+    drawerShape: Shape = NavigationDrawerTokens.ContainerShape.toShape(),
     drawerTonalElevation: Dp = DrawerDefaults.ModalDrawerElevation,
     drawerContainerColor: Color = NavigationDrawerTokens.ContainerColor.toColor(),
     drawerContentColor: Color = contentColorFor(drawerContainerColor),
@@ -354,7 +350,7 @@ fun NavigationDrawer(
     modifier: Modifier = Modifier,
     drawerState: DrawerState = rememberDrawerState(DrawerValue.Closed),
     gesturesEnabled: Boolean = true,
-    drawerShape: Shape = RoundedCornerShape(0.dp, 16.dp, 16.dp, 0.dp),
+    drawerShape: Shape = NavigationDrawerTokens.ContainerShape.toShape(),
     drawerTonalElevation: Dp = DrawerDefaults.ModalDrawerElevation,
     drawerContainerColor: Color = NavigationDrawerTokens.ContainerColor.toColor(),
     drawerContentColor: Color = contentColorFor(drawerContainerColor),
@@ -408,7 +404,7 @@ fun DismissibleNavigationDrawer(
     modifier: Modifier = Modifier,
     drawerState: DrawerState = rememberDrawerState(DrawerValue.Closed),
     gesturesEnabled: Boolean = true,
-    drawerShape: Shape = RectangleShape,
+    drawerShape: Shape = Shapes.None,
     drawerTonalElevation: Dp = DrawerDefaults.DismissibleDrawerElevation,
     drawerContainerColor: Color = MaterialTheme.colorScheme.surface,
     drawerContentColor: Color = contentColorFor(drawerContainerColor),
@@ -504,7 +500,7 @@ fun DismissibleNavigationDrawer(
 fun PermanentNavigationDrawer(
     drawerContent: @Composable ColumnScope.() -> Unit,
     modifier: Modifier = Modifier,
-    drawerShape: Shape = RectangleShape,
+    drawerShape: Shape = Shapes.None,
     drawerTonalElevation: Dp = DrawerDefaults.PermanentDrawerElevation,
     drawerContainerColor: Color = MaterialTheme.colorScheme.surface,
     drawerContentColor: Color = contentColorFor(drawerContainerColor),
@@ -590,24 +586,19 @@ fun NavigationDrawerItem(
     modifier: Modifier = Modifier,
     icon: (@Composable () -> Unit)? = null,
     badge: (@Composable () -> Unit)? = null,
-    shape: Shape = NavigationDrawerTokens.ActiveIndicatorShape,
+    shape: Shape = NavigationDrawerTokens.ActiveIndicatorShape.toShape(),
     colors: NavigationDrawerItemColors = NavigationDrawerItemDefaults.colors(),
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() }
 ) {
     Surface(
+        selected = selected,
+        onClick = onClick,
+        modifier = modifier
+            .height(NavigationDrawerTokens.ActiveIndicatorHeight)
+            .fillMaxWidth(),
         shape = shape,
         color = colors.containerColor(selected).value,
         interactionSource = interactionSource,
-        modifier = modifier
-            .height(NavigationDrawerTokens.ActiveIndicatorHeight)
-            .fillMaxWidth()
-            .selectable(
-                selected = selected,
-                onClick = onClick,
-                interactionSource = interactionSource,
-                role = Role.Tab,
-                indication = null
-            )
     ) {
         Row(
             Modifier.padding(start = 16.dp, end = 24.dp),

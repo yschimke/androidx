@@ -80,18 +80,6 @@ private val Card = Component(
     examples = CardExamples
 )
 
-private val Color = Component(
-    id = nextId(),
-    name = "Color",
-    description = "Color is used to express style and communicate meaning.",
-    // No color icon
-    tintIcon = true,
-    guidelinesUrl = "$StyleGuidelinesUrl/color/overview",
-    docsUrl = "$DocsUrl/ColorScheme",
-    sourceUrl = "$Material3SourceUrl/ColorScheme.kt",
-    examples = ColorExamples
-)
-
 private val Checkboxes = Component(
     id = nextId(),
     name = "Checkboxes",
@@ -255,6 +243,17 @@ private val Tabs = Component(
     examples = TabsExamples
 )
 
+private val TextFields = Component(
+    id = nextId(),
+    name = "Text fields",
+    description = "Text fields let users enter and edit text.",
+    // No text fields icon
+    guidelinesUrl = "$ComponentGuidelinesUrl/text-fields",
+    docsUrl = "$DocsUrl#textfield",
+    sourceUrl = "$Material3SourceUrl/TextField.kt",
+    examples = TextFieldsExamples
+)
+
 private val TopAppBar = Component(
     id = nextId(),
     name = "Top app bar",
@@ -273,7 +272,6 @@ val Components = listOf(
     Buttons,
     Card,
     Checkboxes,
-    Color,
     Dialogs,
     ExtendedFloatingActionButton,
     FloatingActionButtons,
@@ -286,5 +284,6 @@ val Components = listOf(
     Sliders,
     Snackbars,
     Tabs,
+    TextFields,
     TopAppBar
 )

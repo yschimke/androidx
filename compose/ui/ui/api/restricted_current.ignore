@@ -1,3 +1,21 @@
 // Baseline format: 1.0
+InvalidNullConversion: androidx.compose.ui.draw.ShadowKt#shadow(androidx.compose.ui.Modifier, float, androidx.compose.ui.graphics.Shape, boolean):
+    Attempted to remove @NonNull annotation from method androidx.compose.ui.draw.ShadowKt.shadow(androidx.compose.ui.Modifier,float,androidx.compose.ui.graphics.Shape,boolean)
+InvalidNullConversion: androidx.compose.ui.graphics.GraphicsLayerModifierKt#graphicsLayer(androidx.compose.ui.Modifier, float, float, float, float, float, float, float, float, float, float, long, androidx.compose.ui.graphics.Shape, boolean, androidx.compose.ui.graphics.RenderEffect):
+    Attempted to remove @NonNull annotation from method androidx.compose.ui.graphics.GraphicsLayerModifierKt.graphicsLayer(androidx.compose.ui.Modifier,float,float,float,float,float,float,float,float,float,float,long,androidx.compose.ui.graphics.Shape,boolean,androidx.compose.ui.graphics.RenderEffect)
+InvalidNullConversion: androidx.compose.ui.input.pointer.PointerInputChange#copy(long, long, long, boolean, long, long, boolean, androidx.compose.ui.input.pointer.ConsumedData, int):
+    Attempted to remove @NonNull annotation from method androidx.compose.ui.input.pointer.PointerInputChange.copy(long,long,long,boolean,long,long,boolean,androidx.compose.ui.input.pointer.ConsumedData,int)
+
+
+RemovedClass: androidx.compose.ui.focus.FocusNodeUtilsKt:
+    Removed class androidx.compose.ui.focus.FocusNodeUtilsKt
 RemovedClass: androidx.compose.ui.input.nestedscroll.NestedScrollDelegatingWrapperKt:
     Removed class androidx.compose.ui.input.nestedscroll.NestedScrollDelegatingWrapperKt
+RemovedClass: androidx.compose.ui.platform.TextToolbarKt:
+    Removed class androidx.compose.ui.platform.TextToolbarKt
+
+
+RemovedMethod: androidx.compose.ui.graphics.vector.ImageVector.Builder#Builder(String, float, float, float, float, long, int):
+    Removed constructor androidx.compose.ui.graphics.vector.ImageVector.Builder(String,float,float,float,float,long,int)
+RemovedMethod: androidx.compose.ui.input.pointer.PointerInputChange#PointerInputChange(long, long, long, boolean, long, long, boolean, androidx.compose.ui.input.pointer.ConsumedData, int):
+    Removed constructor androidx.compose.ui.input.pointer.PointerInputChange(long,long,long,boolean,long,long,boolean,androidx.compose.ui.input.pointer.ConsumedData,int)

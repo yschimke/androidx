@@ -19,7 +19,7 @@ package androidx.activity
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
-import androidx.core.R
+import androidx.activity.test.R
 import androidx.core.view.MenuProvider
 import androidx.test.core.app.ActivityScenario
 import androidx.test.espresso.Espresso.onView
@@ -73,6 +73,33 @@ class ComponentActivityMenuTest {
     }
 
     @Test
+    fun onPrepareMenu() {
+        with(ActivityScenario.launch(ComponentActivity::class.java)) {
+            val menuHost: ComponentActivity = withActivity { this }
+            var menuPrepared: Boolean
+
+            menuHost.addMenuProvider(object : MenuProvider {
+                override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                    menuInflater.inflate(R.menu.example_menu, menu)
+                }
+
+                override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                    return true
+                }
+
+                override fun onPrepareMenu(menu: Menu) {
+                    menuPrepared = true
+                }
+            })
+
+            menuPrepared = false
+            openActionBarOverflowOrOptionsMenu(menuHost)
+            onView(withText("Item1")).perform(click())
+            assertThat(menuPrepared).isTrue()
+        }
+    }
+
+    @Test
     fun menuItemSelected() {
         with(ActivityScenario.launch(ComponentActivity::class.java)) {
 
@@ -118,6 +145,32 @@ class ComponentActivityMenuTest {
             openActionBarOverflowOrOptionsMenu(menuHost)
             onView(withText("Item3")).perform(click())
             assertThat(itemSelectedId).isEqualTo(R.id.item3)
+        }
+    }
+
+    @Test
+    fun onMenuClosed() {
+        with(ActivityScenario.launch(ComponentActivity::class.java)) {
+            val menuHost: ComponentActivity = withActivity { this }
+            var menuClosed = false
+
+            menuHost.addMenuProvider(object : MenuProvider {
+                override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                    menuInflater.inflate(R.menu.example_menu, menu)
+                }
+
+                override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                    return true
+                }
+
+                override fun onMenuClosed(menu: Menu) {
+                    menuClosed = true
+                }
+            })
+
+            openActionBarOverflowOrOptionsMenu(menuHost)
+            withActivity { closeOptionsMenu() }
+            assertThat(menuClosed).isTrue()
         }
     }
 }

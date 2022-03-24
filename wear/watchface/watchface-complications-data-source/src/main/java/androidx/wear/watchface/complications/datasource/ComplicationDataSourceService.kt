@@ -167,7 +167,7 @@ public class ComplicationRequest(
  * complication data source should be set on the given complication.
  *
  * It is possible to provide additional 'meta-data' tag
- * androidx.watchface.complications.datasource.DEFAULT_CONFIGURATION_SUPPORTED in the service
+ * androidx.watchface.complications.datasource.DEFAULT_CONFIG_SUPPORTED in the service
  * set to "true" to let the system know that the data source is able to provide complication data
  * before it is configured.
  *
@@ -184,6 +184,9 @@ public class ComplicationRequest(
  * Multiple complication data sources in the same APK are supported but in android R there's a
  * soft limit of 100 data sources per APK. Above that the companion watchface editor won't
  * support this complication data source app.
+ *
+ * There's no need to call setDataSource for any the ComplicationData Builders because the system
+ * will append this value on your behalf.
  */
 public abstract class ComplicationDataSourceService : Service() {
     private var wrapper: IComplicationProviderWrapper? = null
@@ -733,8 +736,8 @@ public abstract class ComplicationDataSourceService : Service() {
          * before it is configured.
          * See [METADATA_KEY_DATA_SOURCE_CONFIG_ACTION].
          */
-        public const val METADATA_KEY_DATA_SOURCE_DEFAULT_CONFIGURATION_SUPPORTED: String =
-            "androidx.watchface.complications.datasource.DEFAULT_CONFIGURATION_SUPPORTED"
+        public const val METADATA_KEY_DATA_SOURCE_DEFAULT_CONFIG_SUPPORTED: String =
+            "androidx.watchface.complications.datasource.DEFAULT_CONFIG_SUPPORTED"
 
         /**
          * Category for complication data source config activities. The configuration activity for a

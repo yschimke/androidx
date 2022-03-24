@@ -119,7 +119,19 @@ val taskNamesKnownToDuplicateOutputs = setOf(
     "generateDebugProtos",
     "generateReleaseProtos",
     // Release APKs
-    "copyReleaseApk"
+    "copyReleaseApk",
+    // To-be removed when we can use updateLintBaselineDebug
+    "replaceLintBaseline",
+    "updateLintBaselineDebug",
+    // b/224564238
+    "updateLintBaselineWithExpandProjectionDebug",
+    "updateLintBaselineWithExpandProjectionRelease",
+    "updateLintBaselineWithNullAwareTypeConverterDebug",
+    "updateLintBaselineWithNullAwareTypeConverterRelease",
+    "updateLintBaselineWithoutExpandProjectionDebug",
+    "updateLintBaselineWithoutExpandProjectionRelease",
+    "updateLintBaselineWithoutNullAwareTypeConverterDebug",
+    "updateLintBaselineWithoutNullAwareTypeConverterRelease"
 )
 
 fun shouldValidateTaskOutput(task: Task): Boolean {

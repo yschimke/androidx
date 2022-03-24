@@ -283,8 +283,6 @@ See the complete report at file://\$OUT_DIR/androidx/build/reports/configuration
 WARNING: An illegal reflective access operation has occurred
 WARNING: Illegal reflective access by org\.robolectric\.util\.ReflectionHelpers\$[0-9]+ \(file:\$CHECKOUT/prebuilts/androidx/external/org/robolectric/shadowapi/[0-9]+\.[0-9]+\.[0-9]+/shadowapi\-[0-9]+\.[0-9]+\.[0-9]+\.jar\) to field java\.io\.FileDescriptor\.fd
 WARNING: Please consider reporting this to the maintainers of org\.robolectric\.util\.ReflectionHelpers\$[0-9]+
-WARNING: Illegal reflective access by org\.jetbrains\.kotlin\.kapt[0-9]+\.util\.ModuleManipulationUtilsKt \(file:\$CHECKOUT/prebuilts/androidx/external/org/jetbrains/kotlin/kotlin\-annotation\-processing\-gradle/[0-9]+\.[0-9]+\.[0-9]+/kotlin\-annotation\-processing\-gradle\-[0-9]+\.[0-9]+\.[0-9]+\.jar\) to constructor com\.sun\.tools\.javac\.util\.Context\(\)
-WARNING: Please consider reporting this to the maintainers of org\.jetbrains\.kotlin\.kapt[0-9]+\.util\.ModuleManipulationUtilsKt
 WARNING: Please consider reporting this to the maintainers of org\.jetbrains\.kotlin\.kapt[0-9]+\.base\.javac\.KaptJavaFileManager
 WARNING: Illegal reflective access by com\.intellij\.util\.ReflectionUtil \(file:\$CHECKOUT/prebuilts/androidx/external/com/google/devsite/dackka/[0-9]+\.[0-9]+\.[0-9]+/dackka\-[0-9]+\.[0-9]+\.[0-9]+\.jar\) to method java\.util\.ResourceBundle\.setParent\(java\.util\.ResourceBundle\)
 WARNING: Please consider reporting this to the maintainers of com\.intellij\.util\.ReflectionUtil
@@ -406,6 +404,7 @@ Found an unresolved type in androidx\.paging\.LivePagedListBuilder\$setFetchExec
 \$OUT_DIR\/androidx\/docs\-public\/build\/srcs\/androidx\/work\/impl\/WorkManagerImpl\.java\:[0-9]+\: error\: cannot find symbol
 import static android\.app\.PendingIntent\.FLAG_MUTABLE\;
 # > Task :docs-public:dackkaDocs
+WARN\: nullability annotation on Kotlin source\.If the annotation cannot be found in source\, it might be unavoidable from inheritance\.
 PROGRESS: Initializing plugins
 Loaded plugins: \[org\.jetbrains\.dokka\.base\.DokkaBase, com\.google\.devsite\.DevsitePlugin\]
 Loaded: \[
@@ -602,3 +601,10 @@ at org\.jetbrains\.kotlin\.gradle\.tasks\.AbstractKotlinCompile\.executeImpl\(Ta
 at org\.jetbrains\.kotlin\.gradle\.tasks\.AbstractKotlinCompile\.execute\(Tasks\.kt:[0-9]+\)
 # Gradle will log if you are not authenticated to upload scans
 A build scan was not published as you have not authenticated with server 'ge\.androidx\.dev'\.
+# > Task :core:core:processDebugAndroidTestManifest
+package=".*" found in source AndroidManifest\.xml: .*/AndroidManifest\.xml\.
+Setting the namespace via a source AndroidManifest\.xml's package attribute is deprecated\.
+Please instead set the namespace \(or testNamespace\) in the module's build\.gradle file, as described here: https://developer\.android\.com/studio/build/configure\-app\-module\#set\-namespace
+This migration can be done automatically using the AGP Upgrade Assistant, please refer to https://developer\.android\.com/studio/build/agp\-upgrade\-assistant for more information\.
+# > Task :compose:ui:ui:integration-tests:ui-demos:lintAnalyzeDebug
+Index data read correctly

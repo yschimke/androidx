@@ -23,7 +23,6 @@ import androidx.compose.animation.core.VectorConverter
 import androidx.compose.animation.core.VisibilityThreshold
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.lazy.LazyGridItemInfo
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -287,8 +286,8 @@ internal class LazyGridItemPlacementAnimator(
                         itemInfo.crossAxisOffset,
                         layoutWidth,
                         layoutHeight,
-                        LazyGridItemInfo.Unknown,
-                        LazyGridItemInfo.Unknown,
+                        LazyGridItemInfo.UnknownRow,
+                        LazyGridItemInfo.UnknownColumn,
                         measuredItem.mainAxisSize
                     )
                     positionedItems.add(item)

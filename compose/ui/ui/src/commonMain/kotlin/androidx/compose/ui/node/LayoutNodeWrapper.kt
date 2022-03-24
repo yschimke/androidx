@@ -20,9 +20,6 @@ package androidx.compose.ui.node
 
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusOrder
-import androidx.compose.ui.focus.FocusState
-import androidx.compose.ui.focus.findFocusableChildren
 import androidx.compose.ui.geometry.MutableRect
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
@@ -56,7 +53,6 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.minus
 import androidx.compose.ui.unit.plus
-import androidx.compose.ui.util.fastForEach
 
 /**
  * Measurable and Placeable type that has a position.
@@ -406,6 +402,8 @@ internal abstract class LayoutNodeWrapper(
                 translationX = graphicsLayerScope.translationX,
                 translationY = graphicsLayerScope.translationY,
                 shadowElevation = graphicsLayerScope.shadowElevation,
+                ambientShadowColor = graphicsLayerScope.ambientShadowColor,
+                spotShadowColor = graphicsLayerScope.spotShadowColor,
                 rotationX = graphicsLayerScope.rotationX,
                 rotationY = graphicsLayerScope.rotationY,
                 rotationZ = graphicsLayerScope.rotationZ,
@@ -944,40 +942,6 @@ internal abstract class LayoutNodeWrapper(
     }
 
     /**
-     * Returns the first [focus node][ModifiedFocusNode] in the wrapper list that wraps this
-     * [LayoutNodeWrapper].
-     *
-     * Note: This method tried to find [ModifiedFocusNode] in the
-     * modifiers before the one wrapped with this [LayoutNodeWrapper] and goes up the hierarchy of
-     * [LayoutNode]s if needed.
-     */
-    abstract fun findPreviousFocusWrapper(): ModifiedFocusNode?
-
-    /**
-     * Returns the next [focus node][ModifiedFocusNode] in the wrapper list that is wrapped by
-     * this [LayoutNodeWrapper].
-     *
-     * Note: This method only goes to the modifiers that follow the one wrapped by
-     * this [LayoutNodeWrapper], it doesn't to the children [LayoutNode]s.
-     */
-    abstract fun findNextFocusWrapper(excludeDeactivated: Boolean): ModifiedFocusNode?
-
-    /**
-     * Returns the last [focus node][ModifiedFocusNode] found following this [LayoutNodeWrapper].
-     * It searches the wrapper list associated with this [LayoutNodeWrapper].
-     */
-    abstract fun findLastFocusWrapper(): ModifiedFocusNode?
-
-    /**
-     * When the focus state changes, a [LayoutNodeWrapper] calls this function on the wrapper
-     * that wraps it. The focus state change must be propagated to the parents until we reach
-     * another [focus node][ModifiedFocusNode].
-     */
-    open fun propagateFocusEvent(focusState: FocusState) {
-        wrappedBy?.propagateFocusEvent(focusState)
-    }
-
-    /**
      * Returns the ModifierLocalProviderNode that has the value for [local].
      */
     open fun findModifierLocalProvider(local: ModifierLocal<*>): ModifierLocalProviderNode<*>? =
@@ -989,15 +953,6 @@ internal abstract class LayoutNodeWrapper(
      */
     open fun invalidateConsumersOf(local: ModifierLocal<*>) {
         wrapped?.invalidateConsumersOf(local)
-    }
-
-    /**
-     * Search up the component tree for any parent/parents that have specified a custom focus order.
-     * Allowing parents higher up the hierarchy to overwrite the focus order specified by their
-     * children.
-     */
-    open fun populateFocusOrder(focusOrder: FocusOrder) {
-        wrappedBy?.populateFocusOrder(focusOrder)
     }
 
     /**
@@ -1017,77 +972,6 @@ internal abstract class LayoutNodeWrapper(
 
         parent.propagateRelocationRequest(rectInParentBounds)
     }
-
-    /**
-     * Find the first ancestor that is a [ModifiedFocusNode].
-     */
-    internal fun findParentFocusNode(): ModifiedFocusNode? {
-        // TODO(b/152066829): We shouldn't need to search through the parentLayoutNode, as the
-        // wrappedBy property should automatically point to the last layoutWrapper of the parent.
-        // Find out why this doesn't work.
-        var focusParent = wrappedBy?.findPreviousFocusWrapper()
-        if (focusParent != null) {
-            return focusParent
-        }
-
-        var parentLayoutNode = layoutNode.parent
-        while (parentLayoutNode != null) {
-            focusParent = parentLayoutNode.outerLayoutNodeWrapper.findLastFocusWrapper()
-            if (focusParent != null) {
-                return focusParent
-            }
-            parentLayoutNode = parentLayoutNode.parent
-        }
-        return null
-    }
-
-    /**
-     *  Find the first ancestor that is a [ModifiedKeyInputNode].
-     */
-    internal fun findParentKeyInputNode(): ModifiedKeyInputNode? {
-        // TODO(b/152066829): We shouldn't need to search through the parentLayoutNode, as the
-        // wrappedBy property should automatically point to the last layoutWrapper of the parent.
-        // Find out why this doesn't work.
-        var keyInputParent = wrappedBy?.findPreviousKeyInputWrapper()
-        if (keyInputParent != null) {
-            return keyInputParent
-        }
-
-        var parentLayoutNode = layoutNode.parent
-        while (parentLayoutNode != null) {
-            keyInputParent = parentLayoutNode.outerLayoutNodeWrapper.findLastKeyInputWrapper()
-            if (keyInputParent != null) {
-                return keyInputParent
-            }
-            parentLayoutNode = parentLayoutNode.parent
-        }
-        return null
-    }
-
-    /**
-     * Returns the first [ModifiedKeyInputNode] in the wrapper list that wraps this
-     * [LayoutNodeWrapper].
-     *
-     * Note: This method tried to find [ModifiedKeyInputNode] in the
-     * modifiers before the one wrapped with this [LayoutNodeWrapper] and goes up the hierarchy of
-     * [LayoutNode]s if needed.
-     */
-    abstract fun findPreviousKeyInputWrapper(): ModifiedKeyInputNode?
-
-    /**
-     * Returns the next [ModifiedKeyInputNode] in the wrapper list that is wrapped by this
-     * [LayoutNodeWrapper].
-     *
-     * Note: This method only goes to the modifiers that follow the one wrapped by
-     * this [LayoutNodeWrapper], it doesn't to the children [LayoutNode]s.
-     */
-    abstract fun findNextKeyInputWrapper(): ModifiedKeyInputNode?
-
-    /**
-     * Returns the last [focus node][ModifiedFocusNode] found following this [LayoutNodeWrapper].
-     * It searches the wrapper list associated with this [LayoutNodeWrapper]
-     */
-    abstract fun findLastKeyInputWrapper(): ModifiedKeyInputNode?
 
     /**
      * Called when [LayoutNode.modifier] has changed and all the LayoutNodeWrappers have been
@@ -1138,25 +1022,6 @@ internal abstract class LayoutNodeWrapper(
         }
     }
 
-    // TODO(b/152051577): Measure the performance of focusableChildren.
-    //  Consider caching the children.
-    fun focusableChildren(excludeDeactivated: Boolean): List<ModifiedFocusNode> {
-        // Check the modifier chain that this focus node is part of. If it has a focus modifier,
-        // that means you have found the only focusable child for this node.
-        val focusableChild = wrapped?.findNextFocusWrapper(excludeDeactivated)
-        // findChildFocusNodeInWrapperChain()
-        if (focusableChild != null) {
-            return listOf(focusableChild)
-        }
-
-        // Go through all your children and find the first focusable node from each child.
-        val focusableChildren = mutableListOf<ModifiedFocusNode>()
-        layoutNode.children.fastForEach {
-            it.findFocusableChildren(focusableChildren, excludeDeactivated)
-        }
-        return focusableChildren
-    }
-
     fun shouldSharePointerInputWithSiblings(): Boolean =
         entities.head(EntityList.PointerInputEntityType)
             ?.shouldSharePointerInputWithSiblings() == true ||
@@ -1203,7 +1068,7 @@ internal abstract class LayoutNodeWrapper(
 
         return if ((width > 0f || height > 0f) &&
             offsetFromEdge.x <= width && offsetFromEdge.y <= height) {
-            maxOf(offsetFromEdge.x, offsetFromEdge.y)
+            offsetFromEdge.getDistanceSquared()
         } else {
             Float.POSITIVE_INFINITY // miss
         }

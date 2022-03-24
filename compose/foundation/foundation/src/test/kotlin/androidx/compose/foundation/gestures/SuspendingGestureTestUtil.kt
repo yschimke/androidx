@@ -41,10 +41,11 @@ import androidx.compose.ui.materialize
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalViewConfiguration
 import androidx.compose.ui.unit.Density
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.IntSize
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.yield
 
@@ -76,7 +77,7 @@ internal class SuspendingGestureTestUtil(
         check(!isExecuting) { "executeInComposition is not reentrant" }
         try {
             isExecuting = true
-            runBlockingTest {
+            runTest {
                 val frameClock = TestFrameClock()
 
                 withContext(frameClock) {
@@ -96,7 +97,9 @@ internal class SuspendingGestureTestUtil(
             compose(recomposer) {
                 CompositionLocalProvider(
                     LocalDensity provides Density(1f),
-                    LocalViewConfiguration provides TestViewConfiguration()
+                    LocalViewConfiguration provides TestViewConfiguration(
+                        minimumTouchTargetSize = DpSize.Zero
+                    )
                 ) {
                     pointerInputFilter = currentComposer
                         .materialize(Modifier.pointerInput(Unit, gestureDetector)) as
@@ -247,6 +250,14 @@ internal class SuspendingGestureTestUtil(
         final,
         initial
     )
+
+    /**
+     * Removes all pointers from the active pointers. This can simulate a faulty pointer stream
+     * for robustness testing.
+     */
+    fun clearPointerStream() {
+        activePointers.clear()
+    }
 
     /**
      * Updates all changes so that all events are at the current time.

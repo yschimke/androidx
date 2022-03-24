@@ -47,6 +47,10 @@ package androidx.benchmark.macro {
     method @RestrictTo(androidx.annotation.RestrictTo.Scope.LIBRARY_GROUP_PREFIX) public static boolean isSupportedWithVmSettings(androidx.benchmark.macro.CompilationMode);
   }
 
+  @RequiresApi(29) @RestrictTo(androidx.annotation.RestrictTo.Scope.LIBRARY_GROUP_PREFIX) public final class EnergyMetric extends androidx.benchmark.macro.Metric {
+    ctor public EnergyMetric();
+  }
+
   @RestrictTo(androidx.annotation.RestrictTo.Scope.LIBRARY_GROUP_PREFIX) public final class FrameTimingGfxInfoMetric extends androidx.benchmark.macro.Metric {
     ctor public FrameTimingGfxInfoMetric();
   }
@@ -90,6 +94,10 @@ package androidx.benchmark.macro {
   public final class MetricResultExtensionsKt {
   }
 
+  @RequiresApi(29) @RestrictTo(androidx.annotation.RestrictTo.Scope.LIBRARY_GROUP_PREFIX) public final class PowerMetric extends androidx.benchmark.macro.Metric {
+    ctor public PowerMetric();
+  }
+
   public enum StartupMode {
     enum_constant public static final androidx.benchmark.macro.StartupMode COLD;
     enum_constant public static final androidx.benchmark.macro.StartupMode HOT;
@@ -107,11 +115,22 @@ package androidx.benchmark.macro {
   public final class TagKt {
   }
 
+  @RequiresApi(29) @RestrictTo(androidx.annotation.RestrictTo.Scope.LIBRARY_GROUP_PREFIX) public final class TotalEnergyMetric extends androidx.benchmark.macro.Metric {
+    ctor public TotalEnergyMetric();
+  }
+
+  @RequiresApi(29) @RestrictTo(androidx.annotation.RestrictTo.Scope.LIBRARY_GROUP_PREFIX) public final class TotalPowerMetric extends androidx.benchmark.macro.Metric {
+    ctor public TotalPowerMetric();
+  }
+
 }
 
 package androidx.benchmark.macro.perfetto {
 
   public final class ForceTracingKt {
+  }
+
+  public final class StringHelperKt {
   }
 
 }

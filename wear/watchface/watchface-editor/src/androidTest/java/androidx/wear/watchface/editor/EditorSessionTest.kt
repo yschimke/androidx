@@ -751,7 +751,6 @@ public class EditorSessionTest {
             listOf(colorStyleSetting, watchHandStyleSetting),
             emptyList()
         )
-        @Suppress("Deprecation")
         scenario.onActivity {
             val userStyleSchema = it.editorSession.userStyleSchema
             assertThat(userStyleSchema.userStyleSettings.size).isEqualTo(2)
@@ -1365,6 +1364,7 @@ public class EditorSessionTest {
         }
     }
 
+    @Suppress("DEPRECATION")
     @Test
     public fun launchComplicationDataSourceChooser_ComplicationConfigExtrasToHelper() {
         ComplicationDataSourceChooserContract.useTestComplicationHelperActivity = true
@@ -1420,6 +1420,7 @@ public class EditorSessionTest {
         }
     }
 
+    @Suppress("DEPRECATION")
     @Test
     public fun launchComplicationDataSourceChooser_ComplicationConfigExtrasToChooser() {
         // Invoke the test data source chooser to record the result.
@@ -1593,7 +1594,6 @@ public class EditorSessionTest {
         scenario.onActivity { activity ->
             // Select [blueStyleOption] and [gothicStyleOption].
             val mutableUserStyle = activity.editorSession.userStyle.value.toMutableUserStyle()
-            @Suppress("Deprecation")
             for (userStyleSetting in activity.editorSession.userStyleSchema.userStyleSettings) {
                 mutableUserStyle[userStyleSetting] = userStyleSetting.options.last()
             }
@@ -1776,7 +1776,6 @@ public class EditorSessionTest {
 
             // Select [blueStyleOption] and [gothicStyleOption].
             val mutableUserStyle = activity.editorSession.userStyle.value.toMutableUserStyle()
-            @Suppress("Deprecation")
             for (userStyleSetting in activity.editorSession.userStyleSchema.userStyleSettings) {
                 mutableUserStyle[userStyleSetting] = userStyleSetting.options.last()
             }
@@ -1828,7 +1827,6 @@ public class EditorSessionTest {
             }
             // Select [blueStyleOption] and [gothicStyleOption].
             val mutableUserStyle = activity.editorSession.userStyle.value.toMutableUserStyle()
-            @Suppress("Deprecation")
             for (userStyleSetting in activity.editorSession.userStyleSchema.userStyleSettings) {
                 mutableUserStyle[userStyleSetting] = userStyleSetting.options.last()
             }
@@ -1873,7 +1871,6 @@ public class EditorSessionTest {
 
             // Select [blueStyleOption] and [gothicStyleOption].
             val mutableUserStyle = activity.editorSession.userStyle.value.toMutableUserStyle()
-            @Suppress("Deprecation")
             for (userStyleSetting in activity.editorSession.userStyleSchema.userStyleSettings) {
                 mutableUserStyle[userStyleSetting] = userStyleSetting.options.last()
             }
@@ -1923,7 +1920,6 @@ public class EditorSessionTest {
 
             // Select [blueStyleOption] and [gothicStyleOption].
             val mutableUserStyle = activity.editorSession.userStyle.value.toMutableUserStyle()
-            @Suppress("Deprecation")
             for (userStyleSetting in activity.editorSession.userStyleSchema.userStyleSettings) {
                 mutableUserStyle[userStyleSetting] = userStyleSetting.options.last()
             }
@@ -1992,6 +1988,7 @@ public class EditorSessionTest {
         scenario.onActivity { activity ->
             activity.immediateCoroutineScope.launch {
                 activity.editorSession.complicationsPreviewData.collect {}
+                @Suppress("UNREACHABLE_CODE")
                 fail("We shouldn't get here due to the editor closing")
             }
         }
@@ -2019,7 +2016,6 @@ public class EditorSessionTest {
         scenario.onActivity { activity ->
             // Select [blueStyleOption] and [gothicStyleOption].
             val mutableUserStyle = activity.editorSession.userStyle.value.toMutableUserStyle()
-            @Suppress("Deprecation")
             for (userStyleSetting in activity.editorSession.userStyleSchema.userStyleSettings) {
                 mutableUserStyle[userStyleSetting] = userStyleSetting.options.last()
             }
