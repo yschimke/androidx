@@ -194,8 +194,7 @@ class DataMigrationInitializerTest {
         serializer: TestingSerializer = TestingSerializer()
     ): DataStore<Byte> {
         return SingleProcessDataStore(
-            { testFile },
-            serializer = serializer,
+            JvmStorage({ testFile }, serializer),
             scope = this,
             initTasksList = initTasksList
         )

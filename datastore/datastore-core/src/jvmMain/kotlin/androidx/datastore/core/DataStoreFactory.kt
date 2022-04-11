@@ -26,7 +26,7 @@ import java.io.File
 /**
  * Public factory for creating DataStore instances.
  */
-public object DataStoreFactory {
+public actual object DataStoreFactory {
     /**
      * Create an instance of SingleProcessDataStore. Never create more than one instance of
      * DataStore for a given file; doing so can break all DataStore functionality. You should
@@ -60,12 +60,24 @@ public object DataStoreFactory {
         migrations: List<DataMigration<T>> = listOf(),
         scope: CoroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob()),
         produceFile: () -> File
+    ): DataStore<T> = create(
+        JvmStorage(produceFile, serializer),
+        corruptionHandler = corruptionHandler,
+        migrations = migrations,
+        scope = scope
+
+    )
+
+    @JvmOverloads
+    public actual fun <T> create(
+        storage: Storage<T>,
+        corruptionHandler: ReplaceFileCorruptionHandler<T>?,
+        migrations: List<DataMigration<T>>,
+        scope: CoroutineScope
     ): DataStore<T> =
         SingleProcessDataStore(
-            produceFile = produceFile,
-            serializer = serializer,
+            storage,
             corruptionHandler = corruptionHandler ?: NoOpCorruptionHandler(),
             initTasksList = listOf(DataMigrationInitializer.getInitializer(migrations)),
-            scope = scope
-        )
+            scope = scope)
 }

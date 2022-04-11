@@ -15,13 +15,10 @@
  */
 package androidx.datastore.core
 
-import androidx.annotation.GuardedBy
 import androidx.datastore.core.handlers.NoOpCorruptionHandler
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.completeWith
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -32,13 +29,6 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
-import java.io.File
-import java.io.FileInputStream
-import java.io.FileNotFoundException
-import java.io.FileOutputStream
-import java.io.IOException
-import java.io.OutputStream
-import java.lang.IllegalStateException
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.coroutineContext
 
@@ -74,8 +64,7 @@ private class Final<T>(val finalException: Throwable) : State<T>()
  * Single process implementation of DataStore. This is NOT multi-process safe.
  */
 internal class SingleProcessDataStore<T>(
-    private val produceFile: () -> File,
-    private val serializer: Serializer<T>,
+    private val storage: Storage<T>,
     /**
      * The list of initialization tasks to perform. These tasks will be completed before any data
      * is published to the data and before any read-modify-writes execute in updateData.  If
@@ -84,8 +73,8 @@ internal class SingleProcessDataStore<T>(
      * result in deadlock.
      */
     initTasksList: List<suspend (api: InitializerApi<T>) -> Unit> = emptyList(),
-    private val corruptionHandler: CorruptionHandler<T> = NoOpCorruptionHandler<T>(),
-    private val scope: CoroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
+    private val corruptionHandler: CorruptionHandler<T> = NoOpCorruptionHandler(),
+    private val scope: CoroutineScope
 ) : DataStore<T> {
 
     override val data: Flow<T> = flow {
@@ -158,26 +147,6 @@ internal class SingleProcessDataStore<T>(
         return ack.await()
     }
 
-    private val SCRATCH_SUFFIX = ".tmp"
-
-    private val file: File by lazy {
-        val file = produceFile()
-
-        file.absolutePath.let {
-            synchronized(activeFilesLock) {
-                check(!activeFiles.contains(it)) {
-                    "There are multiple DataStores active for the same file: $file. You should " +
-                        "either maintain your DataStore as a singleton or confirm that there is " +
-                        "no two DataStore's active on the same file (by confirming that the scope" +
-                        " is cancelled)."
-                }
-                activeFiles.add(it)
-            }
-        }
-
-        file
-    }
-
     @Suppress("UNCHECKED_CAST")
     private val downstreamFlow = MutableStateFlow(UnInitialized as State<T>)
 
@@ -217,9 +186,7 @@ internal class SingleProcessDataStore<T>(
             // We expect it to always be non-null but we will leave the alternative as a no-op
             // just in case.
 
-            synchronized(activeFilesLock) {
-                activeFiles.remove(file.absolutePath)
-            }
+            storage.onComplete()
         },
         onUndeliveredElement = { msg, ex ->
             if (msg is Message.Update) {
@@ -376,16 +343,7 @@ internal class SingleProcessDataStore<T>(
     }
 
     private suspend fun readData(): T {
-        try {
-            FileInputStream(file).use { stream ->
-                return serializer.readFrom(stream)
-            }
-        } catch (ex: FileNotFoundException) {
-            if (file.exists()) {
-                throw ex
-            }
-            return serializer.defaultValue
-        }
+        return storage.readData()
     }
 
     // downstreamFlow.value must be successfully set to data before calling this
@@ -418,79 +376,6 @@ internal class SingleProcessDataStore<T>(
      * outside this class.
      */
     internal suspend fun writeData(newData: T) {
-        file.createParentDirectories()
-
-        val scratchFile = File(file.absolutePath + SCRATCH_SUFFIX)
-        try {
-            FileOutputStream(scratchFile).use { stream ->
-                serializer.writeTo(newData, UncloseableOutputStream(stream))
-                stream.fd.sync()
-                // TODO(b/151635324): fsync the directory, otherwise a badly timed crash could
-                //  result in reverting to a previous state.
-            }
-
-            if (!scratchFile.renameTo(file)) {
-                throw IOException(
-                    "Unable to rename $scratchFile." +
-                        "This likely means that there are multiple instances of DataStore " +
-                        "for this file. Ensure that you are only creating a single instance of " +
-                        "datastore for this file."
-                )
-            }
-        } catch (ex: IOException) {
-            if (scratchFile.exists()) {
-                scratchFile.delete() // Swallow failure to delete
-            }
-            throw ex
-        }
-    }
-
-    private fun File.createParentDirectories() {
-        val parent: File? = canonicalFile.parentFile
-
-        parent?.let {
-            it.mkdirs()
-            if (!it.isDirectory) {
-                throw IOException("Unable to create parent directories of $this")
-            }
-        }
-    }
-
-    // Wrapper on FileOutputStream to prevent closing the underlying OutputStream.
-    private class UncloseableOutputStream(val fileOutputStream: FileOutputStream) : OutputStream() {
-
-        override fun write(b: Int) {
-            fileOutputStream.write(b)
-        }
-
-        override fun write(b: ByteArray) {
-            fileOutputStream.write(b)
-        }
-
-        override fun write(bytes: ByteArray, off: Int, len: Int) {
-            fileOutputStream.write(bytes, off, len)
-        }
-
-        override fun close() {
-            // We will not close the underlying FileOutputStream until after we're done syncing
-            // the fd. This is useful for things like b/173037611.
-        }
-
-        override fun flush() {
-            fileOutputStream.flush()
-        }
-    }
-
-    internal companion object {
-        /**
-         * Active files should contain the absolute path for which there are currently active
-         * DataStores. A DataStore is active until the scope it was created with has been
-         * cancelled. Files aren't added to this list until the first read/write because the file
-         * path is computed asynchronously.
-         */
-        @GuardedBy("activeFilesLock")
-        internal val activeFiles = mutableSetOf<String>()
-
-        internal val activeFilesLock = Any()
+        return storage.writeData(newData)
     }
 }

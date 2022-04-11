@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 The Android Open Source Project
+ * Copyright 2022 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,8 +18,7 @@ package androidx.datastore.core.handlers
 
 import androidx.datastore.core.CorruptionException
 import androidx.datastore.core.CorruptionHandler
-import java.io.IOException
-import kotlin.jvm.Throws
+import androidx.datastore.core.IOException
 
 /**
  * A corruption handler that attempts to replace the on-disk data with data from produceNewData.

@@ -33,7 +33,6 @@ import kotlinx.coroutines.awaitCancellation
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.flow.toList
@@ -77,16 +76,17 @@ class SingleProcessDataStoreTest {
     private lateinit var testingSerializer: TestingSerializer
     private lateinit var testFile: File
     private lateinit var dataStoreScope: TestCoroutineScope
+    private lateinit var testStorage: JvmStorage<Byte>
 
     @Before
     fun setUp() {
         testingSerializer = TestingSerializer()
         testFile = tempFolder.newFile()
+        testStorage = JvmStorage({ testFile }, testingSerializer)
         dataStoreScope = TestCoroutineScope(TestCoroutineDispatcher() + Job())
         store =
             SingleProcessDataStore<Byte>(
-                { testFile },
-                testingSerializer,
+                testStorage,
                 scope = dataStoreScope
             )
     }
@@ -250,10 +250,10 @@ class SingleProcessDataStoreTest {
             }
             testFile
         }
+        val testStorage = JvmStorage(fileProducer, testingSerializer)
 
         val newStore = SingleProcessDataStore(
-            fileProducer,
-            serializer = testingSerializer,
+            testStorage,
             scope = dataStoreScope,
             initTasksList = listOf()
         )
@@ -936,8 +936,7 @@ class SingleProcessDataStoreTest {
         corruptionHandler: CorruptionHandler<Byte> = NoOpCorruptionHandler<Byte>()
     ): DataStore<Byte> {
         return SingleProcessDataStore(
-            { file },
-            serializer = serializer,
+            JvmStorage({ file }, serializer),
             scope = scope,
             initTasksList = initTasksList,
             corruptionHandler = corruptionHandler
