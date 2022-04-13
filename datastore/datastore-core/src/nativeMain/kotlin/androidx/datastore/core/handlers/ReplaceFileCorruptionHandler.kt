@@ -18,7 +18,6 @@ package androidx.datastore.core.handlers
 
 import androidx.datastore.core.CorruptionException
 import androidx.datastore.core.CorruptionHandler
-import androidx.datastore.core.IOException
 
 /**
  * A corruption handler that attempts to replace the on-disk data with data from produceNewData.
@@ -35,7 +34,6 @@ public actual class ReplaceFileCorruptionHandler<T> actual constructor(
     private val produceNewData: (CorruptionException) -> T
 ) : CorruptionHandler<T> {
 
-    @Throws(IOException::class)
     override suspend fun handleCorruption(ex: CorruptionException): T {
         return produceNewData(ex)
     }

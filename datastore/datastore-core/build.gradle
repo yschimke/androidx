@@ -15,6 +15,7 @@
  */
 
 import androidx.build.Publish
+import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinNativeCompile
 
 plugins {
@@ -22,19 +23,53 @@ plugins {
     id("org.jetbrains.kotlin.multiplatform")
 }
 
+
+def boolProperty(name) {
+    return project.providers.gradleProperty(name).getOrNull()?.toBoolean()
+}
+
+def playground = androidx.build.StudioType.isPlayground(project)
+//Native on by default in playground
+def enableNative = boolProperty('androidx.kmp.native.enabled') ?: playground
+
+
 kotlin {
     jvm {
         withJava()
+    }
+    if (enableNative) {
+        macosArm64()
     }
 
     sourceSets {
         commonMain {
             dependencies {
+                api(libs.atomicFu)
                 api(libs.kotlinStdlib)
                 api(libs.kotlinCoroutinesCore)
+                implementation("com.squareup.okio:okio:3.0.0")
             }
         }
         commonTest {
+            dependencies {
+                implementation(libs.kotlinTestCommon)
+                implementation(libs.kotlinTestAnnotationsCommon)
+                implementation(libs.kotlinCoroutinesTest)
+                implementation("com.squareup.okio:okio-fakefilesystem:3.0.0")
+            }
+        }
+
+        if (enableNative) {
+            nativeMain
+
+            configure([macosArm64Main]) {
+                dependsOn nativeMain
+            }
+
+            nativeTest
+            configure([macosArm64Test]) {
+                dependsOn nativeTest
+            }
         }
 
         jvmMain {
@@ -50,7 +85,15 @@ kotlin {
                 implementation(libs.kotlinCoroutinesTest)
                 implementation(libs.truth)
                 implementation(project(":internal-testutils-truth"))
+                implementation(libs.kotlinTest)
+                implementation(libs.kotlinTestAnnotationsCommon)
+
             }
+        }
+    }
+    targets.withType(KotlinNativeTarget).configureEach {
+        binaries.all {
+            binaryOptions["memoryModel"] = "experimental"
         }
     }
 }

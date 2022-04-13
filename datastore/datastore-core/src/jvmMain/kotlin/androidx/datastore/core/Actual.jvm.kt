@@ -19,6 +19,7 @@
 package androidx.datastore.core
 
 import androidx.annotation.RestrictTo
+import androidx.annotation.RestrictTo.Scope
 
 // todo(b/228878451) consolidate with compose AtomicInt
 internal actual class AtomicInt actual constructor(value: Int) {
