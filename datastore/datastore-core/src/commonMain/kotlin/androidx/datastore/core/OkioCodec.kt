@@ -37,7 +37,7 @@ internal class OkioFileHandle(private val okioFileHandle:okio.FileHandle) : File
     }
 }
 
-internal class OkioBufferedSync(private val okioBufferedSink: okio.BufferedSink) : BufferedSink() {
+internal class OkioBufferedSync(private val okioBufferedSink: okio.BufferedSink) : BufferedSink {
     override fun close() {
         okioBufferedSink.close()
     }
@@ -47,7 +47,7 @@ internal class OkioBufferedSync(private val okioBufferedSink: okio.BufferedSink)
     }
 }
 
-internal class OkioBufferedSource(private val okioBufferedSource: okio.BufferedSource) : BufferedSource() {
+internal class OkioBufferedSource(private val okioBufferedSource: okio.BufferedSource) : BufferedSource {
     override fun readByte(): Byte {
         return okioBufferedSource.readByte()
     }

@@ -86,7 +86,7 @@ internal class JavaIOFileHandle(private val out:FileOutputStream) : FileHandle()
 
 }
 
-internal class JavaIOBufferedSink(internal val out:BufferedOutputStream) : BufferedSink() {
+internal class JavaIOBufferedSink(internal val out:BufferedOutputStream) : BufferedSink {
     override fun close() {
         //nothing to close. Will be closed by file handle
     }
@@ -96,7 +96,7 @@ internal class JavaIOBufferedSink(internal val out:BufferedOutputStream) : Buffe
     }
 }
 
-internal class JavaIOBufferedSource(internal val fin:BufferedInputStream) : BufferedSource() {
+internal class JavaIOBufferedSource(internal val fin:BufferedInputStream) : BufferedSource {
     override fun readByte(): Byte {
         return fin.read().toByte()
     }

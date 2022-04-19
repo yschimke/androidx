@@ -16,8 +16,10 @@
 
 package androidx.datastore.core
 
+import okio.FileSystem
 
-actual fun Path(path:String): Path = OkioPath(path)
+
+actual fun Path(path:String): Path = OkioPath(path, FileSystem.SYSTEM)
 
 // todo: FIXME DON'T MERGE.  Need real atomic int.
 internal actual class AtomicInt actual constructor(private var value: Int) {

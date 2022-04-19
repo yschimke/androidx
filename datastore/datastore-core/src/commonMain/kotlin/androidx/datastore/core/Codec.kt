@@ -43,18 +43,18 @@ interface Codec<T> {
 }
 
 
-//This class handles the marshaling users' codecs to the OutputStream or Sink.
+//This class marshals users' codecs to the OutputStream or Sink.
 //This is abstract and not expected/actual to allow OKIO to function in common.  This is useful
 //for our common tests and leave the possibility open for OKIO on any platform.
-abstract class BufferedSink {
-    abstract fun close()
-    abstract fun write(byteArray: ByteArray)
+interface BufferedSink {
+    fun close()
+    fun write(byteArray: ByteArray)
     //todo: all the other write(*) methods
 }
 
-//This class handles the marshaling users' codecs to the InputStream or Source.
-abstract class BufferedSource {
-    abstract fun readByte(): Byte
+//This class marshals users' codecs to the InputStream or Source.
+interface BufferedSource {
+    fun readByte(): Byte
     //todo: all the other read* methods
 }
 
