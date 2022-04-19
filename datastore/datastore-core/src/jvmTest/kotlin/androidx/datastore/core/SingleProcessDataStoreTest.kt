@@ -76,18 +76,18 @@ class SingleProcessDataStoreTest {
     private lateinit var testingSerializer: TestingSerializer
     private lateinit var testFile: File
     private lateinit var dataStoreScope: TestCoroutineScope
-    private lateinit var testStorage: JvmStorage<Byte>
+
 
     @Before
     fun setUp() {
         testingSerializer = TestingSerializer()
         testFile = tempFolder.newFile()
-        testStorage = JvmStorage({ testFile }, testingSerializer)
         dataStoreScope = TestCoroutineScope(TestCoroutineDispatcher() + Job())
         store =
             SingleProcessDataStore<Byte>(
-                testStorage,
-                scope = dataStoreScope
+                JavaIOCodec(testingSerializer),
+                scope = dataStoreScope,
+                producePath = {JavaIOPath(testFile)}
             )
     }
 
@@ -250,12 +250,12 @@ class SingleProcessDataStoreTest {
             }
             testFile
         }
-        val testStorage = JvmStorage(fileProducer, testingSerializer)
 
         val newStore = SingleProcessDataStore(
-            testStorage,
+            JavaIOCodec(testingSerializer),
             scope = dataStoreScope,
-            initTasksList = listOf()
+            initTasksList = listOf(),
+            producePath = {JavaIOPath(fileProducer())}
         )
 
         assertThrows<IOException> { newStore.data.first() }.hasMessageThat().isEqualTo(
@@ -936,10 +936,11 @@ class SingleProcessDataStoreTest {
         corruptionHandler: CorruptionHandler<Byte> = NoOpCorruptionHandler<Byte>()
     ): DataStore<Byte> {
         return SingleProcessDataStore(
-            JvmStorage({ file }, serializer),
+            JavaIOCodec(serializer),
             scope = scope,
             initTasksList = initTasksList,
-            corruptionHandler = corruptionHandler
+            corruptionHandler = corruptionHandler,
+            producePath = {JavaIOPath(file)}
         )
     }
 }

@@ -31,6 +31,9 @@ import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.coroutineContext
+import kotlinx.atomicfu.locks.SynchronizedObject
+import kotlinx.atomicfu.locks.synchronized
+
 
 /**
  * Represents the current state of the DataStore.
@@ -64,7 +67,7 @@ private class Final<T>(val finalException: Throwable) : State<T>()
  * Single process implementation of DataStore. This is NOT multi-process safe.
  */
 internal class SingleProcessDataStore<T>(
-    private val storage: Storage<T>,
+    private val codec: Codec<T>,
     /**
      * The list of initialization tasks to perform. These tasks will be completed before any data
      * is published to the data and before any read-modify-writes execute in updateData.  If
@@ -74,8 +77,34 @@ internal class SingleProcessDataStore<T>(
      */
     initTasksList: List<suspend (api: InitializerApi<T>) -> Unit> = emptyList(),
     private val corruptionHandler: CorruptionHandler<T> = NoOpCorruptionHandler(),
-    private val scope: CoroutineScope
+    private val scope: CoroutineScope,
+    private val producePath: () -> Path
 ) : DataStore<T> {
+
+    private val SCRATCH_SUFFIX = ".tmp"
+
+    private val path: Path by lazy {
+        val newPath = producePath()
+        // todo: figure out why we can't canonicalize a non existent file. Until then
+        // require absolute
+        // val newPath = fileSystem.canonicalize(initialPath)
+        check(newPath.isAbsolute) {
+            "Path supplied must be an absolute path: $newPath"
+        }
+        check(newPath.parent != null) {
+            "Path supplied must have a parent directory: $newPath"
+        }
+        synchronized(activeFileLock) {
+            check(!activeFiles.contains(newPath)) {
+                "There are multiple DataStores active for the same file: $newPath. You " +
+                    "should either maintain your DataStore as a singleton or confirm that there " +
+                    "is no two DataStore's active on the same file (by confirming that the scope " +
+                    "is cancelled)"
+            }
+            activeFiles.add(newPath)
+            newPath
+        }
+    }
 
     override val data: Flow<T> = flow {
         /**
@@ -186,7 +215,9 @@ internal class SingleProcessDataStore<T>(
             // We expect it to always be non-null but we will leave the alternative as a no-op
             // just in case.
 
-            storage.onComplete()
+            synchronized(activeFileLock) {
+                activeFiles.remove(path)
+            }
         },
         onUndeliveredElement = { msg, ex ->
             if (msg is Message.Update) {
@@ -343,7 +374,16 @@ internal class SingleProcessDataStore<T>(
     }
 
     private suspend fun readData(): T {
-        return storage.readData()
+        try {
+            return path.read {
+                return@read codec.readFrom(this)
+            }
+        } catch (ex: FileNotFoundException) {
+            if (path.exists) {
+                throw ex
+            }
+            return codec.defaultValue
+        }
     }
 
     // downstreamFlow.value must be successfully set to data before calling this
@@ -376,6 +416,36 @@ internal class SingleProcessDataStore<T>(
      * outside this class.
      */
     internal suspend fun writeData(newData: T) {
-        return storage.writeData(newData)
+        path.parent!!.createDirectories()
+        val scratchPath = path.append(SCRATCH_SUFFIX)
+        try {
+            val fileHandle = scratchPath.openReadWrite()
+            try {
+                val bufferedSink = fileHandle.appendingBufferedSync()
+                try {
+                    codec.writeTo(newData, bufferedSink)
+                } finally {
+                  bufferedSink.close()
+                }
+                fileHandle.flush()
+                // TODO(b/151635324): fsync the directory, otherwise a badly timed crash could
+                //  result in reverting to a previous state.
+            } finally {
+                fileHandle.close()
+            }
+            scratchPath.move(path)
+        } catch (ex: okio.IOException) {
+            if (scratchPath.exists) {
+                scratchPath.delete()
+            }
+            throw ex
+        }
     }
+
+    internal companion object {
+        internal val activeFiles = mutableSetOf<Path>()
+        internal val activeFileLock = Lock()
+    }
+
+    internal class Lock : SynchronizedObject()
 }

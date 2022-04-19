@@ -60,7 +60,11 @@ kotlin {
         }
 
         if (enableNative) {
-            nativeMain
+            nativeMain {
+                dependencies {
+                    implementation("com.squareup.okio:okio:3.0.0")
+                }
+            }
 
             configure([macosArm64Main]) {
                 dependsOn nativeMain

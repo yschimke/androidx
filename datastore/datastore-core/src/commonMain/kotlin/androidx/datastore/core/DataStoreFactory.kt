@@ -16,17 +16,27 @@
 
 package androidx.datastore.core
 
+import androidx.datastore.core.handlers.NoOpCorruptionHandler
 import androidx.datastore.core.handlers.ReplaceFileCorruptionHandler
 import kotlin.jvm.JvmOverloads
 import kotlinx.coroutines.CoroutineScope
 
-public expect object DataStoreFactory {
+public object DataStoreFactory {
 
     @JvmOverloads
     public fun <T> create(
-        storage: Storage<T>,
+        codec: Codec<T>,
         corruptionHandler: ReplaceFileCorruptionHandler<T>? = null,
         migrations: List<DataMigration<T>> = listOf(),
-        scope: CoroutineScope
-    ): DataStore<T>
+        scope: CoroutineScope,
+        producePath: () -> Path
+    ): DataStore<T> {
+        return SingleProcessDataStore(
+            codec,
+            corruptionHandler = corruptionHandler ?: NoOpCorruptionHandler(),
+            initTasksList = listOf(DataMigrationInitializer.getInitializer(migrations)),
+            scope = scope,
+            producePath = producePath,
+        )
+    }
 }

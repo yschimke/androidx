@@ -16,22 +16,19 @@
 
 package androidx.datastore.core
 
-import okio.BufferedSink
-import okio.BufferedSource
-import okio.EOFException
-import okio.IOException
 
-class TestingSerializerCommon(
+class TestingCodec(
     var failReadWithCorruptionException: Boolean = false,
     var failingRead: Boolean = false,
     var failingWrite: Boolean = false,
     override val defaultValue: Byte = 0
-) : OkioSerializer<Byte> {
+) : Codec<Byte> {
+
     override suspend fun readFrom(input: BufferedSource): Byte {
         if (failReadWithCorruptionException) {
             throw CorruptionException(
                 "CorruptionException",
-                IOException()
+                IOException("I was asked to fail on read")
             )
         }
 

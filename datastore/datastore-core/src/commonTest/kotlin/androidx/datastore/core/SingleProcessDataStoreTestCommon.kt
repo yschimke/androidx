@@ -29,8 +29,8 @@ import kotlinx.coroutines.test.TestDispatcher
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
-import okio.Path
-import okio.Path.Companion.toPath
+//import okio.Path
+//import okio.Path.Companion.toPath
 import okio.fakefilesystem.FakeFileSystem
 
 @ExperimentalCoroutinesApi
@@ -38,8 +38,7 @@ import okio.fakefilesystem.FakeFileSystem
 class SingleProcessDataStoreTestCommon {
 
     private lateinit var store: DataStore<Byte>
-    private lateinit var testingSerializer: TestingSerializerCommon
-    private lateinit var testStorage: OkioStorage<Byte>
+    private lateinit var testingCodec: TestingCodec
     private lateinit var testCoroutineDispatcher: TestDispatcher
     private lateinit var testScope: TestScope
     private lateinit var fileSystem: FakeFileSystem
@@ -47,15 +46,15 @@ class SingleProcessDataStoreTestCommon {
 
     @BeforeTest
     fun setUp() {
-        testingSerializer = TestingSerializerCommon()
+        testingCodec = TestingCodec()
         fileSystem = FakeFileSystem()
-        path = "/fakeFile".toPath()
-        testStorage = OkioStorage(fileSystem, { path }, testingSerializer)
+        path = OkioPath("/fakeFile", fileSystem)
         testCoroutineDispatcher = UnconfinedTestDispatcher()
         testScope = TestScope(testCoroutineDispatcher)
         store = SingleProcessDataStore(
-            testStorage,
-            scope = testScope
+            codec = testingCodec,
+            scope = testScope,
+            producePath = {path}
         )
     }
 
@@ -84,16 +83,17 @@ class SingleProcessDataStoreTestCommon {
 
     private fun newDataStore(
         file: Path = path,
-        serializer: OkioSerializer<Byte> = testingSerializer,
+        codec: Codec<Byte> = testingCodec,
         scope: CoroutineScope = testScope,
         initTasksList: List<suspend (api: InitializerApi<Byte>) -> Unit> = listOf(),
         corruptionHandler: CorruptionHandler<Byte> = NoOpCorruptionHandler<Byte>()
     ): DataStore<Byte> {
         return SingleProcessDataStore(
-            OkioStorage(fileSystem, { file }, serializer),
+            codec = codec,
             scope = scope,
             initTasksList = initTasksList,
-            corruptionHandler = corruptionHandler
+            corruptionHandler = corruptionHandler,
+            producePath = {file}
         )
     }
 }

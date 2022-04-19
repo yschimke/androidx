@@ -16,7 +16,10 @@
 
 package androidx.datastore.core
 
-// todo: FIXME DON'T COMMIT.  Need real atomic int.
+
+actual fun Path(path:String): Path = OkioPath(path)
+
+// todo: FIXME DON'T MERGE.  Need real atomic int.
 internal actual class AtomicInt actual constructor(private var value: Int) {
 
     actual fun get(): Int {
@@ -43,8 +46,6 @@ internal actual class AtomicInt actual constructor(private var value: Int) {
     }
 }
 
-@Suppress("AcronymName")
-public actual open class IOException actual constructor(message: String, cause: Throwable?) :
-    Exception(message) {
-    public actual constructor(message: String) : this(message, null)
-}
+public actual typealias IOException = okio.IOException
+public actual typealias FileNotFoundException = okio.FileNotFoundException
+public actual typealias EOFException = okio.EOFException

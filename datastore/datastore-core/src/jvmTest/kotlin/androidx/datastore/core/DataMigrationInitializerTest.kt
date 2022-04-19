@@ -194,9 +194,10 @@ class DataMigrationInitializerTest {
         serializer: TestingSerializer = TestingSerializer()
     ): DataStore<Byte> {
         return SingleProcessDataStore(
-            JvmStorage({ testFile }, serializer),
+            JavaIOCodec(serializer),
             scope = this,
-            initTasksList = initTasksList
+            initTasksList = initTasksList,
+            producePath = {JavaIOPath(testFile)}
         )
     }
 

@@ -16,7 +16,8 @@
 
 package androidx.datastore.core.handlers
 
-import androidx.datastore.core.JvmStorage
+import androidx.datastore.core.JavaIOCodec
+import androidx.datastore.core.JavaIOPath
 import androidx.datastore.core.SingleProcessDataStore
 import androidx.datastore.core.TestingSerializer
 import androidx.testutils.assertThrows
@@ -57,9 +58,10 @@ class ReplaceFileCorruptionHandlerTest {
         preSeedData(testFile, 1)
 
         val store = SingleProcessDataStore<Byte>(
-            JvmStorage({ testFile }, TestingSerializer(failReadWithCorruptionException = true)),
+            JavaIOCodec(TestingSerializer(failReadWithCorruptionException = true)),
             corruptionHandler = ReplaceFileCorruptionHandler<Byte> { 10 },
-            scope = this
+            scope = this,
+            producePath = {JavaIOPath(testFile)}
         )
 
         assertThat(store.data.first()).isEqualTo(10)
@@ -70,9 +72,10 @@ class ReplaceFileCorruptionHandlerTest {
         preSeedData(testFile, 1)
 
         val store = SingleProcessDataStore<Byte>(
-            JvmStorage({ testFile }, TestingSerializer(failReadWithCorruptionException = true)),
+            JavaIOCodec(TestingSerializer(failReadWithCorruptionException = true)),
             corruptionHandler = ReplaceFileCorruptionHandler<Byte> { 10 },
-            scope = this
+            scope = this,
+            producePath = {JavaIOPath(testFile)}
         )
 
         assertThat(store.updateData { it.inc() }).isEqualTo(11)
@@ -83,9 +86,10 @@ class ReplaceFileCorruptionHandlerTest {
         preSeedData(testFile, 1)
 
         val store = SingleProcessDataStore<Byte>(
-            JvmStorage({ testFile }, TestingSerializer(failReadWithCorruptionException = true)),
+            JavaIOCodec(TestingSerializer(failReadWithCorruptionException = true)),
             corruptionHandler = ReplaceFileCorruptionHandler<Byte> { 10 },
-            scope = this
+            scope = this,
+            producePath = {JavaIOPath(testFile)}
         )
 
         val plus1 = async { store.updateData { it.inc() } }
@@ -103,11 +107,11 @@ class ReplaceFileCorruptionHandlerTest {
         preSeedData(testFile, 1)
 
         val store = SingleProcessDataStore<Byte>(
-            JvmStorage(
-                { testFile },
+            JavaIOCodec(
                 TestingSerializer(failReadWithCorruptionException = true, failingWrite = true)),
             corruptionHandler = ReplaceFileCorruptionHandler<Byte> { 10 },
-            scope = this
+            scope = this,
+            producePath = {JavaIOPath(testFile)}
         )
 
         assertThrows<IOException> { store.data.first() }
@@ -119,8 +123,9 @@ class ReplaceFileCorruptionHandlerTest {
     private suspend fun preSeedData(file: File, byte: Byte) {
         coroutineScope {
             SingleProcessDataStore(
-                JvmStorage({ file }, TestingSerializer()),
-                scope = this
+                JavaIOCodec(TestingSerializer()),
+                scope = this,
+                producePath = {JavaIOPath(testFile)}
             ).updateData { byte }
         }
     }

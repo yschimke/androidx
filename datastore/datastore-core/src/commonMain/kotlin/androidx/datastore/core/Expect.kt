@@ -16,9 +16,7 @@
 
 package androidx.datastore.core
 
-public expect open class IOException(message: String, cause: Throwable?) : Exception {
-    public constructor(message: String)
-}
+
 
 // todo(b/228878451) consolidate with compose AtomicInt
 internal expect class AtomicInt(value: Int) {
@@ -30,3 +28,14 @@ internal expect class AtomicInt(value: Int) {
     fun getAndDecrement(): Int
     fun decrementAndGet(): Int
 }
+
+expect open class IOException constructor(
+    message: String?,
+    cause: Throwable?
+) : Exception {
+    constructor(message: String?)
+}
+
+expect open class EOFException constructor(message: String?) : IOException
+
+expect open class FileNotFoundException constructor(message: String?) : IOException
