@@ -20,10 +20,17 @@ package androidx.datastore.core
 
 import androidx.annotation.RestrictTo
 import androidx.annotation.RestrictTo.Scope
-import okio.FileSystem
+import okio.Path.Companion.toPath
 
+public actual typealias IOException = java.io.IOException
+public actual typealias FileNotFoundException = java.io.FileNotFoundException
+public actual typealias EOFException = java.io.EOFException
+public actual typealias File = java.io.File
 
-actual fun Path(path:String):Path = JavaIOPath(path)
+internal actual object FileUtils {
+    internal actual fun createPath(file:File): Path = JavaIOPath(file)
+}
+
 
 // todo(b/228878451) consolidate with compose AtomicInt
 internal actual class AtomicInt actual constructor(value: Int) {
@@ -37,6 +44,3 @@ internal actual class AtomicInt actual constructor(value: Int) {
     actual fun decrementAndGet(): Int = delegate.decrementAndGet()
 }
 
-public actual typealias IOException = java.io.IOException
-public actual typealias FileNotFoundException = java.io.FileNotFoundException
-public actual typealias EOFException = java.io.EOFException

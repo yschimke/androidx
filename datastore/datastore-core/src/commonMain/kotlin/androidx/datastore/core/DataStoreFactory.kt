@@ -25,18 +25,18 @@ public object DataStoreFactory {
 
     @JvmOverloads
     public fun <T> create(
-        codec: Codec<T>,
+        serializer: Serializer<T>,
         corruptionHandler: ReplaceFileCorruptionHandler<T>? = null,
         migrations: List<DataMigration<T>> = listOf(),
         scope: CoroutineScope,
-        producePath: () -> Path
+        produceFile: () -> File
     ): DataStore<T> {
         return SingleProcessDataStore(
-            codec,
+            serializer,
             corruptionHandler = corruptionHandler ?: NoOpCorruptionHandler(),
             initTasksList = listOf(DataMigrationInitializer.getInitializer(migrations)),
             scope = scope,
-            producePath = producePath,
+            produceFile = produceFile,
         )
     }
 }

@@ -16,10 +16,11 @@
 
 package androidx.datastore.core
 
+import okio.BufferedSink
+import okio.BufferedSource
 import okio.FileSystem
+import okio.Path.Companion.toPath
 
-
-actual fun Path(path:String): Path = OkioPath(path, FileSystem.SYSTEM)
 
 // todo: FIXME DON'T MERGE.  Need real atomic int.
 internal actual class AtomicInt actual constructor(private var value: Int) {
@@ -51,3 +52,50 @@ internal actual class AtomicInt actual constructor(private var value: Int) {
 public actual typealias IOException = okio.IOException
 public actual typealias FileNotFoundException = okio.FileNotFoundException
 public actual typealias EOFException = okio.EOFException
+
+internal actual object FileUtils {
+    internal actual fun createPath(file:File): Path =
+        OkioPath(file.pathName.toPath(), file.fileSystem)
+}
+
+
+actual class File actual constructor(val pathName:String) {
+    internal var fileSystem:FileSystem = FileSystem.SYSTEM
+}
+
+
+public actual abstract class InputStream(
+    private val delegate: okio.BufferedSource
+) {
+    @Throws(IOException::class)
+    actual abstract fun read(): Int
+
+}
+
+actual abstract class OutputStream(
+    private val delegate: okio.BufferedSink
+) {
+    @Throws(IOException::class)
+    actual abstract fun write(var1: Int)
+    actual open fun close() {}
+
+}
+
+internal open class OkioInputStream(private val delegate: okio.BufferedSource)
+    : InputStream(delegate) {
+    @Throws(IOException::class)
+    override fun read(): Int {
+        return delegate.readInt()
+    }
+}
+
+internal open class OkioOutputStream(private val delegate: BufferedSink) : OutputStream(delegate) {
+    override fun write(var1: Int) {
+        delegate.writeInt(var1)
+    }
+
+    override fun close() {
+        delegate.close()
+    }
+
+}

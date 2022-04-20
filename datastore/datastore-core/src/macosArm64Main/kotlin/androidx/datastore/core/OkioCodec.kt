@@ -24,8 +24,8 @@ import okio.buffer
 //picked up for all android/jvm implementations.
 
 internal class OkioFileHandle(private val okioFileHandle:okio.FileHandle) : FileHandle() {
-    override fun appendingBufferedSync(): BufferedSink {
-        return OkioBufferedSync(okioFileHandle.appendingSink().buffer())
+    override fun appendingOutputStream(): OutputStream {
+        return OkioOutputStream(okioFileHandle.appendingSink().buffer())
     }
 
     override fun flush() {
@@ -37,59 +37,49 @@ internal class OkioFileHandle(private val okioFileHandle:okio.FileHandle) : File
     }
 }
 
-internal class OkioBufferedSync(private val okioBufferedSink: okio.BufferedSink) : BufferedSink {
-    override fun close() {
-        okioBufferedSink.close()
-    }
 
-    override fun write(byteArray: ByteArray) {
-        okioBufferedSink.write(byteArray)
-    }
-}
+internal class OkioPath(private val path:okio.Path, private val fileSystem: FileSystem) : Path() {
 
-internal class OkioBufferedSource(private val okioBufferedSource: okio.BufferedSource) : BufferedSource {
-    override fun readByte(): Byte {
-        return okioBufferedSource.readByte()
-    }
-
-}
-
-
-internal class OkioPath(path:String, private val fileSystem: FileSystem) : Path() {
-    private val okioPath = path.toPath()
-    override suspend fun <T> read(readerAction: suspend BufferedSource.() -> T): T {
-        return fileSystem.read(okioPath) {
-            readerAction(OkioBufferedSource(this))
+    override suspend fun <T> read(readerAction: suspend InputStream.() -> T): T {
+        return fileSystem.read(path) {
+            readerAction(OkioInputStream(this))
         }
     }
 
 
     override fun createDirectories() {
-        fileSystem.createDirectories(okioPath)
+        fileSystem.createDirectories(path)
     }
 
     override fun delete() {
-        fileSystem.delete(okioPath)
+        fileSystem.delete(path)
     }
 
     override fun openReadWrite(): FileHandle {
-        return OkioFileHandle(fileSystem.openReadWrite(okioPath))
+        return OkioFileHandle(fileSystem.openReadWrite(path))
     }
 
     override fun append(morePath:String):Path {
-        return OkioPath("$this$morePath", fileSystem)
+        return OkioPath("${path}$morePath".toPath(), fileSystem)
     }
 
     override fun move(toPath: Path) {
         check(toPath is OkioPath) {"toPath must be an OkioPath.  Was ${toPath::class}"}
-        fileSystem.atomicMove(this.okioPath, toPath.okioPath)
+        fileSystem.atomicMove(this.path, toPath.path)
+    }
+
+    override fun toString(): String {
+        return path.toString()
     }
 
     override val isAbsolute: Boolean
-        get() = okioPath.isAbsolute
+        get() = path.isAbsolute
     override val exists: Boolean
-        get() = fileSystem.exists(okioPath)
+        get() = fileSystem.exists(path)
     override val parent: Path?
-        get() = OkioPath(okioPath.parent.toString(), fileSystem)
+        get() = path.parent?.let {
+                    OkioPath(it, fileSystem)
+                }
+
 
 }

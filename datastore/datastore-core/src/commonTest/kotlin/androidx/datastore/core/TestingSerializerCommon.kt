@@ -16,15 +16,19 @@
 
 package androidx.datastore.core
 
+expect class TestFileSystem
 
-class TestingCodec(
+expect fun getTestFile(pathName:String, testFileSystem: TestFileSystem):File
+expect fun createTestFileSystem():TestFileSystem
+
+class TestingSerializerCommon(
     var failReadWithCorruptionException: Boolean = false,
     var failingRead: Boolean = false,
     var failingWrite: Boolean = false,
     override val defaultValue: Byte = 0
-) : Codec<Byte> {
+) : Serializer<Byte> {
 
-    override suspend fun readFrom(input: BufferedSource): Byte {
+    override suspend fun readFrom(input: InputStream): Byte {
         if (failReadWithCorruptionException) {
             throw CorruptionException(
                 "CorruptionException",
@@ -37,17 +41,17 @@ class TestingCodec(
         }
 
         val read = try {
-            input.readByte()
+            input.read().toByte()
         } catch (e: EOFException) {
             return 0
         }
         return read
     }
 
-    override suspend fun writeTo(t: Byte, output: BufferedSink) {
+    override suspend fun writeTo(t: Byte, output: OutputStream) {
         if (failingWrite) {
             throw IOException("I was asked to fail on writes")
         }
-        output.write(byteArrayOf(t))
+        output.write(t.toInt())
     }
 }

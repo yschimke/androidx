@@ -16,7 +16,22 @@
 
 package androidx.datastore.core
 
+expect abstract class InputStream {
+    @Throws(IOException::class)
+    abstract fun read(): Int
+}
+expect abstract class OutputStream {
+    @Throws(IOException::class)
+    abstract fun write(var1: Int)
+    open fun close()
+}
 
+expect class File constructor(pathName:String)
+
+internal expect object FileUtils {
+    //Tried to make this top level function, but got missing method runtime error on jvm
+    internal fun createPath(file:File):Path
+}
 
 // todo(b/228878451) consolidate with compose AtomicInt
 internal expect class AtomicInt(value: Int) {
@@ -39,3 +54,32 @@ expect open class IOException constructor(
 expect open class EOFException constructor(message: String?) : IOException
 
 expect open class FileNotFoundException constructor(message: String?) : IOException
+
+//This class is the deciding factor for what io library to use.
+internal abstract class Path {
+
+    internal abstract suspend fun <T> read(readerAction: suspend InputStream.() -> T): T
+    internal abstract fun createDirectories()
+    internal abstract fun delete()
+
+    internal abstract fun openReadWrite():FileHandle
+
+    internal abstract fun move(toPath:Path)
+
+    internal abstract fun append(morePath:String):Path
+
+    internal abstract val isAbsolute:Boolean
+    internal abstract val exists:Boolean
+    internal abstract val parent:Path?
+}
+
+
+
+internal abstract class FileHandle {
+
+    abstract fun appendingOutputStream():OutputStream
+
+    abstract fun flush()
+    abstract fun close()
+}
+

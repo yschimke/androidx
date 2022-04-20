@@ -22,12 +22,16 @@ import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
 
+public actual typealias InputStream = java.io.InputStream
+public actual typealias OutputStream = java.io.OutputStream
+
+
 internal class JavaIOPath(val file:File) : Path() {
     constructor(path:String) : this(File(path))
 
-    override suspend fun <T> read(readerAction: suspend BufferedSource.() -> T): T {
+    override suspend fun <T> read(readerAction: suspend InputStream.() -> T): T {
         return BufferedInputStream(FileInputStream(file)).use { fin ->
-            readerAction(JavaIOBufferedSource(fin))
+            readerAction(fin)
         }
     }
 
@@ -72,8 +76,8 @@ internal fun File.createParentDirectories() {
 }
 
 internal class JavaIOFileHandle(private val out:FileOutputStream) : FileHandle() {
-    override fun appendingBufferedSync(): BufferedSink {
-        return JavaIOBufferedSink(BufferedOutputStream(out))
+    override fun appendingOutputStream(): OutputStream {
+        return BufferedOutputStream(out)
     }
 
     override fun flush() {
@@ -86,36 +90,20 @@ internal class JavaIOFileHandle(private val out:FileOutputStream) : FileHandle()
 
 }
 
-internal class JavaIOBufferedSink(internal val out:BufferedOutputStream) : BufferedSink {
-    override fun close() {
-        //nothing to close. Will be closed by file handle
-    }
-
-    override fun write(byteArray: ByteArray) {
-        out.write(byteArray)
-    }
-}
-
-internal class JavaIOBufferedSource(internal val fin:BufferedInputStream) : BufferedSource {
-    override fun readByte(): Byte {
-        return fin.read().toByte()
-    }
-}
-
-internal class JavaIOCodec<T>(private val serializer: Serializer<T>) : Codec<T> {
-    override val defaultValue: T
-        get() = serializer.defaultValue
-
-    override suspend fun readFrom(input: BufferedSource): T {
-        check(input is JavaIOBufferedSource)
-            {"BufferedSource must be a JavaBufferedSource.  Was: ${input::class}"}
-        return serializer.readFrom(input.fin)
-    }
-
-    override suspend fun writeTo(t: T, output: BufferedSink) {
-        check(output is JavaIOBufferedSink)
-            {"BufferedSink must be a JavaBufferedSink.  Was: ${output::class}"}
-        serializer.writeTo(t, output.out)
-    }
-
-}
+//internal class JavaIOCodec<T>(private val serializer: Serializer<T>) : Codec<T> {
+//    override val defaultValue: T
+//        get() = serializer.defaultValue
+//
+//    override suspend fun readFrom(input: BufferedSource): T {
+//        check(input is JavaIOBufferedSource)
+//            {"BufferedSource must be a JavaBufferedSource.  Was: ${input::class}"}
+//        return serializer.readFrom(input.fin)
+//    }
+//
+//    override suspend fun writeTo(t: T, output: BufferedSink) {
+//        check(output is JavaIOBufferedSink)
+//            {"BufferedSink must be a JavaBufferedSink.  Was: ${output::class}"}
+//        serializer.writeTo(t, output.out)
+//    }
+//
+//}

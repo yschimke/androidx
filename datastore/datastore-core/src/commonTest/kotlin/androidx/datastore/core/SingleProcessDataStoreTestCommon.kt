@@ -31,30 +31,29 @@ import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 //import okio.Path
 //import okio.Path.Companion.toPath
-import okio.fakefilesystem.FakeFileSystem
 
 @ExperimentalCoroutinesApi
 // todo: revisit this class name.  How do we want to handle common vs platform specific
 class SingleProcessDataStoreTestCommon {
 
     private lateinit var store: DataStore<Byte>
-    private lateinit var testingCodec: TestingCodec
+    private lateinit var testingCodec: TestingSerializerCommon
     private lateinit var testCoroutineDispatcher: TestDispatcher
     private lateinit var testScope: TestScope
-    private lateinit var fileSystem: FakeFileSystem
-    private lateinit var path: Path
+    private lateinit var fileSystem: TestFileSystem
+    private lateinit var file: File
 
     @BeforeTest
     fun setUp() {
-        testingCodec = TestingCodec()
-        fileSystem = FakeFileSystem()
-        path = OkioPath("/fakeFile", fileSystem)
+        testingCodec = TestingSerializerCommon()
+        fileSystem = createTestFileSystem()
+        file = getTestFile("/fakeFile", fileSystem)
         testCoroutineDispatcher = UnconfinedTestDispatcher()
         testScope = TestScope(testCoroutineDispatcher)
         store = SingleProcessDataStore(
-            codec = testingCodec,
+            serializer = testingCodec,
             scope = testScope,
-            producePath = {path}
+            produceFile = {file}
         )
     }
 
@@ -82,18 +81,18 @@ class SingleProcessDataStoreTestCommon {
 
 
     private fun newDataStore(
-        file: Path = path,
-        codec: Codec<Byte> = testingCodec,
+        file: File = this.file,
+        serializer: Serializer<Byte> = testingCodec,
         scope: CoroutineScope = testScope,
         initTasksList: List<suspend (api: InitializerApi<Byte>) -> Unit> = listOf(),
         corruptionHandler: CorruptionHandler<Byte> = NoOpCorruptionHandler<Byte>()
     ): DataStore<Byte> {
         return SingleProcessDataStore(
-            codec = codec,
+            serializer = serializer,
             scope = scope,
             initTasksList = initTasksList,
             corruptionHandler = corruptionHandler,
-            producePath = {file}
+            produceFile = {file}
         )
     }
 }

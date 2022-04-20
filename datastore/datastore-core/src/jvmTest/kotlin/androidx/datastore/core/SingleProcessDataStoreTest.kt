@@ -85,9 +85,9 @@ class SingleProcessDataStoreTest {
         dataStoreScope = TestCoroutineScope(TestCoroutineDispatcher() + Job())
         store =
             SingleProcessDataStore<Byte>(
-                JavaIOCodec(testingSerializer),
+                testingSerializer,
                 scope = dataStoreScope,
-                producePath = {JavaIOPath(testFile)}
+                produceFile = {testFile},
             )
     }
 
@@ -252,10 +252,10 @@ class SingleProcessDataStoreTest {
         }
 
         val newStore = SingleProcessDataStore(
-            JavaIOCodec(testingSerializer),
+            testingSerializer,
             scope = dataStoreScope,
             initTasksList = listOf(),
-            producePath = {JavaIOPath(fileProducer())}
+            produceFile = fileProducer
         )
 
         assertThrows<IOException> { newStore.data.first() }.hasMessageThat().isEqualTo(
@@ -936,11 +936,11 @@ class SingleProcessDataStoreTest {
         corruptionHandler: CorruptionHandler<Byte> = NoOpCorruptionHandler<Byte>()
     ): DataStore<Byte> {
         return SingleProcessDataStore(
-            JavaIOCodec(serializer),
+            serializer,
             scope = scope,
             initTasksList = initTasksList,
             corruptionHandler = corruptionHandler,
-            producePath = {JavaIOPath(file)}
+            produceFile = { file }
         )
     }
 }

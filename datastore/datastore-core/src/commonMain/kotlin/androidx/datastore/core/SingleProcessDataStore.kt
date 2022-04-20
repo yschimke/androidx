@@ -67,7 +67,7 @@ private class Final<T>(val finalException: Throwable) : State<T>()
  * Single process implementation of DataStore. This is NOT multi-process safe.
  */
 internal class SingleProcessDataStore<T>(
-    private val codec: Codec<T>,
+    private val serializer: Serializer<T>,
     /**
      * The list of initialization tasks to perform. These tasks will be completed before any data
      * is published to the data and before any read-modify-writes execute in updateData.  If
@@ -78,13 +78,14 @@ internal class SingleProcessDataStore<T>(
     initTasksList: List<suspend (api: InitializerApi<T>) -> Unit> = emptyList(),
     private val corruptionHandler: CorruptionHandler<T> = NoOpCorruptionHandler(),
     private val scope: CoroutineScope,
-    private val producePath: () -> Path
+    private val produceFile: () -> File
 ) : DataStore<T> {
 
     private val SCRATCH_SUFFIX = ".tmp"
 
     private val path: Path by lazy {
-        val newPath = producePath()
+        val file = produceFile()
+        val newPath = FileUtils.createPath(file)
         // todo: figure out why we can't canonicalize a non existent file. Until then
         // require absolute
         // val newPath = fileSystem.canonicalize(initialPath)
@@ -376,13 +377,13 @@ internal class SingleProcessDataStore<T>(
     private suspend fun readData(): T {
         try {
             return path.read {
-                return@read codec.readFrom(this)
+                return@read serializer.readFrom(this)
             }
         } catch (ex: FileNotFoundException) {
             if (path.exists) {
                 throw ex
             }
-            return codec.defaultValue
+            return serializer.defaultValue
         }
     }
 
@@ -421,11 +422,11 @@ internal class SingleProcessDataStore<T>(
         try {
             val fileHandle = scratchPath.openReadWrite()
             try {
-                val bufferedSink = fileHandle.appendingBufferedSync()
+                val outputStream = fileHandle.appendingOutputStream()
                 try {
-                    codec.writeTo(newData, bufferedSink)
+                    serializer.writeTo(newData, outputStream)
                 } finally {
-                  bufferedSink.close()
+                  outputStream.close()
                 }
                 fileHandle.flush()
                 // TODO(b/151635324): fsync the directory, otherwise a badly timed crash could

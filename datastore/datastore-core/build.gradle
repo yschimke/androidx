@@ -47,7 +47,6 @@ kotlin {
                 api(libs.atomicFu)
                 api(libs.kotlinStdlib)
                 api(libs.kotlinCoroutinesCore)
-                implementation("com.squareup.okio:okio:3.0.0")
             }
         }
         commonTest {
@@ -55,7 +54,6 @@ kotlin {
                 implementation(libs.kotlinTestCommon)
                 implementation(libs.kotlinTestAnnotationsCommon)
                 implementation(libs.kotlinCoroutinesTest)
-                implementation("com.squareup.okio:okio-fakefilesystem:3.0.0")
             }
         }
 
@@ -70,7 +68,11 @@ kotlin {
                 dependsOn nativeMain
             }
 
-            nativeTest
+            nativeTest {
+                dependencies {
+                    implementation("com.squareup.okio:okio-fakefilesystem:3.0.0")
+                }
+            }
             configure([macosArm64Test]) {
                 dependsOn nativeTest
             }
