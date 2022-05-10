@@ -168,3 +168,10 @@ jobs:
         with:
           name: gradle-daemon-logs_${{ matrix.project }}
           path: ~/.gradle/daemon
+      - name: "Upload memory dumps"
+        continue-on-error: true
+        if: failure()
+        uses: actions/upload-artifact@v2
+        with:
+          name: memory_dumps_${{ matrix.project }}
+          path: ~/**/*/java_pid*.hprof
