@@ -46,23 +46,22 @@ runs:
         gradle-home-cache-excludes: |
           caches/jars-9
           caches/transforms-3
-    steps:
-      - name: Decide Gradle Version
-        id: decide-gradle-version
-        uses: actions/github-script@v6
-        with:
-          result-encoding: string
-          script: |
-            // decide which gradle version to use.
-            // if there is an input, use that
-            if (github.event.inputs.gradle-version != null) {
-              return github.event.inputs.gradle-version
-            }
-            // if it is scheduled build, use release-nightly
-            if (github.event.schedule != null) {
-              return "release-nightly"
-            }
-            return ""
+    - name: Decide Gradle Version
+      id: decide-gradle-version
+      uses: actions/github-script@v6
+      with:
+        result-encoding: string
+        script: |
+          // decide which gradle version to use.
+          // if there is an input, use that
+          if (github.event.inputs.gradle-version != null) {
+            return github.event.inputs.gradle-version
+          }
+          // if it is scheduled build, use release-nightly
+          if (github.event.schedule != null) {
+            return "release-nightly"
+          }
+          return ""
 
     - name: "Modify Gradle Version"
       shell: bash
