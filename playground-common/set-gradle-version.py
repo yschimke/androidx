@@ -17,9 +17,13 @@ print("Will set version to", version, "in ", properties_file)
 with urllib.request.urlopen("https://services.gradle.org/versions/{}".format(version)) as url:
     data = json.loads(url.read().decode())
     downloadUrl=data['downloadUrl']
-    print(downloadUrl)
+    checksum=urllib.request.urlopen(data['checksumUrl']).read().decode('ascii')
+    print("download url:", downloadUrl)
+    print("checksum:", checksum)
     for line in fileinput.input(properties_file, inplace=True):
         if line.startswith("distributionUrl"):
             print('distributionUrl={}'.format(downloadUrl.replace(":", "\:")))
+        elif line.startswith("distributionSha256Sum"):
+            print('distributionSha256Sum={}'.format(checksum))
         else:
             print(line, end='')
