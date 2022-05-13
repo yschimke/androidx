@@ -102,13 +102,6 @@ jobs:
           gradle-home-cache-excludes: | 
             caches/jars-9
             caches/transforms-3
-
-      - name: "ktlint"
-        env:
-          JAVA_HOME: ${{ steps.setup-java.outputs.path }}
-        working-directory: activity
-        run: ./gradlew -q :ktlintCheckFile ${{ steps.ktlint-file-args.outputs.ktlint-file-args }} ${{ needs.setup.outputs.gradlew_flags }}
-
   build-modules:
     strategy:
       fail-fast: false
@@ -117,12 +110,7 @@ jobs:
         # If you would like to remove some projects temporarily, use .github/ci-control/ci-config.json instead.
         # Keep these in alphabetical order.
         project: ["activity"]
-        include:
-          - project: "compose-runtime"
-            project-root: "compose/runtime"
-          - project: "collection"
-            custom-os: "macos-latest"
-    runs-on: ${{ matrix.custom-os || matrix.os }}
+    runs-on: ${{ matrix.os }}
     needs: [setup, lint]
     env:
       artifact-id: ${{matrix.project}}
