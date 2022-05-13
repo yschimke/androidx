@@ -52,7 +52,7 @@ runs:
           caches/jars-9
           caches/transforms-3
     - name: "Modify Gradle Version"
-      uses: bash
+      shell: bash
       if: ${{ inputs.gradle-version != '' }}
       run: |
         python3 playground-common/set-gradle-version.py ${{ inputs.gradle-version }}
