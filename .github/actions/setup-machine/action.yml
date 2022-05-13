@@ -1,10 +1,5 @@
 name: 'setup-machine'
 description: 'Prepares the machine for build (setup gradle, jdk etc)'
-inputs:
-  gradle-version:
-    description: "Gradle version to use, defaults to the wrapper version"
-    required: false
-    default: ''
 runs:
   using: "composite"
   steps:
@@ -51,8 +46,26 @@ runs:
         gradle-home-cache-excludes: |
           caches/jars-9
           caches/transforms-3
+    steps:
+      - name: Decide Gradle Version
+        id: decide-gradle-version
+        uses: actions/github-script@v6
+        with:
+          result-encoding: string
+          script: |
+            // decide which gradle version to use.
+            // if there is an input, use that
+            if (github.event.inputs.gradle-version != null) {
+              return github.event.inputs.gradle-version
+            }
+            // if it is scheduled build, use release-nightly
+            if (github.event.schedule != null) {
+              return "release-nightly"
+            }
+            return ""
+
     - name: "Modify Gradle Version"
       shell: bash
-      if: ${{ inputs.gradle-version != '' }}
+      if: ${{ steps.decide-gradle-version.outputs.result != '' }}
       run: |
-        python3 playground-common/set-gradle-version.py ${{ inputs.gradle-version }}
+        python3 playground-common/set-gradle-version.py ${{ steps.decide-gradle-version.outputs.result }}

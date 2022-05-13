@@ -1,5 +1,14 @@
-# Script to update gradle version
-import urllib.request, json, fileinput, sys,pathlib, os
+#! /usr/bin/env python3
+# Script to update gradle version, used in CI to test new gradle versions
+# Must be called with one of values from https://services.gradle.org/versions
+# e.g. ./set-gradle-version.py release-nightly
+import fileinput
+import json
+import os
+import pathlib
+import sys
+import urllib.request
+
 if len(sys.argv) != 2:
     raise SystemExit('Must invoke with a gradle version like current, nightly etc')
 version=sys.argv[1]
@@ -14,5 +23,3 @@ with urllib.request.urlopen("https://services.gradle.org/versions/{}".format(ver
             print('distributionUrl={}'.format(downloadUrl.replace(":", "\:")))
         else:
             print(line, end='')
-        
-            

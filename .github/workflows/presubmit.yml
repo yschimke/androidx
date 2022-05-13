@@ -2,6 +2,9 @@ name: AndroidX Presubmits
 on:
   push:
   pull_request:
+  schedule:
+    #every day, 1:13 AM UTC for gradle release nightly builds
+    - cron: '13 1 * * *'
   workflow_dispatch:
     inputs:
       gradle-version:
@@ -59,8 +62,6 @@ jobs:
 
       - name: "Setup Machine"
         uses: ./.github/actions/setup-machine
-        with:
-          gradle-version: "nightly"
 
       - name: "Get changed files in push or pull_request"
         id: changed-files
