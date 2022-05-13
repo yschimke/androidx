@@ -54,7 +54,7 @@ runs:
         script: |
           // decide which gradle version to use.
           // if there is an input, use that
-          if (github.event.inputs.gradle-version != null) {
+          if (github.event.inputs?.gradle-version != null) {
             return github.event.inputs.gradle-version
           }
           // if it is scheduled build, use release-nightly
