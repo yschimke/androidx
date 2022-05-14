@@ -26,25 +26,25 @@ plugins {
 AndroidXComposePlugin.applyAndConfigureKotlinPlugin(project)
 
 dependencies {
-    kotlinPlugin(project(":compose:compiler:compiler"))
+    kotlinPlugin(projectOrArtifact(":compose:compiler:compiler"))
 
     if(!AndroidXComposePlugin.isMultiplatformEnabled(project)) {
-        api(project(":compose:foundation:foundation"))
-        api(project(":compose:ui:ui"))
-        api(project(":compose:ui:ui-text"))
-        api(project(":compose:runtime:runtime"))
+        api(projectOrArtifact(":compose:foundation:foundation"))
+        api(projectOrArtifact(":compose:ui:ui"))
+        api(projectOrArtifact(":compose:ui:ui-text"))
+        api(projectOrArtifact(":compose:runtime:runtime"))
 
         implementation(libs.kotlinStdlib)
-        implementation(project(":compose:foundation:foundation-layout"))
-        implementation(project(":profileinstaller:profileinstaller"))
+        implementation(projectOrArtifact(":compose:foundation:foundation-layout"))
+        implementation(projectOrArtifact(":profileinstaller:profileinstaller"))
 
         testImplementation(libs.testRules)
         testImplementation(libs.testRunner)
         testImplementation(libs.junit)
 
-        androidTestImplementation(project(":compose:ui:ui-test"))
-        androidTestImplementation(project(":compose:ui:ui-test-junit4"))
-        androidTestImplementation(project(":compose:test-utils"))
+        androidTestImplementation(projectOrArtifact(":compose:ui:ui-test"))
+        androidTestImplementation(projectOrArtifact(":compose:ui:ui-test-junit4"))
+        androidTestImplementation(projectOrArtifact(":compose:test-utils"))
         androidTestImplementation(libs.testRunner)
 
         samples(project(":wear:compose:compose-foundation-samples"))
@@ -64,13 +64,13 @@ if(AndroidXComposePlugin.isMultiplatformEnabled(project)) {
          */
         sourceSets {
             commonMain.dependencies {
-                api(project(":compose:foundation:foundation"))
-                api(project(":compose:ui:ui"))
-                api(project(":compose:ui:ui-text"))
-                api(project(":compose:runtime:runtime"))
+                api(projectOrArtifact(":compose:foundation:foundation"))
+                api(projectOrArtifact(":compose:ui:ui"))
+                api(projectOrArtifact(":compose:ui:ui-text"))
+                api(projectOrArtifact(":compose:runtime:runtime"))
 
                 implementation(libs.kotlinStdlib)
-                implementation(project(":compose:foundation:foundation-layout"))
+                implementation(projectOrArtifact(":compose:foundation:foundation-layout"))
             }
             jvmMain.dependencies {
                 implementation(libs.kotlinStdlib)
@@ -80,9 +80,9 @@ if(AndroidXComposePlugin.isMultiplatformEnabled(project)) {
                 implementation(kotlin("test-junit"))
             }
             androidAndroidTest.dependencies {
-                implementation(project(":compose:ui:ui-test"))
-                implementation(project(":compose:ui:ui-test-junit4"))
-                implementation(project(":compose:test-utils"))
+                implementation(projectOrArtifact(":compose:ui:ui-test"))
+                implementation(projectOrArtifact(":compose:ui:ui-test-junit4"))
+                implementation(projectOrArtifact(":compose:test-utils"))
                 implementation(libs.testRunner)
             }
         }

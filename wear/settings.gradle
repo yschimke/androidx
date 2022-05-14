@@ -1,0 +1,24 @@
+// see ../playground-common/README.md for details on how this works
+pluginManagement {
+    includeBuild "../playground-common/playground-plugin"
+}
+plugins {
+    id "playground"
+}
+
+rootProject.name = "wear-playground"
+
+playground {
+    setupPlayground("..")
+    selectProjectsFromAndroidX({ name ->
+        if (name.contains("benchmark")) return false
+        if (name.contains("integration-tests")) return false
+        if (name.startsWith(":wear:compose")) return true
+        if (name == ":internal-testutils-runtime") return true
+        // Transitive dependencies of internal-testutils-appcompat
+//        if (name.startsWith(":annotation:annotation-experimental")) return true
+        if (name == ":annotation:annotation-sampled") return true
+        if (isNeededForComposePlayground(name)) return true
+        return false
+    })
+}
