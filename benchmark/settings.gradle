@@ -1,0 +1,63 @@
+/*
+ * Copyright 2020 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+// see ../playground-common/README.md for details on how this works
+pluginManagement {
+    includeBuild "../playground-common/playground-plugin"
+}
+plugins {
+    id "playground"
+}
+
+rootProject.name = "benchmark-playground"
+
+playground {
+    setupPlayground("..")
+    selectProjectsFromAndroidX({ name ->
+        println(name)
+        if (name.startsWith(":benchmark")) return true
+        if (name.startsWith(":tracing")) return true
+        if (name.startsWith(":annotation")) return true
+        if (name == ":internal-testutils-runtime") return true
+        if (name == ":internal-testutils-ktx") return true
+        if (name == ":internal-testutils-truth") return true
+        if (name == ":internal-testutils-appcompat") return true
+        if (name == ":internal-testutils-espresso") return true
+        if (name == ":internal-testutils-macrobenchmark") return true
+        if (name == ":activity:activity") return true
+        if (name == ":activity:activity-ktx") return true
+        if (name == ":activity:activity-lint") return true
+        if (name.startsWith(":lifecycle") && !name.contains("integration-tests")) return true
+        if (name == ":appcompat:appcompat") return true
+        if (name == ":appcompat:appcompat-resources") return true
+        if (name == ":appcompat:appcompat-lint") return true
+        if (name == ":appcompat:appcompat-lint:integration-tests") return true
+        if (name == ":profileinstaller:profileinstaller") return true
+        if (name == ":recyclerview:recyclerview") return true
+        if (name == ":recyclerview:recyclerview-lint") return true
+        if (name == ":work:work-runtime") return true
+        if (name == ":work:work-runtime-ktx") return true
+        if (name == ":work:work-runtime-lint") return true
+        if (name == ":room:room-runtime") return true
+        if (name == ":room:room-runtime-lint") return true
+        if (name == ":room:room-common") return true
+        if (name == ":sqlite:sqlite-framework") return true
+        if (name == ":sqlite:sqlite") return true
+        if (isNeededForComposePlayground(name)) return true
+        return false
+    })
+}
+

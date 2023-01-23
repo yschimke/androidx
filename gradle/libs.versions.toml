@@ -54,7 +54,7 @@ paparazziNative = "2022.1.1-canary-f5f9f71"
 skiko = "0.7.7"
 sqldelight = "1.3.0"
 retrofit = "2.7.2"
-wire = "4.4.1"
+wire = "4.4.3"
 
 [libraries]
 androidAccessibilityFramework = { module = "com.google.android.apps.common.testing.accessibility.framework:accessibility-test-framework", version = { strictly = "2.1" } }

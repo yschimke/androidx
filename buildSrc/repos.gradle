@@ -57,7 +57,7 @@ def addMavenRepositories(RepositoryHandler handler) {
             artifact()
         }
     }
-    if (System.getenv("ALLOW_PUBLIC_REPOS") != null || System.getProperty("ALLOW_PUBLIC_REPOS") != null) {
+//    if (System.getenv("ALLOW_PUBLIC_REPOS") != null || System.getProperty("ALLOW_PUBLIC_REPOS") != null) {
         handler.mavenCentral()
         handler.google()
         handler.gradlePluginPortal()
@@ -65,7 +65,7 @@ def addMavenRepositories(RepositoryHandler handler) {
                url("https://maven.pkg.jetbrains.space/public/p/compose/dev")
         }
         handler.mavenLocal()
-    }
+//    }
     // Ordering appears to be important: b/229733266
     def androidPluginRepoOverride = System.getenv("GRADLE_PLUGIN_REPO")
     if (androidPluginRepoOverride != null) {
