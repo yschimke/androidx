@@ -61,8 +61,8 @@ creating a fork of the [androidx/androidx](https://github.com/androidx/androidx)
 
   ```bash
   # You could also add this to your .{bash|zsh}rc file.
-  export JAVA_HOME="location of JDK 21 directory"
-  export ANDROID_SDK_ROOT="location of the Android SDK directory"
+  export JAVA_HOME="/usr/lib/jvm/java-21-openjdk"
+  export ANDROID_SDK_ROOT="/home/yuri/Android/Sdk"
   ```
 
 ### Checkout and importing a project

@@ -35,12 +35,12 @@ playground {
                 ":compose:remote:remote-creation",
                 ":compose:remote:remote-creation-compose",
                 ":compose:remote:remote-creation-core",
-                ":compose:remote:remote-player-compose",
-                ":compose:remote:remote-player-compose-testutils",
-                ":compose:remote:remote-player-core",
-                ":compose:remote:remote-player-view",
-                ":compose:remote:remote-tooling-preview",
-                ":wear:compose:remote:remote-material3",
+//                ":compose:remote:remote-player-compose",
+//                ":compose:remote:remote-player-compose-testutils",
+//                ":compose:remote:remote-player-core",
+//                ":compose:remote:remote-player-view",
+//                ":compose:remote:remote-tooling-preview",
+//                ":wear:compose:remote:remote-material3",
         ]) return true
         return false
     })

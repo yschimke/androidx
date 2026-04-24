@@ -29,6 +29,19 @@ rootProject.name = "compose-runtime"
 playground {
     setupPlayground("../../..")
     selectProjectsFromAndroidX({ name ->
+        if (name in [
+                ":compose:remote:remote-core",
+                ":compose:remote:remote-core-testutils",
+                ":compose:remote:remote-creation",
+                ":compose:remote:remote-creation-compose",
+                ":compose:remote:remote-creation-core",
+               ":compose:remote:remote-player-compose",
+               ":compose:remote:remote-player-compose-testutils",
+               ":compose:remote:remote-player-core",
+               ":compose:remote:remote-player-view",
+               ":compose:remote:remote-tooling-preview",
+               ":wear:compose:remote:remote-material3",
+        ]) return true
         if (name == ":compose:runtime:runtime-tracing") return false
         if (name.startsWith(":compose:runtime")) return true
         return false
