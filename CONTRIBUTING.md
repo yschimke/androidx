@@ -13,6 +13,7 @@ You can start contributing to any of the following library groups from GitHub:
   - [AppCompat](https://developer.android.com/jetpack/androidx/releases/appcompat)
   - [Biometric](https://developer.android.com/training/sign-in/biometric-auth)
   - [Collection](https://developer.android.com/jetpack/androidx/releases/collection)
+  - [Compose Remote](https://developer.android.com/jetpack/androidx/releases/compose-remote)
   - [Compose Runtime](https://developer.android.com/jetpack/androidx/releases/compose-runtime)
   - [Core](https://developer.android.com/jetpack/androidx/releases/core)
   - [DataStore](https://developer.android.com/topic/libraries/architecture/datastore)
@@ -74,6 +75,7 @@ androidx
   -- appcompat
   -- biometric
   -- compose/compiler
+  -- compose/remote
   -- compose/runtime
   -- core
   -- datastore
