@@ -27,8 +27,10 @@ import androidx.wear.compose.material3.TimeTextDefaults
 import androidx.wear.compose.material3.curvedText
 import androidx.wear.compose.material3.timeTextCurvedText
 import androidx.wear.compose.material3.timeTextSeparator
+import androidx.wear.compose.ui.tooling.preview.WearPreviewLargeRound
 
 @Sampled
+@WearPreviewLargeRound
 @Composable
 fun TimeTextClockOnly() {
     // TimeText displays the current time by default.
@@ -36,6 +38,7 @@ fun TimeTextClockOnly() {
 }
 
 @Sampled
+@WearPreviewLargeRound
 @Composable
 fun TimeTextWithStatus() {
     val style = TimeTextDefaults.timeTextStyle()
@@ -49,6 +52,7 @@ fun TimeTextWithStatus() {
 }
 
 @Sampled
+@WearPreviewLargeRound
 @Composable
 fun TimeTextWithStatusEllipsized() {
     val style = TimeTextDefaults.timeTextStyle()

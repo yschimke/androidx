@@ -27,7 +27,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.wear.compose.foundation.lazy.TransformingLazyColumn
 import androidx.wear.compose.foundation.lazy.itemsIndexed
 import androidx.wear.compose.foundation.lazy.rememberTransformingLazyColumnState
@@ -46,9 +45,10 @@ import androidx.wear.compose.material3.SurfaceTransformation
 import androidx.wear.compose.material3.Text
 import androidx.wear.compose.material3.lazy.rememberTransformationSpec
 import androidx.wear.compose.material3.lazy.transformedHeight
+import androidx.wear.compose.ui.tooling.preview.WearPreviewLargeRound
 
 @Sampled
-@Preview
+@WearPreviewLargeRound
 @Composable
 fun TransformingLazyColumnButtonsSample() {
     val state = rememberTransformingLazyColumnState()
@@ -76,7 +76,7 @@ fun TransformingLazyColumnButtonsSample() {
 }
 
 @Sampled
-@Preview
+@WearPreviewLargeRound
 @Composable
 fun TransformingLazyColumnMinimumVerticalContentPaddingSample() {
     val transformationSpec = rememberTransformationSpec()

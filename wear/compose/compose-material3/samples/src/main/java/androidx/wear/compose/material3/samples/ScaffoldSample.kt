@@ -26,7 +26,6 @@ import androidx.compose.foundation.rememberOverscrollEffect
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.wear.compose.foundation.lazy.ScalingLazyColumn
 import androidx.wear.compose.foundation.lazy.TransformingLazyColumn
@@ -37,9 +36,10 @@ import androidx.wear.compose.material3.Button
 import androidx.wear.compose.material3.EdgeButton
 import androidx.wear.compose.material3.ScreenScaffold
 import androidx.wear.compose.material3.Text
+import androidx.wear.compose.ui.tooling.preview.WearPreviewLargeRound
 
-@Preview
 @Sampled
+@WearPreviewLargeRound
 @Composable
 fun ScaffoldSample() {
     // Declare just one [AppScaffold] per app such as in the activity.
@@ -66,8 +66,8 @@ fun ScaffoldSample() {
     }
 }
 
-@Preview
 @Sampled
+@WearPreviewLargeRound
 @Composable
 fun ScaffoldWithSLCEdgeButtonSample() {
     // Declare just one [AppScaffold] per app such as in the activity.
@@ -115,8 +115,8 @@ fun ScaffoldWithSLCEdgeButtonSample() {
     }
 }
 
-@Preview
 @Sampled
+@WearPreviewLargeRound
 @Composable
 fun ScaffoldWithTLCEdgeButtonSample() {
     // Declare just one [AppScaffold] per app such as in the activity.

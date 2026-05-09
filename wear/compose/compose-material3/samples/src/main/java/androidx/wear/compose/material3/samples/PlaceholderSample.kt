@@ -36,6 +36,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.wear.compose.material3.ButtonDefaults
 import androidx.wear.compose.material3.FilledTonalButton
@@ -52,6 +53,7 @@ import kotlinx.coroutines.delay
  * the content is going to be and it doesn't have cached data that can be shown.
  */
 @Sampled
+@Preview(showBackground = true, backgroundColor = 0xFF000000)
 @Composable
 fun ButtonWithIconAndLabelAndPlaceholders() {
     var labelText by remember { mutableStateOf("") }
@@ -103,6 +105,7 @@ fun ButtonWithIconAndLabelAndPlaceholders() {
  * while loading.
  */
 @Sampled
+@Preview(showBackground = true, backgroundColor = 0xFF000000)
 @Composable
 fun ButtonWithIconAndLabelCachedData() {
     var labelText by remember { mutableStateOf("Cached Data") }
@@ -159,6 +162,7 @@ fun ButtonWithIconAndLabelCachedData() {
  * placeholder and will not be visible.
  */
 @Sampled
+@Preview(showBackground = true, backgroundColor = 0xFF000000)
 @Composable
 fun TextPlaceholder() {
     var labelText by remember { mutableStateOf("") }

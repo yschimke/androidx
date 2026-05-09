@@ -38,6 +38,7 @@ import androidx.wear.compose.material3.PagerScaffoldDefaults
 import androidx.wear.compose.material3.Text
 import androidx.wear.compose.material3.VerticalPageIndicator
 import androidx.wear.compose.material3.VerticalPagerScaffold
+import androidx.wear.compose.ui.tooling.preview.WearPreviewLargeRound
 
 @Sampled
 @Composable
@@ -76,6 +77,7 @@ fun HorizontalPageIndicatorWithPagerSample(navigateBack: () -> Unit) {
 }
 
 @Sampled
+@WearPreviewLargeRound
 @Composable
 fun VerticalPageIndicatorWithPagerSample() {
     val pageCount = 9
@@ -105,4 +107,10 @@ fun VerticalPageIndicatorWithPagerSample() {
             }
         }
     }
+}
+
+@WearPreviewLargeRound
+@Composable
+internal fun HorizontalPageIndicatorWithPagerPreview() {
+    HorizontalPageIndicatorWithPagerSample(navigateBack = {})
 }

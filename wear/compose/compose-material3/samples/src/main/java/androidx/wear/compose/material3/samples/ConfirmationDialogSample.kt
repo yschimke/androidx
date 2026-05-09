@@ -38,8 +38,10 @@ import androidx.wear.compose.material3.SuccessConfirmationDialog
 import androidx.wear.compose.material3.Text
 import androidx.wear.compose.material3.confirmationDialogCurvedText
 import androidx.wear.compose.material3.samples.icons.FavoriteIcon
+import androidx.wear.compose.ui.tooling.preview.WearPreviewLargeRound
 
 @Sampled
+@WearPreviewLargeRound
 @Composable
 fun ConfirmationDialogSample() {
     var showConfirmation by remember { mutableStateOf(false) }
@@ -65,6 +67,7 @@ fun ConfirmationDialogSample() {
 }
 
 @Sampled
+@WearPreviewLargeRound
 @Composable
 fun LongTextConfirmationDialogSample() {
     var showConfirmation by remember { mutableStateOf(false) }
@@ -93,6 +96,7 @@ fun LongTextConfirmationDialogSample() {
 }
 
 @Sampled
+@WearPreviewLargeRound
 @Composable
 fun FailureConfirmationDialogSample() {
     var showConfirmation by remember { mutableStateOf(false) }
@@ -115,6 +119,7 @@ fun FailureConfirmationDialogSample() {
 }
 
 @Sampled
+@WearPreviewLargeRound
 @Composable
 fun FailureConfirmationDialogWithGenericFailureIconSample() {
     var showConfirmation by remember { mutableStateOf(false) }
@@ -138,6 +143,7 @@ fun FailureConfirmationDialogWithGenericFailureIconSample() {
 }
 
 @Sampled
+@WearPreviewLargeRound
 @Composable
 fun SuccessConfirmationDialogSample() {
     var showConfirmation by remember { mutableStateOf(false) }

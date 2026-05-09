@@ -34,11 +34,13 @@ import androidx.wear.compose.material3.DatePicker
 import androidx.wear.compose.material3.DatePickerType
 import androidx.wear.compose.material3.Icon
 import androidx.wear.compose.material3.Text
+import androidx.wear.compose.ui.tooling.preview.WearPreviewLargeRound
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 
 @Sampled
+@WearPreviewLargeRound
 @Composable
 fun DatePickerSample() {
     var showDatePicker by remember { mutableStateOf(true) }
@@ -67,6 +69,7 @@ fun DatePickerSample() {
 }
 
 @Sampled
+@WearPreviewLargeRound
 @Composable
 fun DatePickerYearMonthDaySample() {
     var showDatePicker by remember { mutableStateOf(true) }
@@ -98,6 +101,7 @@ fun DatePickerYearMonthDaySample() {
 }
 
 @Sampled
+@WearPreviewLargeRound
 @Composable
 fun DatePickerFutureOnlySample() {
     val currentDate = LocalDate.now()

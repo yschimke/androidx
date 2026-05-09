@@ -48,9 +48,9 @@ fun RemoteIconDefault() {
 
 @WearPreviewDevices
 @Composable
-private fun RemoteIconPreview(
+internal fun RemoteIconPreview(
     @PreviewParameter(ProfilePreviewParameterProvider::class) profile: Profile
-) = RemotePreview(profile = profile) { Container { RemoteIconDefault() } }
+) = RemotePreview(profile = profile) { Container8 { RemoteIconDefault() } }
 
 @Composable
 @RemoteComposable
@@ -63,9 +63,9 @@ fun RemoteIconFromResource() {
 
 @WearPreviewDevices
 @Composable
-private fun RemoteIconFromResourcePreview(
+internal fun RemoteIconFromResourcePreview(
     @PreviewParameter(ProfilePreviewParameterProvider::class) profile: Profile
-) = RemotePreview(profile = profile) { Container { RemoteIconFromResource() } }
+) = RemotePreview(profile = profile) { Container8 { RemoteIconFromResource() } }
 
 @Composable
 @RemoteComposable
@@ -76,13 +76,13 @@ fun RemoteIconColor() {
 
 @WearPreviewDevices
 @Composable
-private fun RemoteIconColorPreview(
+internal fun RemoteIconColorPreview(
     @PreviewParameter(ProfilePreviewParameterProvider::class) profile: Profile
-) = RemotePreview(profile = profile) { Container { RemoteIconColor() } }
+) = RemotePreview(profile = profile) { Container8 { RemoteIconColor() } }
 
 @Composable
 @RemoteComposable
-private fun Container(
+internal fun Container8(
     modifier: RemoteModifier = RemoteModifier.fillMaxSize(),
     content: @Composable @RemoteComposable () -> Unit,
 ) {

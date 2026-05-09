@@ -32,6 +32,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontVariation
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.wear.compose.material3.AnimatedText
@@ -41,6 +42,7 @@ import androidx.wear.compose.material3.rememberAnimatedTextFontRegistry
 import kotlinx.coroutines.launch
 
 @Sampled
+@Preview(showBackground = true, backgroundColor = 0xFF000000)
 @Composable
 fun AnimatedTextSample() {
     val scope = rememberCoroutineScope()
@@ -75,6 +77,7 @@ fun AnimatedTextSample() {
 }
 
 @Sampled
+@Preview(showBackground = true, backgroundColor = 0xFF000000)
 @Composable
 fun AnimatedTextSampleButtonResponse() {
     val scope = rememberCoroutineScope()
@@ -127,6 +130,7 @@ fun AnimatedTextSampleButtonResponse() {
 }
 
 @Sampled
+@Preview(showBackground = true, backgroundColor = 0xFF000000)
 @Composable
 fun AnimatedTextSampleSharedFontRegistry() {
     val animatedTextFontRegistry =

@@ -30,7 +30,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.CompositingStrategy.Companion.ModulateAlpha
 import androidx.compose.ui.graphics.GraphicsLayerScope
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.wear.compose.foundation.lazy.TransformingLazyColumn
 import androidx.wear.compose.foundation.lazy.TransformingLazyColumnItemScrollProgress
@@ -43,10 +42,11 @@ import androidx.wear.compose.material3.lazy.TransformationSpec
 import androidx.wear.compose.material3.lazy.TransformationVariableSpec
 import androidx.wear.compose.material3.lazy.rememberTransformationSpec
 import androidx.wear.compose.material3.lazy.transformedHeight
+import androidx.wear.compose.ui.tooling.preview.WearPreviewLargeRound
 
+@WearPreviewLargeRound
 @Composable
 @Sampled
-@Preview
 fun CustomTransformationSpecSample() {
     val transformationSpec = rememberTransformationSpec()
     val morphingTransformationSpec =
@@ -89,9 +89,9 @@ fun CustomTransformationSpecSample() {
     }
 }
 
+@WearPreviewLargeRound
 @Composable
 @Sampled
-@Preview
 fun CustomCompositingStrategyTransformationSpecSample() {
     val transformationSpec = rememberTransformationSpec()
 
@@ -142,9 +142,9 @@ fun CustomCompositingStrategyTransformationSpecSample() {
     }
 }
 
+@WearPreviewLargeRound
 @Composable
 @Sampled
-@Preview
 fun ResponsiveTransformationSpecButtonSample() {
     val transformationSpec =
         rememberTransformationSpec(
@@ -175,9 +175,9 @@ fun ResponsiveTransformationSpecButtonSample() {
     }
 }
 
+@WearPreviewLargeRound
 @Composable
 @Sampled
-@Preview
 fun TransformationSpecButtonRowSample() {
     // Use the spec derived from default small and large screen specs.
     val transformationSpec = rememberTransformationSpec()

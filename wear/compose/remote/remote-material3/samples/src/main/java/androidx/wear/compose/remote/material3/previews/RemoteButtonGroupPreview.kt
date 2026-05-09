@@ -59,9 +59,9 @@ fun RemoteButtonGroupThreeButtons() {
 
 @WearPreviewDevices
 @Composable
-private fun RemoteButtonGroupThreeButtonsPreview(
+internal fun RemoteButtonGroupThreeButtonsPreview(
     @PreviewParameter(ProfilePreviewParameterProvider::class) profile: Profile
-) = RemotePreview(profile = profile) { Container { RemoteButtonGroupThreeButtons() } }
+) = RemotePreview(profile = profile) { Container2 { RemoteButtonGroupThreeButtons() } }
 
 @Composable
 @RemoteComposable
@@ -74,13 +74,13 @@ fun RemoteButtonGroupTwoButtons() {
 
 @WearPreviewDevices
 @Composable
-private fun RemoteButtonGroupTwoButtonsPreview(
+internal fun RemoteButtonGroupTwoButtonsPreview(
     @PreviewParameter(ProfilePreviewParameterProvider::class) profile: Profile
-) = RemotePreview(profile = profile) { Container { RemoteButtonGroupTwoButtons() } }
+) = RemotePreview(profile = profile) { Container2 { RemoteButtonGroupTwoButtons() } }
 
 @Composable
 @RemoteComposable
-private fun Button(imageVector: ImageVector, modifier: RemoteModifier) {
+internal fun Button(imageVector: ImageVector, modifier: RemoteModifier) {
     RemoteIconButton(
         testAction,
         modifier = modifier.widthIn(RemoteButtonGroupDefaults.MinWidth),
@@ -94,13 +94,13 @@ private fun Button(imageVector: ImageVector, modifier: RemoteModifier) {
 
 @Composable
 @RemoteComposable
-private fun Spacer() {
+internal fun Spacer() {
     RemoteBox(RemoteModifier.size(RemoteButtonGroupDefaults.Spacing))
 }
 
 @Composable
 @RemoteComposable
-private fun Container(
+internal fun Container2(
     modifier: RemoteModifier = RemoteModifier.fillMaxSize(),
     content: @Composable @RemoteComposable () -> Unit,
 ) {

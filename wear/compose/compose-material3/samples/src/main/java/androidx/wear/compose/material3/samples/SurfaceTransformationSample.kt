@@ -31,7 +31,6 @@ import androidx.compose.ui.draw.paint
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.painter.ColorPainter
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.wear.compose.foundation.lazy.TransformingLazyColumn
 import androidx.wear.compose.material3.Button
@@ -42,9 +41,10 @@ import androidx.wear.compose.material3.lazy.ResponsiveTransformationSpec
 import androidx.wear.compose.material3.lazy.TransformationVariableSpec
 import androidx.wear.compose.material3.lazy.rememberTransformationSpec
 import androidx.wear.compose.material3.lazy.transformedHeight
+import androidx.wear.compose.ui.tooling.preview.WearPreviewLargeRound
 
 @Sampled
-@Preview
+@WearPreviewLargeRound
 @Composable
 fun SurfaceTransformationOnCustomComponent() {
     @Composable
@@ -87,7 +87,7 @@ fun SurfaceTransformationOnCustomComponent() {
 }
 
 @Sampled
-@Preview
+@WearPreviewLargeRound
 @Composable
 fun SurfaceTransformationButtonSample() {
     val transformationSpec =
@@ -117,7 +117,7 @@ fun SurfaceTransformationButtonSample() {
 }
 
 @Sampled
-@Preview
+@WearPreviewLargeRound
 @Composable
 fun SurfaceTransformationCardSample() {
     val transformationSpec = rememberTransformationSpec()

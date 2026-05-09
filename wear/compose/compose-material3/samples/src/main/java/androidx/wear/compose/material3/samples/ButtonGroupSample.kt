@@ -30,12 +30,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.wear.compose.material3.Button
 import androidx.wear.compose.material3.ButtonGroup
 import androidx.wear.compose.material3.Text
 
 @Sampled
+@Preview
 @Composable
 fun ButtonGroupSample() {
     val interactionSource1 = remember { MutableInteractionSource() }
@@ -62,6 +64,7 @@ fun ButtonGroupSample() {
 }
 
 @Sampled
+@Preview
 @Composable
 fun ButtonGroupThreeButtonsSample() {
     val interactionSource1 = remember { MutableInteractionSource() }

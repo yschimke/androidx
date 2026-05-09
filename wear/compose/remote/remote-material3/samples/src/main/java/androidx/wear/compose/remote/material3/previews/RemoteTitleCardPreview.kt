@@ -38,19 +38,19 @@ import androidx.wear.compose.ui.tooling.preview.WearPreviewDevices
 @Composable
 fun RemoteTitleCardPreview(
     @PreviewParameter(ProfilePreviewParameterProvider::class) profile: Profile
-) = RemotePreview(profile = profile) { Container { RemoteTitleCardDefault() } }
+) = RemotePreview(profile = profile) { Container12 { RemoteTitleCardDefault() } }
 
 @WearPreviewDevices
 @Composable
 fun RemoteTitleCardWithTitleSubtitlePreview(
     @PreviewParameter(ProfilePreviewParameterProvider::class) profile: Profile
-) = RemotePreview(profile = profile) { Container { RemoteTitleCardWithTitleSubtitle() } }
+) = RemotePreview(profile = profile) { Container12 { RemoteTitleCardWithTitleSubtitle() } }
 
 @WearPreviewDevices
 @Composable
 fun RemoteTitleCardWithTitleTimePreview(
     @PreviewParameter(ProfilePreviewParameterProvider::class) profile: Profile
-) = RemotePreview(profile = profile) { Container { RemoteTitleCardWithTitleTime() } }
+) = RemotePreview(profile = profile) { Container12 { RemoteTitleCardWithTitleTime() } }
 
 @Composable
 @RemoteComposable
@@ -87,7 +87,7 @@ fun RemoteTitleCardWithTitleTime() {
 
 @Composable
 @RemoteComposable
-private fun Container(
+internal fun Container12(
     modifier: RemoteModifier = RemoteModifier.fillMaxSize().padding(16.rdp),
     content: @Composable @RemoteComposable () -> Unit,
 ) {

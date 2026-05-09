@@ -34,11 +34,13 @@ import androidx.wear.compose.material3.Icon
 import androidx.wear.compose.material3.Text
 import androidx.wear.compose.material3.TimePicker
 import androidx.wear.compose.material3.TimePickerType
+import androidx.wear.compose.ui.tooling.preview.WearPreviewLargeRound
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 
 @Sampled
+@WearPreviewLargeRound
 @Composable
 fun TimePickerSample() {
     var showTimePicker by remember { mutableStateOf(true) }
@@ -68,6 +70,7 @@ fun TimePickerSample() {
 }
 
 @Sampled
+@WearPreviewLargeRound
 @Composable
 fun TimePickerWithMinutesAndSecondsSample() {
     var showTimePicker by remember { mutableStateOf(true) }
@@ -95,6 +98,7 @@ fun TimePickerWithMinutesAndSecondsSample() {
 }
 
 @Sampled
+@WearPreviewLargeRound
 @Composable
 fun TimePickerWithSecondsSample() {
     var showTimePicker by remember { mutableStateOf(true) }
@@ -122,6 +126,7 @@ fun TimePickerWithSecondsSample() {
 }
 
 @Sampled
+@WearPreviewLargeRound
 @Composable
 fun TimePickerWith12HourClockSample() {
     var showTimePicker by remember { mutableStateOf(true) }

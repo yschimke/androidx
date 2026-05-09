@@ -29,16 +29,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.wear.compose.foundation.lazy.ScalingLazyColumn
 import androidx.wear.compose.foundation.lazy.TransformingLazyColumn
 import androidx.wear.compose.foundation.lazy.rememberScalingLazyListState
 import androidx.wear.compose.foundation.lazy.rememberTransformingLazyColumnState
 import androidx.wear.compose.material3.ScrollIndicator
 import androidx.wear.compose.material3.Text
+import androidx.wear.compose.ui.tooling.preview.WearPreviewLargeRound
 
 @Sampled
-@Preview
+@WearPreviewLargeRound
 @Composable
 fun ScrollIndicatorWithTLCSample() {
     val scrollState = rememberTransformingLazyColumnState()
@@ -51,7 +51,7 @@ fun ScrollIndicatorWithTLCSample() {
 }
 
 @Sampled
-@Preview
+@WearPreviewLargeRound
 @Composable
 fun ScrollIndicatorWithSLCSample() {
     val scrollState = rememberScalingLazyListState()
@@ -64,7 +64,7 @@ fun ScrollIndicatorWithSLCSample() {
 }
 
 @Sampled
-@Preview
+@WearPreviewLargeRound
 @Composable
 fun ScrollIndicatorWithLCSample() {
     val scrollState = rememberLazyListState()
@@ -81,7 +81,7 @@ fun ScrollIndicatorWithLCSample() {
 }
 
 @Sampled
-@Preview
+@WearPreviewLargeRound
 @Composable
 fun ScrollIndicatorWithColumnSample() {
     val scrollState = rememberScrollState()

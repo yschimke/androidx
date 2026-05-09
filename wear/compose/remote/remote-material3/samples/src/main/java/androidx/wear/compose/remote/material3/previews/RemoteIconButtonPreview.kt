@@ -50,9 +50,9 @@ fun RemoteIconButtonEnabled() {
 
 @WearPreviewDevices
 @Composable
-private fun RemoteIconButtonEnabledPreview(
+internal fun RemoteIconButtonEnabledPreview(
     @PreviewParameter(ProfilePreviewParameterProvider::class) profile: Profile
-) = RemotePreview(profile = profile) { Container { RemoteIconButtonEnabled() } }
+) = RemotePreview(profile = profile) { Container7 { RemoteIconButtonEnabled() } }
 
 @Composable
 @RemoteComposable
@@ -64,9 +64,9 @@ fun RemoteIconButtonTonal() {
 
 @WearPreviewDevices
 @Composable
-private fun RemoteIconButtonTonalPreview(
+internal fun RemoteIconButtonTonalPreview(
     @PreviewParameter(ProfilePreviewParameterProvider::class) profile: Profile
-) = RemotePreview(profile = profile) { Container { RemoteIconButtonTonal() } }
+) = RemotePreview(profile = profile) { Container7 { RemoteIconButtonTonal() } }
 
 @Composable
 @RemoteComposable
@@ -84,9 +84,9 @@ fun RemoteIconButtonOutlined() {
 
 @WearPreviewDevices
 @Composable
-private fun RemoteIconButtonOutlinedPreview(
+internal fun RemoteIconButtonOutlinedPreview(
     @PreviewParameter(ProfilePreviewParameterProvider::class) profile: Profile
-) = RemotePreview(profile = profile) { Container { RemoteIconButtonOutlined() } }
+) = RemotePreview(profile = profile) { Container7 { RemoteIconButtonOutlined() } }
 
 private val tonalColors
     @Composable
@@ -113,7 +113,7 @@ private val outlinedColors
 
 @Composable
 @RemoteComposable
-private fun Container(
+internal fun Container7(
     modifier: RemoteModifier = RemoteModifier.fillMaxSize(),
     content: @Composable @RemoteComposable () -> Unit,
 ) {

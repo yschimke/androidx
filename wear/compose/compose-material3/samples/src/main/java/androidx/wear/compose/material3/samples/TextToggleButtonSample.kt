@@ -23,6 +23,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.wear.compose.material3.Text
 import androidx.wear.compose.material3.TextButtonDefaults
 import androidx.wear.compose.material3.TextToggleButton
@@ -30,6 +31,7 @@ import androidx.wear.compose.material3.TextToggleButtonDefaults
 import androidx.wear.compose.material3.touchTargetAwareSize
 
 @Sampled
+@Preview
 @Composable
 fun TextToggleButtonSample() {
     var checked by remember { mutableStateOf(true) }
@@ -43,6 +45,7 @@ fun TextToggleButtonSample() {
 }
 
 @Sampled
+@Preview
 @Composable
 fun TextToggleButtonVariantSample() {
     var checked by remember { mutableStateOf(true) }
@@ -56,6 +59,7 @@ fun TextToggleButtonVariantSample() {
 }
 
 @Sampled
+@Preview
 @Composable
 fun LargeTextToggleButtonSample() {
     var checked by remember { mutableStateOf(true) }

@@ -38,6 +38,7 @@ import androidx.compose.ui.semantics.onClick
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.wear.compose.material3.Button
 import androidx.wear.compose.material3.ButtonDefaults
 import androidx.wear.compose.material3.ChildButton
@@ -47,15 +48,19 @@ import androidx.wear.compose.material3.Icon
 import androidx.wear.compose.material3.OutlinedButton
 import androidx.wear.compose.material3.Text
 
+@Preview
 @Sampled
 @Composable
-fun SimpleButtonSample(modifier: Modifier = Modifier) {
+fun SimpleButtonSample() {
+    val modifier = Modifier
     Button(onClick = { /* Do something */ }, label = { Text("Simple Button") }, modifier = modifier)
 }
 
+@Preview
 @Sampled
 @Composable
-fun ButtonSample(modifier: Modifier = Modifier.fillMaxWidth()) {
+fun ButtonSample() {
+    val modifier = Modifier.fillMaxWidth()
     Button(
         onClick = { /* Do something */ },
         label = { Text("Button") },
@@ -73,7 +78,8 @@ fun ButtonSample(modifier: Modifier = Modifier.fillMaxWidth()) {
 
 @Sampled
 @Composable
-fun ButtonLargeIconSample(modifier: Modifier = Modifier.fillMaxWidth(), enabled: Boolean = true) {
+fun ButtonLargeIconSample(enabled: Boolean = true) {
+    val modifier = Modifier.fillMaxWidth()
     // When customising the icon size, it is recommended to also specify
     // the associated content padding
     Button(
@@ -95,10 +101,8 @@ fun ButtonLargeIconSample(modifier: Modifier = Modifier.fillMaxWidth(), enabled:
 
 @Sampled
 @Composable
-fun ButtonExtraLargeIconSample(
-    modifier: Modifier = Modifier.fillMaxWidth(),
-    enabled: Boolean = true,
-) {
+fun ButtonExtraLargeIconSample(enabled: Boolean = true) {
+    val modifier = Modifier.fillMaxWidth()
     // When customising the icon size, it is recommended to also specify
     // the associated content padding
     Button(
@@ -118,9 +122,36 @@ fun ButtonExtraLargeIconSample(
     )
 }
 
+@Preview
+@Composable
+internal fun ButtonLargeIconEnabledPreview() {
+    ButtonLargeIconSample(enabled = true)
+}
+
+@Preview
+@Composable
+internal fun ButtonLargeIconDisabledPreview() {
+    ButtonLargeIconSample(enabled = false)
+}
+
+@Preview
+@Composable
+internal fun ButtonExtraLargeIconEnabledPreview() {
+    ButtonExtraLargeIconSample(enabled = true)
+}
+
+@Preview
+@Composable
+internal fun ButtonExtraLargeIconDisabledPreview() {
+    ButtonExtraLargeIconSample(enabled = false)
+}
+
+@Preview
 @Sampled
 @Composable
-fun ButtonWithImageSample(modifier: Modifier = Modifier.fillMaxWidth(), enabled: Boolean = true) {
+fun ButtonWithImageSample() {
+    val modifier = Modifier.fillMaxWidth()
+    val enabled = true
     Button(
         onClick = { /* Do something */ },
         containerPainter =
@@ -140,9 +171,11 @@ fun ButtonWithImageSample(modifier: Modifier = Modifier.fillMaxWidth(), enabled:
     )
 }
 
+@Preview
 @Sampled
 @Composable
-fun SimpleFilledTonalButtonSample(modifier: Modifier = Modifier.fillMaxWidth()) {
+fun SimpleFilledTonalButtonSample() {
+    val modifier = Modifier.fillMaxWidth()
     FilledTonalButton(
         onClick = { /* Do something */ },
         label = { Text("Filled Tonal Button") },
@@ -150,9 +183,11 @@ fun SimpleFilledTonalButtonSample(modifier: Modifier = Modifier.fillMaxWidth()) 
     )
 }
 
+@Preview
 @Sampled
 @Composable
-fun FilledTonalButtonSample(modifier: Modifier = Modifier.fillMaxWidth()) {
+fun FilledTonalButtonSample() {
+    val modifier = Modifier.fillMaxWidth()
     FilledTonalButton(
         onClick = { /* Do something */ },
         label = { Text("Filled Tonal Button") },
@@ -168,9 +203,11 @@ fun FilledTonalButtonSample(modifier: Modifier = Modifier.fillMaxWidth()) {
     )
 }
 
+@Preview
 @Sampled
 @Composable
-fun SimpleFilledVariantButtonSample(modifier: Modifier = Modifier.fillMaxWidth()) {
+fun SimpleFilledVariantButtonSample() {
+    val modifier = Modifier.fillMaxWidth()
     Button(
         onClick = { /* Do something */ },
         colors = ButtonDefaults.filledVariantButtonColors(),
@@ -179,9 +216,11 @@ fun SimpleFilledVariantButtonSample(modifier: Modifier = Modifier.fillMaxWidth()
     )
 }
 
+@Preview
 @Sampled
 @Composable
-fun FilledVariantButtonSample(modifier: Modifier = Modifier.fillMaxWidth()) {
+fun FilledVariantButtonSample() {
+    val modifier = Modifier.fillMaxWidth()
     Button(
         onClick = { /* Do something */ },
         colors = ButtonDefaults.filledVariantButtonColors(),
@@ -198,9 +237,11 @@ fun FilledVariantButtonSample(modifier: Modifier = Modifier.fillMaxWidth()) {
     )
 }
 
+@Preview
 @Sampled
 @Composable
-fun SimpleOutlinedButtonSample(modifier: Modifier = Modifier.fillMaxWidth()) {
+fun SimpleOutlinedButtonSample() {
+    val modifier = Modifier.fillMaxWidth()
     OutlinedButton(
         onClick = { /* Do something */ },
         label = { Text("Outlined Button") },
@@ -208,9 +249,11 @@ fun SimpleOutlinedButtonSample(modifier: Modifier = Modifier.fillMaxWidth()) {
     )
 }
 
+@Preview
 @Sampled
 @Composable
-fun OutlinedButtonSample(modifier: Modifier = Modifier.fillMaxWidth()) {
+fun OutlinedButtonSample() {
+    val modifier = Modifier.fillMaxWidth()
     OutlinedButton(
         onClick = { /* Do something */ },
         label = { Text("Outlined Button") },
@@ -226,9 +269,11 @@ fun OutlinedButtonSample(modifier: Modifier = Modifier.fillMaxWidth()) {
     )
 }
 
+@Preview
 @Sampled
 @Composable
-fun SimpleChildButtonSample(modifier: Modifier = Modifier.fillMaxWidth()) {
+fun SimpleChildButtonSample() {
+    val modifier = Modifier.fillMaxWidth()
     ChildButton(
         onClick = { /* Do something */ },
         label = {
@@ -238,9 +283,11 @@ fun SimpleChildButtonSample(modifier: Modifier = Modifier.fillMaxWidth()) {
     )
 }
 
+@Preview
 @Sampled
 @Composable
-fun ChildButtonSample(modifier: Modifier = Modifier.fillMaxWidth()) {
+fun ChildButtonSample() {
+    val modifier = Modifier.fillMaxWidth()
     ChildButton(
         onClick = { /* Do something */ },
         label = { Text("Child Button") },
@@ -256,9 +303,11 @@ fun ChildButtonSample(modifier: Modifier = Modifier.fillMaxWidth()) {
     )
 }
 
+@Preview
 @Sampled
 @Composable
-fun CompactButtonSample(modifier: Modifier = Modifier) {
+fun CompactButtonSample() {
+    val modifier = Modifier
     CompactButton(
         onClick = { /* Do something */ },
         icon = {
@@ -295,9 +344,11 @@ fun CompactButtonWithOnLongClickSample(
     )
 }
 
+@Preview
 @Sampled
 @Composable
-fun FilledTonalCompactButtonSample(modifier: Modifier = Modifier) {
+fun FilledTonalCompactButtonSample() {
+    val modifier = Modifier
     CompactButton(
         onClick = { /* Do something */ },
         icon = {
@@ -314,9 +365,11 @@ fun FilledTonalCompactButtonSample(modifier: Modifier = Modifier) {
     }
 }
 
+@Preview
 @Sampled
 @Composable
-fun OutlinedCompactButtonSample(modifier: Modifier = Modifier) {
+fun OutlinedCompactButtonSample() {
+    val modifier = Modifier
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         var expanded by remember { mutableStateOf(false) }
         if (expanded) {
@@ -352,4 +405,10 @@ fun OutlinedCompactButtonSample(modifier: Modifier = Modifier) {
             }
         }
     }
+}
+
+@Preview
+@Composable
+internal fun CompactButtonWithOnLongClickPreview() {
+    CompactButtonWithOnLongClickSample(onClickHandler = {}, onLongClickHandler = {})
 }

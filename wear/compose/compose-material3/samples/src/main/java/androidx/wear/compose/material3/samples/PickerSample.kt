@@ -32,9 +32,11 @@ import androidx.wear.compose.material3.Button
 import androidx.wear.compose.material3.Picker
 import androidx.wear.compose.material3.Text
 import androidx.wear.compose.material3.rememberPickerState
+import androidx.wear.compose.ui.tooling.preview.WearPreviewLargeRound
 import kotlinx.coroutines.launch
 
 @Sampled
+@WearPreviewLargeRound
 @Composable
 fun SimplePicker() {
     val items = listOf("One", "Two", "Three", "Four", "Five")
@@ -66,6 +68,7 @@ fun SimplePicker() {
 }
 
 @Sampled
+@WearPreviewLargeRound
 @Composable
 fun PickerScrollToOption() {
     val coroutineScope = rememberCoroutineScope()
@@ -83,6 +86,7 @@ fun PickerScrollToOption() {
 }
 
 @Sampled
+@WearPreviewLargeRound
 @Composable
 fun PickerAnimateScrollToOption() {
     val coroutineScope = rememberCoroutineScope()

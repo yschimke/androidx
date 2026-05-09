@@ -81,11 +81,11 @@ fun RemoteTextFontScaleComparisonPreview() {
 }
 
 @Composable
-private fun RowScope.RCText() {
+internal fun RowScope.RCText() {
     @Suppress("COMPOSE_APPLIER_CALL_MISMATCH") // b/481422057
     Box(modifier = Modifier.weight(1f)) {
         RemotePreview {
-            Container {
+            Container10 {
                 val state = LocalRemoteComposeCreationState.current
                 val density = LocalDensity.current
                 state.remoteDensity =
@@ -101,7 +101,7 @@ private fun RowScope.RCText() {
 }
 
 @Composable
-private fun RowScope.ComposeText() {
+internal fun RowScope.ComposeText() {
     Column(
         modifier = Modifier.weight(1f).align(Alignment.CenterVertically),
         horizontalAlignment = Alignment.End,
@@ -115,7 +115,7 @@ private fun RowScope.ComposeText() {
 
 @Composable
 @RemoteComposable
-private fun Container(
+internal fun Container10(
     modifier: RemoteModifier = RemoteModifier.fillMaxSize(),
     content: @Composable @RemoteComposable () -> Unit,
 ) {

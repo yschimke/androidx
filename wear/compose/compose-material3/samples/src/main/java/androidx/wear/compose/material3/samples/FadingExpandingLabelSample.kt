@@ -29,10 +29,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.wear.compose.material3.Button
 import androidx.wear.compose.material3.FadingExpandingLabel
 
 @Sampled
+@Preview
 @Composable
 fun FadingExpandingLabelButtonSample() {
     var text by remember { mutableStateOf("Text Text Text Text") }

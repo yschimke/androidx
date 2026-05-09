@@ -37,7 +37,6 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.semantics.CustomAccessibilityAction
 import androidx.compose.ui.semantics.customActions
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.wear.compose.foundation.lazy.ScalingLazyColumn
 import androidx.wear.compose.foundation.lazy.TransformingLazyColumn
@@ -55,8 +54,10 @@ import androidx.wear.compose.material3.TitleCard
 import androidx.wear.compose.material3.lazy.rememberTransformationSpec
 import androidx.wear.compose.material3.lazy.transformedHeight
 import androidx.wear.compose.material3.rememberRevealState
+import androidx.wear.compose.ui.tooling.preview.WearPreviewLargeRound
 import kotlinx.coroutines.launch
 
+@WearPreviewLargeRound
 @Composable
 @Sampled
 fun SwipeToRevealSample() {
@@ -106,6 +107,7 @@ fun SwipeToRevealSample() {
     }
 }
 
+@WearPreviewLargeRound
 @Composable
 @Sampled
 fun SwipeToRevealSingleActionCardSample() {
@@ -149,7 +151,7 @@ fun SwipeToRevealSingleActionCardSample() {
     }
 }
 
-@Preview
+@WearPreviewLargeRound
 @Composable
 @Sampled
 fun SwipeToRevealWithTransformingLazyColumnSample() {
@@ -229,7 +231,7 @@ fun SwipeToRevealWithTransformingLazyColumnSample() {
     }
 }
 
-@Preview
+@WearPreviewLargeRound
 @Composable
 @Sampled
 fun SwipeToRevealWithScalingLazyColumnSample() {
@@ -306,7 +308,7 @@ fun SwipeToRevealWithScalingLazyColumnSample() {
     }
 }
 
-@Preview
+@WearPreviewLargeRound
 @Composable
 @Sampled
 fun SwipeToRevealNoPartialRevealWithScalingLazyColumnSample() {

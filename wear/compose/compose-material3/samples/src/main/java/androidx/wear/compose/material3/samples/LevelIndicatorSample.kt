@@ -35,8 +35,10 @@ import androidx.wear.compose.material3.LevelIndicator
 import androidx.wear.compose.material3.StepperDefaults
 import androidx.wear.compose.material3.samples.icons.VolumeDownIcon
 import androidx.wear.compose.material3.samples.icons.VolumeUpIcon
+import androidx.wear.compose.ui.tooling.preview.WearPreviewLargeRound
 
 @Sampled
+@WearPreviewLargeRound
 @Composable
 fun LevelIndicatorSample() {
     var value by remember { mutableFloatStateOf(0.5f) }

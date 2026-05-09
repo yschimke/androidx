@@ -22,10 +22,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.wear.compose.material3.Slider
 import androidx.wear.compose.material3.SliderDefaults
 
 @Sampled
+@Preview(showBackground = true, backgroundColor = 0xFF000000)
 @Composable
 fun SliderSample() {
     var value by remember { mutableStateOf(4.5f) }
@@ -39,6 +41,7 @@ fun SliderSample() {
 }
 
 @Sampled
+@Preview(showBackground = true, backgroundColor = 0xFF000000)
 @Composable
 fun ChangedSliderSample() {
     val initialValue = 4.5f
@@ -59,6 +62,7 @@ fun ChangedSliderSample() {
 }
 
 @Sampled
+@Preview(showBackground = true, backgroundColor = 0xFF000000)
 @Composable
 fun SliderSegmentedSample() {
     var value by remember { mutableStateOf(2f) }
@@ -72,6 +76,7 @@ fun SliderSegmentedSample() {
 }
 
 @Sampled
+@Preview(showBackground = true, backgroundColor = 0xFF000000)
 @Composable
 fun SliderWithIntegerSample() {
     var value by remember { mutableStateOf(4) }

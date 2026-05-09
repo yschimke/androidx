@@ -20,17 +20,20 @@ import androidx.annotation.Sampled
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.wear.compose.material3.ButtonDefaults
 import androidx.wear.compose.material3.Text
 import androidx.wear.compose.material3.TextButton
 import androidx.wear.compose.material3.TextButtonDefaults
 
+@Preview
 @Composable
 @Sampled
 fun TextButtonSample() {
     TextButton(onClick = { /* Do something */ }) { Text(text = "ABC") }
 }
 
+@Preview
 @Composable
 @Sampled
 fun FilledTextButtonSample() {
@@ -42,6 +45,7 @@ fun FilledTextButtonSample() {
     }
 }
 
+@Preview
 @Composable
 @Sampled
 fun FilledVariantTextButtonSample() {
@@ -53,6 +57,7 @@ fun FilledVariantTextButtonSample() {
     }
 }
 
+@Preview
 @Composable
 @Sampled
 fun LargeFilledTonalTextButtonSample() {
@@ -65,6 +70,7 @@ fun LargeFilledTonalTextButtonSample() {
     }
 }
 
+@Preview
 @Composable
 @Sampled
 fun FilledTonalTextButtonSample() {
@@ -76,6 +82,7 @@ fun FilledTonalTextButtonSample() {
     }
 }
 
+@Preview
 @Composable
 @Sampled
 fun OutlinedTextButtonSample() {
@@ -100,10 +107,17 @@ fun TextButtonWithOnLongClickSample(onLongClick: () -> Unit) {
     }
 }
 
+@Preview
 @Composable
 @Sampled
 fun TextButtonWithCornerAnimationSample() {
     TextButton(onClick = { /* Do something */ }, shapes = TextButtonDefaults.animatedShapes()) {
         Text(text = "ABC")
     }
+}
+
+@Preview
+@Composable
+internal fun TextButtonWithOnLongClickPreview() {
+    TextButtonWithOnLongClickSample(onLongClick = {})
 }

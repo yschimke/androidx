@@ -53,14 +53,15 @@ import androidx.wear.compose.material3.OutlinedCard
 import androidx.wear.compose.material3.Text
 import androidx.wear.compose.material3.TitleCard
 
-@Preview
 @Sampled
+@Preview
 @Composable
 fun CardSample() {
     Card(onClick = { /* Do something */ }) { Text("Card") }
 }
 
 @Sampled
+@Preview
 @Composable
 fun NonClickableCardSample() {
     Card { Text("Non Clickable Card") }
@@ -79,6 +80,7 @@ fun CardWithOnLongClickSample(onLongClickHandler: () -> Unit) {
 }
 
 @Sampled
+@Preview
 @Composable
 fun AppCardSample() {
     AppCard(
@@ -92,6 +94,7 @@ fun AppCardSample() {
 }
 
 @Sampled
+@Preview
 @Composable
 fun NonClickableAppCardSample() {
     AppCard(
@@ -104,6 +107,7 @@ fun NonClickableAppCardSample() {
 }
 
 @Sampled
+@Preview
 @Composable
 fun AppCardWithIconSample() {
     AppCard(
@@ -127,6 +131,7 @@ fun AppCardWithIconSample() {
 }
 
 @Sampled
+@Preview
 @Composable
 fun AppCardWithImageSample() {
     val configuration = LocalConfiguration.current
@@ -164,6 +169,7 @@ fun AppCardWithImageSample() {
 }
 
 @Sampled
+@Preview
 @Composable
 fun TitleCardSample() {
     TitleCard(
@@ -176,6 +182,7 @@ fun TitleCardSample() {
 }
 
 @Sampled
+@Preview
 @Composable
 fun NonClickableTitleCardSample() {
     TitleCard(title = { Text("Title card") }, time = { Text("Now") }) {
@@ -184,6 +191,7 @@ fun NonClickableTitleCardSample() {
 }
 
 @Sampled
+@Preview
 @Composable
 fun TitleCardWithSubtitleAndTimeSample() {
     TitleCard(
@@ -194,8 +202,8 @@ fun TitleCardWithSubtitleAndTimeSample() {
     )
 }
 
-@Preview
 @Sampled
+@Preview
 @Composable
 fun TitleCardWithMultipleImagesSample() {
     TitleCard(
@@ -232,6 +240,7 @@ fun TitleCardWithMultipleImagesSample() {
 }
 
 @Sampled
+@Preview
 @Composable
 fun TitleCardWithImageWithTimeAndTitleSample() {
     TitleCard(
@@ -249,6 +258,7 @@ fun TitleCardWithImageWithTimeAndTitleSample() {
 }
 
 @Sampled
+@Preview
 @Composable
 fun NonClickableTitleCardWithImageWithTimeAndTitleSample() {
     TitleCard(
@@ -265,18 +275,21 @@ fun NonClickableTitleCardWithImageWithTimeAndTitleSample() {
 }
 
 @Sampled
+@Preview
 @Composable
 fun OutlinedCardSample() {
     OutlinedCard(onClick = { /* Do something */ }) { Text("Outlined card") }
 }
 
 @Sampled
+@Preview
 @Composable
 fun NonClickableOutlinedCardSample() {
     OutlinedCard { Text("Non-clickable outlined card") }
 }
 
 @Sampled
+@Preview
 @Composable
 fun ImageCardSample() {
     Card(
@@ -289,6 +302,7 @@ fun ImageCardSample() {
 }
 
 @Sampled
+@Preview
 @Composable
 fun NonClickableImageCardSample() {
     Card(
@@ -300,6 +314,7 @@ fun NonClickableImageCardSample() {
 }
 
 @Sampled
+@Preview
 @Composable
 fun OutlinedAppCardSample() {
     AppCard(
@@ -322,6 +337,7 @@ fun OutlinedAppCardSample() {
 }
 
 @Sampled
+@Preview
 @Composable
 fun OutlinedTitleCardSample() {
     TitleCard(
@@ -346,4 +362,10 @@ fun CardFillContentSample() {
     ) {
         Text("Card", modifier = Modifier.fillMaxHeight().background(Color.Red))
     }
+}
+
+@Preview
+@Composable
+internal fun CardWithOnLongClickPreview() {
+    CardWithOnLongClickSample(onLongClickHandler = {})
 }

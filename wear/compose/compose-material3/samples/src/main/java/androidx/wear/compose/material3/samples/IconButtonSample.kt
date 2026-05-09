@@ -25,6 +25,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.wear.compose.material3.FilledIconButton
 import androidx.wear.compose.material3.FilledTonalIconButton
 import androidx.wear.compose.material3.Icon
@@ -34,6 +36,7 @@ import androidx.wear.compose.material3.IconButtonDefaults
 import androidx.wear.compose.material3.IconButtonShapes
 import androidx.wear.compose.material3.OutlinedIconButton
 
+@Preview
 @Composable
 @Sampled
 fun IconButtonSample() {
@@ -42,6 +45,7 @@ fun IconButtonSample() {
     }
 }
 
+@Preview
 @Composable
 @Sampled
 fun FilledIconButtonSample() {
@@ -50,6 +54,7 @@ fun FilledIconButtonSample() {
     }
 }
 
+@Preview
 @Composable
 @Sampled
 fun FilledVariantIconButtonSample() {
@@ -61,6 +66,7 @@ fun FilledVariantIconButtonSample() {
     }
 }
 
+@Preview
 @Composable
 @Sampled
 fun FilledTonalIconButtonSample() {
@@ -69,6 +75,7 @@ fun FilledTonalIconButtonSample() {
     }
 }
 
+@Preview
 @Composable
 @Sampled
 fun OutlinedIconButtonSample() {
@@ -103,6 +110,18 @@ fun IconButtonWithCornerAnimationSample(
     }
 }
 
+@Preview
+@Composable
+internal fun IconButtonWithCornerAnimationPreview() {
+    IconButtonWithCornerAnimationSample(colors = IconButtonDefaults.filledIconButtonColors())
+}
+
+@Preview
+@Composable
+internal fun FilledVariantIconButtonWithCornerAnimationPreview() {
+    IconButtonWithCornerAnimationSample(colors = IconButtonDefaults.filledVariantIconButtonColors())
+}
+
 @Composable
 @Sampled
 fun IconButtonWithImageSample(
@@ -119,4 +138,16 @@ fun IconButtonWithImageSample(
                 if (enabled) Modifier else Modifier.alpha(IconButtonDefaults.DisabledImageOpacity),
         )
     }
+}
+
+@Preview
+@Composable
+internal fun IconButtonWithOnLongClickPreview() {
+    IconButtonWithOnLongClickSample(onLongClick = {})
+}
+
+@Preview
+@Composable
+internal fun IconButtonWithImagePreview() {
+    IconButtonWithImageSample(painter = painterResource(R.drawable.backgroundimage), enabled = true)
 }

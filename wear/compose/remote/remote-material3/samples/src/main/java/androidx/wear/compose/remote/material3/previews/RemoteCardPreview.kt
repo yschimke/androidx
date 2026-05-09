@@ -38,13 +38,13 @@ import androidx.wear.compose.ui.tooling.preview.WearPreviewDevices
 @WearPreviewDevices
 @Composable
 fun RemoteCardPreview(@PreviewParameter(ProfilePreviewParameterProvider::class) profile: Profile) =
-    RemotePreview(profile = profile) { Container { RemoteCardDefault() } }
+    RemotePreview(profile = profile) { Container4 { RemoteCardDefault() } }
 
 @WearPreviewDevices
 @Composable
 fun RemoteCardOutlinePreview(
     @PreviewParameter(ProfilePreviewParameterProvider::class) profile: Profile
-) = RemotePreview(profile = profile) { Container { RemoteCardOutline() } }
+) = RemotePreview(profile = profile) { Container4 { RemoteCardOutline() } }
 
 @Composable
 @RemoteComposable
@@ -60,7 +60,7 @@ fun RemoteCardOutline() {
 
 @Composable
 @RemoteComposable
-private fun Container(
+internal fun Container4(
     modifier: RemoteModifier = RemoteModifier.fillMaxSize().padding(16.rdp),
     content: @Composable @RemoteComposable () -> Unit,
 ) {

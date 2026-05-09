@@ -47,9 +47,9 @@ fun RemoteTextButtonEnabled() {
 
 @WearPreviewDevices
 @Composable
-private fun RemoteTextButtonEnabledPreview(
+internal fun RemoteTextButtonEnabledPreview(
     @PreviewParameter(ProfilePreviewParameterProvider::class) profile: Profile
-) = RemotePreview(profile = profile) { Container { RemoteTextButtonEnabled() } }
+) = RemotePreview(profile = profile) { Container9 { RemoteTextButtonEnabled() } }
 
 @Composable
 @RemoteComposable
@@ -61,9 +61,9 @@ fun RemoteTextButtonTonal() {
 
 @WearPreviewDevices
 @Composable
-private fun RemoteTextButtonTonalPreview(
+internal fun RemoteTextButtonTonalPreview(
     @PreviewParameter(ProfilePreviewParameterProvider::class) profile: Profile
-) = RemotePreview(profile = profile) { Container { RemoteTextButtonTonal() } }
+) = RemotePreview(profile = profile) { Container9 { RemoteTextButtonTonal() } }
 
 @Composable
 @RemoteComposable
@@ -81,12 +81,12 @@ fun RemoteTextButtonOutline() {
 
 @WearPreviewDevices
 @Composable
-private fun RemoteTextButtonOutlinePreview(
+internal fun RemoteTextButtonOutlinePreview(
     @PreviewParameter(ProfilePreviewParameterProvider::class) profile: Profile
-) = RemotePreview(profile = profile) { Container { RemoteTextButtonOutline() } }
+) = RemotePreview(profile = profile) { Container9 { RemoteTextButtonOutline() } }
 
 @Composable
-private fun filledTonalColor() =
+internal fun filledTonalColor() =
     RemoteTextButtonDefaults.textButtonColors()
         .copy(
             containerColor = RemoteMaterialTheme.colorScheme.primary,
@@ -96,7 +96,7 @@ private fun filledTonalColor() =
         )
 
 @Composable
-private fun outlineColor() =
+internal fun outlineColor() =
     RemoteTextButtonDefaults.textButtonColors()
         .copy(
             containerColor = RemoteColor(Color.Transparent),
@@ -107,7 +107,7 @@ private fun outlineColor() =
 
 @Composable
 @RemoteComposable
-private fun Container(
+internal fun Container9(
     modifier: RemoteModifier = RemoteModifier.fillMaxSize(),
     content: @Composable @RemoteComposable () -> Unit,
 ) {

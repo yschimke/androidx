@@ -28,6 +28,7 @@ import androidx.compose.ui.semantics.progressBarRangeInfo
 import androidx.compose.ui.semantics.semantics
 import androidx.wear.compose.material3.LinearProgressIndicator
 import androidx.wear.compose.material3.MaterialTheme
+import androidx.wear.compose.ui.tooling.preview.WearPreviewLargeRound
 
 @Sampled
 @Composable
@@ -45,4 +46,10 @@ fun LinearProgressIndicatorSample(progress: () -> Float, enabled: Boolean = true
                 },
         )
     }
+}
+
+@WearPreviewLargeRound
+@Composable
+internal fun LinearProgressIndicatorPreview() {
+    LinearProgressIndicatorSample(progress = { 0.5f })
 }

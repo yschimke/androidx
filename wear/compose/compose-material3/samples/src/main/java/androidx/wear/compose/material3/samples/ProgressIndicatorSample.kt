@@ -60,9 +60,11 @@ import androidx.wear.compose.material3.ProgressIndicatorDefaults
 import androidx.wear.compose.material3.SegmentedCircularProgressIndicator
 import androidx.wear.compose.material3.Text
 import androidx.wear.compose.material3.drawCircularProgressIndicator
+import androidx.wear.compose.ui.tooling.preview.WearPreviewLargeRound
 import kotlinx.coroutines.flow.collectLatest
 
 @Sampled
+@WearPreviewLargeRound
 @Composable
 fun FullScreenProgressIndicatorSample() {
     Box(
@@ -76,6 +78,7 @@ fun FullScreenProgressIndicatorSample() {
 }
 
 @Sampled
+@WearPreviewLargeRound
 @Composable
 fun MediaButtonProgressIndicatorSample() {
     var isPlaying by remember { mutableStateOf(false) }
@@ -123,6 +126,7 @@ fun MediaButtonProgressIndicatorSample() {
 }
 
 @Sampled
+@WearPreviewLargeRound
 @Composable
 fun OverflowProgressIndicatorSample() {
     Box(
@@ -142,6 +146,7 @@ fun OverflowProgressIndicatorSample() {
 }
 
 @Sampled
+@WearPreviewLargeRound
 @Composable
 fun SmallValuesProgressIndicatorSample() {
     Box {
@@ -163,6 +168,7 @@ fun SmallValuesProgressIndicatorSample() {
 }
 
 @Sampled
+@WearPreviewLargeRound
 @Composable
 fun CircularProgressIndicatorCustomAnimationSample() {
     val progress = remember { mutableFloatStateOf(0f) }
@@ -204,6 +210,7 @@ fun CircularProgressIndicatorCustomAnimationSample() {
 }
 
 @Sampled
+@WearPreviewLargeRound
 @Composable
 fun IndeterminateProgressIndicatorSample() {
     Box(modifier = Modifier.fillMaxSize()) {
@@ -212,6 +219,7 @@ fun IndeterminateProgressIndicatorSample() {
 }
 
 @Sampled
+@WearPreviewLargeRound
 @Composable
 fun IndeterminateProgressArcSample() {
     Box(modifier = Modifier.fillMaxSize()) {
@@ -224,6 +232,7 @@ fun IndeterminateProgressArcSample() {
 }
 
 @Sampled
+@WearPreviewLargeRound
 @Composable
 fun SegmentedProgressIndicatorSample() {
     Box(
@@ -237,6 +246,7 @@ fun SegmentedProgressIndicatorSample() {
 }
 
 @Sampled
+@WearPreviewLargeRound
 @Composable
 fun SegmentedProgressIndicatorBinarySample() {
     Box(
@@ -250,6 +260,7 @@ fun SegmentedProgressIndicatorBinarySample() {
 }
 
 @Sampled
+@WearPreviewLargeRound
 @Composable
 fun SmallSegmentedProgressIndicatorSample() {
     Box(modifier = Modifier.fillMaxSize()) {
@@ -262,6 +273,7 @@ fun SmallSegmentedProgressIndicatorSample() {
 }
 
 @Sampled
+@WearPreviewLargeRound
 @Composable
 fun SmallSegmentedProgressIndicatorBinarySample() {
     Box(modifier = Modifier.fillMaxSize()) {

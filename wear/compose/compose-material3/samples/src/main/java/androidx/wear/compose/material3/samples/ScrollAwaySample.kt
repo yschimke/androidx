@@ -36,8 +36,10 @@ import androidx.wear.compose.material3.TimeText
 import androidx.wear.compose.material3.curvedText
 import androidx.wear.compose.material3.scrollAway
 import androidx.wear.compose.material3.timeTextSeparator
+import androidx.wear.compose.ui.tooling.preview.WearPreviewLargeRound
 
 @Sampled
+@WearPreviewLargeRound
 @Composable
 fun ScrollAwaySample() {
     val state = rememberScalingLazyListState()

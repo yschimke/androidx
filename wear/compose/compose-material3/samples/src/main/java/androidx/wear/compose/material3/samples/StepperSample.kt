@@ -39,8 +39,10 @@ import androidx.wear.compose.material3.rangeSemantics
 import androidx.wear.compose.material3.samples.icons.HeadphoneIcon
 import androidx.wear.compose.material3.samples.icons.VolumeDownIcon
 import androidx.wear.compose.material3.samples.icons.VolumeUpIcon
+import androidx.wear.compose.ui.tooling.preview.WearPreviewLargeRound
 
 @Sampled
+@WearPreviewLargeRound
 @Composable
 fun StepperSample() {
     var value by remember { mutableFloatStateOf(2f) }
@@ -65,6 +67,7 @@ fun StepperSample() {
 }
 
 @Sampled
+@WearPreviewLargeRound
 @Composable
 fun StepperWithIntegerSample() {
     var value by remember { mutableIntStateOf(3) }
@@ -88,6 +91,7 @@ fun StepperWithIntegerSample() {
 }
 
 @Sampled
+@WearPreviewLargeRound
 @Composable
 fun StepperWithRangeSemanticsSample() {
     var value by remember { mutableFloatStateOf(2f) }
@@ -115,6 +119,7 @@ fun StepperWithRangeSemanticsSample() {
 }
 
 @Sampled
+@WearPreviewLargeRound
 @Composable
 fun StepperWithButtonSample() {
     var value by remember { mutableFloatStateOf(2f) }

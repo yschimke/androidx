@@ -45,6 +45,7 @@ import androidx.wear.compose.material3.FilledTonalButton
 import androidx.wear.compose.material3.MaterialTheme
 import androidx.wear.compose.material3.SwipeToDismissBox
 import androidx.wear.compose.material3.Text
+import androidx.wear.compose.ui.tooling.preview.WearPreviewLargeRound
 
 @Sampled
 @Composable
@@ -68,6 +69,7 @@ fun SimpleSwipeToDismissBox(navigateBack: () -> Unit) {
 }
 
 @Sampled
+@WearPreviewLargeRound
 @Composable
 fun StatefulSwipeToDismissBox() {
     // State for managing a 2-level navigation hierarchy between
@@ -166,4 +168,16 @@ fun EdgeSwipeForSwipeToDismiss(navigateBack: () -> Unit) {
             }
         }
     }
+}
+
+@WearPreviewLargeRound
+@Composable
+internal fun SimpleSwipeToDismissBoxPreview() {
+    SimpleSwipeToDismissBox(navigateBack = {})
+}
+
+@WearPreviewLargeRound
+@Composable
+internal fun EdgeSwipeForSwipeToDismissPreview() {
+    EdgeSwipeForSwipeToDismiss(navigateBack = {})
 }

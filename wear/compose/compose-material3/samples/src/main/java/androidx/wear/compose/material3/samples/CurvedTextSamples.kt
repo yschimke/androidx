@@ -38,8 +38,10 @@ import androidx.wear.compose.material3.CurvedTextDefaults
 import androidx.wear.compose.material3.Icon
 import androidx.wear.compose.material3.MaterialTheme
 import androidx.wear.compose.material3.curvedText
+import androidx.wear.compose.ui.tooling.preview.WearPreviewLargeRound
 
 @Sampled
+@WearPreviewLargeRound
 @Composable
 fun CurvedTextTop() {
     val backgroundColor = MaterialTheme.colorScheme.onPrimary
@@ -54,6 +56,7 @@ fun CurvedTextTop() {
 }
 
 @Sampled
+@WearPreviewLargeRound
 @Composable
 fun CurvedTextBottom() {
     val backgroundColor = MaterialTheme.colorScheme.onPrimary

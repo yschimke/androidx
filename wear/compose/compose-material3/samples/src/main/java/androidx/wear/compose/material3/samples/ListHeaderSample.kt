@@ -38,7 +38,7 @@ import androidx.wear.compose.material3.ScreenScaffold
 import androidx.wear.compose.material3.Text
 
 @Sampled
-@Preview
+@Preview(showBackground = true, backgroundColor = 0xFF000000)
 @Composable
 fun ListHeaderSample() {
     val scrollState = rememberScalingLazyListState()

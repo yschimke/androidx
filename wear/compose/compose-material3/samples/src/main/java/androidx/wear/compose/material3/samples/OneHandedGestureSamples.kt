@@ -56,8 +56,10 @@ import androidx.wear.compose.material3.onehandedgesture.OneHandedGestureIndicato
 import androidx.wear.compose.material3.onehandedgesture.OneHandedGestureScrollIndicator
 import androidx.wear.compose.material3.onehandedgesture.OneHandedGestureVerticalPageIndicator
 import androidx.wear.compose.material3.onehandedgesture.oneHandedGesture
+import androidx.wear.compose.ui.tooling.preview.WearPreviewLargeRound
 
 @Sampled
+@WearPreviewLargeRound
 @Composable
 fun OneHandedGestureButtonSample() {
     var label by remember { mutableStateOf("Gesturable Button") }
@@ -88,6 +90,7 @@ fun OneHandedGestureButtonSample() {
 }
 
 @Sampled
+@WearPreviewLargeRound
 @Composable
 fun OneHandedGestureTransformingLazyColumnSample() {
     val backDispatcherOwner = LocalOnBackPressedDispatcherOwner.current
@@ -160,6 +163,7 @@ fun OneHandedGestureTransformingLazyColumnSample() {
 }
 
 @Sampled
+@WearPreviewLargeRound
 @Composable
 fun OneHandedGestureHorizontalPagerSample() {
     val pagerState = rememberPagerState(pageCount = { 10 })
@@ -203,6 +207,7 @@ fun OneHandedGestureHorizontalPagerSample() {
 }
 
 @Sampled
+@WearPreviewLargeRound
 @Composable
 fun OneHandedGestureVerticalPagerSample() {
     val pagerState = rememberPagerState(pageCount = { 10 })

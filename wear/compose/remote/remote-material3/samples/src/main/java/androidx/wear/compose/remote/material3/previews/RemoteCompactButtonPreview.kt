@@ -63,9 +63,9 @@ fun RemoteCompactButtonWithIcon() {
 
 @WearPreviewDevices
 @Composable
-private fun RemoteCompactButtonWithIconPreview(
+internal fun RemoteCompactButtonWithIconPreview(
     @PreviewParameter(ProfilePreviewParameterProvider::class) profile: Profile
-) = RemotePreview(profile = profile) { Container { RemoteCompactButtonWithIcon() } }
+) = RemotePreview(profile = profile) { Container6 { RemoteCompactButtonWithIcon() } }
 
 @Composable
 @RemoteComposable
@@ -79,9 +79,9 @@ fun RemoteCompactButtonWithLabel() {
 
 @WearPreviewDevices
 @Composable
-private fun RemoteCompactButtonWithLabelPreview(
+internal fun RemoteCompactButtonWithLabelPreview(
     @PreviewParameter(ProfilePreviewParameterProvider::class) profile: Profile
-) = RemotePreview(profile = profile) { Container { RemoteCompactButtonWithLabel() } }
+) = RemotePreview(profile = profile) { Container6 { RemoteCompactButtonWithLabel() } }
 
 @Composable
 @RemoteComposable
@@ -103,9 +103,9 @@ fun RemoteCompactButtonWithIconAndLabel() {
 
 @WearPreviewDevices
 @Composable
-private fun RemoteCompactButtonWithIconAndLabelPreview(
+internal fun RemoteCompactButtonWithIconAndLabelPreview(
     @PreviewParameter(ProfilePreviewParameterProvider::class) profile: Profile
-) = RemotePreview(profile = profile) { Container { RemoteCompactButtonWithIconAndLabel() } }
+) = RemotePreview(profile = profile) { Container6 { RemoteCompactButtonWithIconAndLabel() } }
 
 @Composable
 @RemoteComposable
@@ -120,9 +120,9 @@ fun RemoteCompactButtonWithBorder() {
 
 @WearPreviewDevices
 @Composable
-private fun RemoteCompactButtonWithBorderPreview(
+internal fun RemoteCompactButtonWithBorderPreview(
     @PreviewParameter(ProfilePreviewParameterProvider::class) profile: Profile
-) = RemotePreview(profile = profile) { Container { RemoteCompactButtonWithBorder() } }
+) = RemotePreview(profile = profile) { Container6 { RemoteCompactButtonWithBorder() } }
 
 @Composable
 @RemoteComposable
@@ -136,13 +136,13 @@ fun RemoteCompactButtonWithShape() {
 
 @WearPreviewDevices
 @Composable
-private fun RemoteCompactButtonWithShapePreview(
+internal fun RemoteCompactButtonWithShapePreview(
     @PreviewParameter(ProfilePreviewParameterProvider::class) profile: Profile
-) = RemotePreview(profile = profile) { Container { RemoteCompactButtonWithShape() } }
+) = RemotePreview(profile = profile) { Container6 { RemoteCompactButtonWithShape() } }
 
 @Composable
 @RemoteComposable
-private fun Container(
+internal fun Container6(
     modifier: RemoteModifier = RemoteModifier.fillMaxSize(),
     content: @Composable @RemoteComposable () -> Unit,
 ) {

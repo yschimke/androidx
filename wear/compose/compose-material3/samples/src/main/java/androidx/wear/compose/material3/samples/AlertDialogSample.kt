@@ -44,10 +44,12 @@ import androidx.wear.compose.material3.SwitchButton
 import androidx.wear.compose.material3.Text
 import androidx.wear.compose.material3.lazy.rememberTransformationSpec
 import androidx.wear.compose.material3.lazy.transformedHeight
+import androidx.wear.compose.ui.tooling.preview.WearPreviewLargeRound
 
 @Sampled
+@WearPreviewLargeRound
+@Preview(showBackground = true, backgroundColor = 0xFF000000)
 @Composable
-@Preview
 fun AlertDialogWithConfirmAndDismissSample() {
     var showDialog by remember { mutableStateOf(false) }
     Box(Modifier.fillMaxSize()) {
@@ -92,8 +94,8 @@ fun AlertDialogWithConfirmAndDismissSample() {
     }
 }
 
-@Preview
 @Sampled
+@WearPreviewLargeRound
 @Composable
 fun AlertDialogWithConfirmAndDismissTransformingContentSample() {
     var showDialog by remember { mutableStateOf(false) }
@@ -161,8 +163,8 @@ fun AlertDialogWithConfirmAndDismissTransformingContentSample() {
     }
 }
 
-@Preview
 @Sampled
+@WearPreviewLargeRound
 @Composable
 fun AlertDialogWithEdgeButtonSample() {
     var showDialog by remember { mutableStateOf(false) }
@@ -199,8 +201,8 @@ fun AlertDialogWithEdgeButtonSample() {
     )
 }
 
-@Preview
 @Sampled
+@WearPreviewLargeRound
 @Composable
 fun AlertDialogWithEdgeButtonTransformingContentSample() {
     var showDialog by remember { mutableStateOf(false) }
@@ -238,8 +240,8 @@ fun AlertDialogWithEdgeButtonTransformingContentSample() {
     )
 }
 
-@Preview
 @Sampled
+@WearPreviewLargeRound
 @Composable
 fun AlertDialogWithContentGroupsSample() {
     var showDialog by remember { mutableStateOf(false) }
@@ -303,8 +305,8 @@ fun AlertDialogWithContentGroupsSample() {
     }
 }
 
-@Preview
 @Sampled
+@WearPreviewLargeRound
 @Composable
 fun AlertDialogWithContentGroupsTransformingContentSample() {
     var showDialog by remember { mutableStateOf(false) }

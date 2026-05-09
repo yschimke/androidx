@@ -29,6 +29,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.wear.compose.material3.IconToggleButton
 import androidx.wear.compose.material3.IconToggleButtonDefaults
@@ -36,6 +37,7 @@ import androidx.wear.compose.material3.samples.icons.WifiOffIcon
 import androidx.wear.compose.material3.samples.icons.WifiOnIcon
 
 @Sampled
+@Preview
 @Composable
 fun IconToggleButtonSample() {
     var firstChecked by remember { mutableStateOf(true) }
@@ -75,6 +77,7 @@ fun IconToggleButtonSample() {
 }
 
 @Sampled
+@Preview
 @Composable
 fun IconToggleButtonVariantSample() {
     var firstChecked by remember { mutableStateOf(true) }

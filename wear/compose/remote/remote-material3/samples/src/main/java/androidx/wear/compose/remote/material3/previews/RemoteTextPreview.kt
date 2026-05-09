@@ -38,11 +38,11 @@ import androidx.wear.compose.ui.tooling.preview.WearPreviewDevices
 
 @WearPreviewDevices
 @Composable
-private fun RemoteTextStylePreview(
+internal fun RemoteTextStylePreview(
     @PreviewParameter(ProfilePreviewParameterProvider::class) profile: Profile
 ) =
     RemotePreview(profile = profile) {
-        Container {
+        Container11 {
             val text = "textWithStyle".rs
 
             RemoteText(
@@ -54,11 +54,11 @@ private fun RemoteTextStylePreview(
 
 @WearPreviewDevices
 @Composable
-private fun RemoteTextOverflowPreview(
+internal fun RemoteTextOverflowPreview(
     @PreviewParameter(ProfilePreviewParameterProvider::class) profile: Profile
 ) =
     RemotePreview(profile = profile) {
-        Container {
+        Container11 {
             val text =
                 "a piece of writing in which the expression of feelings and ideas is given intensity by particular attention to diction (sometimes involving rhyme), rhythm, and imagery."
                     .rs
@@ -77,7 +77,7 @@ private fun RemoteTextOverflowPreview(
 
 @Composable
 @RemoteComposable
-private fun Container(
+internal fun Container11(
     modifier: RemoteModifier = RemoteModifier.fillMaxSize(),
     content: @Composable @RemoteComposable () -> Unit,
 ) {

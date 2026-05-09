@@ -34,8 +34,10 @@ import androidx.compose.ui.unit.dp
 import androidx.wear.compose.material3.PickerGroup
 import androidx.wear.compose.material3.Text
 import androidx.wear.compose.material3.rememberPickerState
+import androidx.wear.compose.ui.tooling.preview.WearPreviewLargeRound
 
 @Sampled
+@WearPreviewLargeRound
 @Composable
 fun PickerGroupSample() {
     var selectedPickerIndex by remember { mutableIntStateOf(0) }
@@ -77,6 +79,7 @@ fun PickerGroupSample() {
 }
 
 @Sampled
+@WearPreviewLargeRound
 @Composable
 fun AutoCenteringPickerGroup() {
     var selectedPickerIndex by remember { mutableIntStateOf(0) }

@@ -40,6 +40,7 @@ import androidx.wear.compose.material3.PagerScaffoldDefaults
 import androidx.wear.compose.material3.ScreenScaffold
 import androidx.wear.compose.material3.Text
 import androidx.wear.compose.material3.VerticalPagerScaffold
+import androidx.wear.compose.ui.tooling.preview.WearPreviewLargeRound
 
 @Sampled
 @Composable
@@ -126,6 +127,7 @@ fun HorizontalPagerScaffoldWithLowSensitivitySample(navigateBack: () -> Unit) {
 }
 
 @Sampled
+@WearPreviewLargeRound
 @Composable
 fun VerticalPagerScaffoldSample() {
     AppScaffold {
@@ -162,6 +164,7 @@ fun VerticalPagerScaffoldSample() {
 }
 
 @Sampled
+@WearPreviewLargeRound
 @Composable
 fun VerticalPagerScaffoldWithLowSensitivitySample() {
     AppScaffold {
@@ -199,4 +202,16 @@ fun VerticalPagerScaffoldWithLowSensitivitySample() {
             }
         }
     }
+}
+
+@WearPreviewLargeRound
+@Composable
+internal fun HorizontalPagerScaffoldPreview() {
+    HorizontalPagerScaffoldSample(navigateBack = {})
+}
+
+@WearPreviewLargeRound
+@Composable
+internal fun HorizontalPagerScaffoldWithLowSensitivityPreview() {
+    HorizontalPagerScaffoldWithLowSensitivitySample(navigateBack = {})
 }
