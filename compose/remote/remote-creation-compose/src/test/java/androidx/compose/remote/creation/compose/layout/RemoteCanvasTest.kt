@@ -493,7 +493,7 @@ class RemoteCanvasTest {
             initFromBuffer(buffer)
             operations.onEach {
                 if (it is VariableSupport) {
-                    it.updateVariables(context)
+                    it.updateVariables(this@RemoteCanvasTest.context)
                 }
             }
         }

@@ -62,7 +62,7 @@ class RemoteDocumentTestRule : ExternalResource() {
     val androidContext by lazy { ApplicationProvider.getApplicationContext<Context>() }
 
     val density by lazy { RemoteDensity(androidContext.resources.displayMetrics.density.rf, 1f.rf) }
-    val context =
+    val context: AndroidRemoteContext =
         AndroidRemoteContext().apply {
             useCanvas(Canvas(Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)))
             density = this@RemoteDocumentTestRule.density.density.constantValue
@@ -83,6 +83,6 @@ class RemoteDocumentTestRule : ExternalResource() {
             val buffer = creationState.document.buffer
             buffer.buffer.index = 0
             initFromBuffer(buffer)
-            paint(context, 0)
+            paint(this@RemoteDocumentTestRule.context, 0)
         }
 }

@@ -20,6 +20,7 @@ import androidx.compose.remote.core.PaintContext;
 import androidx.compose.remote.core.RcPlatformServices;
 import androidx.compose.remote.core.RemoteContext;
 import androidx.compose.remote.core.VariableSupport;
+import androidx.compose.remote.core.operations.DrawTextOnCircle;
 import androidx.compose.remote.core.operations.FloatExpression;
 import androidx.compose.remote.core.operations.PathData;
 import androidx.compose.remote.core.operations.ShaderData;
@@ -272,6 +273,36 @@ public class MockRemoteContext extends RemoteContext {
                                 .append(hOffset)
                                 .append(", ")
                                 .append(vOffset)
+                                .append(")\n");
+                    }
+
+                    @Override
+                    public void drawTextOnCircle(
+                            int textId,
+                            float centerX,
+                            float centerY,
+                            float radius,
+                            float startAngle,
+                            float warpRadiusOffset,
+                            DrawTextOnCircle.Alignment alignment,
+                            DrawTextOnCircle.Placement placement) {
+                        stringBuilder
+                                .append("drawTextOnCircle(")
+                                .append(textId)
+                                .append(", ")
+                                .append(centerX)
+                                .append(", ")
+                                .append(centerY)
+                                .append(", ")
+                                .append(radius)
+                                .append(", ")
+                                .append(startAngle)
+                                .append(", ")
+                                .append(warpRadiusOffset)
+                                .append(", ")
+                                .append(alignment)
+                                .append(", ")
+                                .append(placement)
                                 .append(")\n");
                     }
 
@@ -641,6 +672,11 @@ public class MockRemoteContext extends RemoteContext {
     public float[] getPathData(int instanceId) {
         stringBuilder.append("getPathData(").append(instanceId).append(")= \n");
         return mPathDataMap.get(instanceId);
+    }
+
+    @Override
+    public int getVariableId(@NonNull String name) {
+        return varNamesMap.get(name);
     }
 
     @Override

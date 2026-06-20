@@ -61,6 +61,7 @@ import androidx.compose.remote.core.PaintContext;
 import androidx.compose.remote.core.RcPlatformServices;
 import androidx.compose.remote.core.RemoteContext;
 import androidx.compose.remote.core.operations.ClipPath;
+import androidx.compose.remote.core.operations.DrawTextOnCircle;
 import androidx.compose.remote.core.operations.ShaderData;
 import androidx.compose.remote.core.operations.Utils;
 import androidx.compose.remote.core.operations.layout.managers.CoreText;
@@ -498,6 +499,54 @@ public class AndroidPaintContext extends PaintContext implements CustomContext {
     @Override
     public void drawTextOnPath(int textId, int pathId, float hOffset, float vOffset) {
         mCanvas.drawTextOnPath(getText(textId), getPath(pathId, 0, 1), hOffset, vOffset, mPaint);
+    }
+
+    @Override
+    public void drawTextOnCircle(
+            int textId,
+            float centerX,
+            float centerY,
+            float radius,
+            float startAngle,
+            float warpRadiusOffset,
+            DrawTextOnCircle.Alignment alignment,
+            DrawTextOnCircle.Placement placement) {
+        String text = getText(textId);
+        if (text == null) {
+            return;
+        }
+        Path textPath = new Path();
+        float textWidth = mPaint.measureText(text);
+        float finalRadius = radius + warpRadiusOffset;
+        float sweepRadians = textWidth / finalRadius;
+        float sweepDegrees = (float) Math.toDegrees(sweepRadians);
+        boolean clockwise = (placement == DrawTextOnCircle.Placement.OUTSIDE);
+
+        float finalStartAngle = startAngle;
+        if (!clockwise) {
+            sweepDegrees = -sweepDegrees;
+            if (alignment == DrawTextOnCircle.Alignment.CENTER) {
+                finalStartAngle = startAngle + Math.abs(sweepDegrees) / 2f;
+            } else if (alignment == DrawTextOnCircle.Alignment.END) {
+                finalStartAngle = startAngle + Math.abs(sweepDegrees);
+            }
+        } else {
+            if (alignment == DrawTextOnCircle.Alignment.CENTER) {
+                finalStartAngle = startAngle - sweepDegrees / 2f;
+            } else if (alignment == DrawTextOnCircle.Alignment.END) {
+                finalStartAngle = startAngle - sweepDegrees;
+            }
+        }
+
+        textPath.addArc(
+                centerX - finalRadius,
+                centerY - finalRadius,
+                centerX + finalRadius,
+                centerY + finalRadius,
+                finalStartAngle,
+                sweepDegrees
+        );
+        mCanvas.drawTextOnPath(text, textPath, 0f, 0f, mPaint);
     }
 
     private Paint.FontMetrics mCachedFontMetrics;

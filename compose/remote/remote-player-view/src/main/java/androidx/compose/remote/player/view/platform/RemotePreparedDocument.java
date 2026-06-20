@@ -60,6 +60,11 @@ public class RemotePreparedDocument implements RemoteComposePlayer.PreparedDocum
                 public void loadColor(int id, int color) {}
 
                 @Override
+                public int getVariableId(@NonNull String name) {
+                    return 0;
+                }
+
+                @Override
                 public void setNamedColorOverride(@NonNull String colorName, int color) {}
 
                 @Override

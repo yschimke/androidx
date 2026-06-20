@@ -76,9 +76,26 @@ public class RemoteComposeState implements CollectionsAccess {
      * @param id the id of the object
      * @return the object
      */
+    // ---- Reactive data storage seam ---------------------------------------------------------
+    // The id->Object data cache (text, bitmaps, …) is read and written through these protected
+    // accessors so a subclass can back it with a different store (e.g. Compose snapshot state). The
+    // reverse Object->id map (mDataIntMap) is maintained alongside by the callers and is not part of
+    // the seam. The default implementation is the original in-memory map, so behavior is unchanged.
+
+    /** Read the stored data object for [id] (null if unset). */
+    @Nullable
+    protected Object storeGetData(int id) {
+        return mIntDataMap.get(id);
+    }
+
+    /** Write the stored data object for [id]. */
+    protected void storePutData(int id, @NonNull Object item) {
+        mIntDataMap.put(id, item);
+    }
+
     @Nullable
     public Object getFromId(int id) {
-        return mIntDataMap.get(id);
+        return storeGetData(id);
     }
 
     /**
@@ -88,7 +105,7 @@ public class RemoteComposeState implements CollectionsAccess {
      * @return true if the cache contain this id
      */
     public boolean containsId(int id) {
-        return mIntDataMap.get(id) != null;
+        return storeGetData(id) != null;
     }
 
     /** Return the id of an item from the cache. */
@@ -107,7 +124,7 @@ public class RemoteComposeState implements CollectionsAccess {
     public int cacheData(@NonNull Object item) {
         int id = createNextAvailableId();
         mDataIntMap.put(item, id);
-        mIntDataMap.put(id, item);
+        storePutData(id, item);
         return id;
     }
 
@@ -118,14 +135,14 @@ public class RemoteComposeState implements CollectionsAccess {
     public int cacheData(@NonNull Object item, int type) {
         int id = createNextAvailableId(type);
         mDataIntMap.put(item, id);
-        mIntDataMap.put(id, item);
+        storePutData(id, item);
         return id;
     }
 
     /** Insert an item in the cache */
     public void cacheData(int id, @NonNull Object item) {
         mDataIntMap.put(item, id);
-        mIntDataMap.put(id, item);
+        storePutData(id, item);
     }
 
     /** Insert an item in the cache */
@@ -134,11 +151,11 @@ public class RemoteComposeState implements CollectionsAccess {
             return;
         }
         if (!mDataOverride[id]) {
-            Object previous = mIntDataMap.get(id);
+            Object previous = storeGetData(id);
             if (previous != item) {
                 mDataIntMap.remove(previous);
                 mDataIntMap.put(item, id);
-                mIntDataMap.put(id, item);
+                storePutData(id, item);
                 updateListeners(id);
             }
         }
@@ -216,11 +233,11 @@ public class RemoteComposeState implements CollectionsAccess {
         if (id < 0 || id >= mDataOverride.length) {
             return;
         }
-        Object previous = mIntDataMap.get(id);
+        Object previous = storeGetData(id);
         if (previous != item) {
             mDataIntMap.remove(previous);
             mDataIntMap.put(item, id);
-            mIntDataMap.put(id, item);
+            storePutData(id, item);
             mDataOverride[id] = true;
             updateListeners(id);
         }
@@ -229,14 +246,14 @@ public class RemoteComposeState implements CollectionsAccess {
     /** Insert an item in the cache */
     public int cacheFloat(float item) {
         int id = createNextAvailableId();
-        mFloatMap.put(id, item);
-        mIntegerMap.put(id, (int) item);
+        storePutFloat(id, item);
+        storePutInteger(id, (int) item);
         return id;
     }
 
     /** Insert an item in the cache */
     public void cacheFloat(int id, float item) {
-        mFloatMap.put(id, item);
+        storePutFloat(id, item);
     }
 
     /** Insert an float item in the cache */
@@ -245,10 +262,10 @@ public class RemoteComposeState implements CollectionsAccess {
             return;
         }
         if (!mFloatOverride[id]) {
-            float previous = mFloatMap.get(id);
+            float previous = storeGetFloat(id);
             if (previous != value) {
-                mFloatMap.put(id, value);
-                mIntegerMap.put(id, (int) value);
+                storePutFloat(id, value);
+                storePutInteger(id, (int) value);
                 updateListeners(id);
             }
         }
@@ -264,10 +281,10 @@ public class RemoteComposeState implements CollectionsAccess {
         if (id < 0 || id >= mFloatOverride.length) {
             return;
         }
-        float previous = mFloatMap.get(id);
+        float previous = storeGetFloat(id);
         if (previous != value) {
-            mFloatMap.put(id, value);
-            mIntegerMap.put(id, (int) value);
+            storePutFloat(id, value);
+            storePutInteger(id, (int) value);
             mFloatOverride[id] = true;
             updateListeners(id);
         }
@@ -281,8 +298,8 @@ public class RemoteComposeState implements CollectionsAccess {
      */
     public int cacheInteger(int item) {
         int id = createNextAvailableId();
-        mIntegerMap.put(id, item);
-        mFloatMap.put(id, item);
+        storePutInteger(id, item);
+        storePutFloat(id, item);
         return id;
     }
 
@@ -297,10 +314,10 @@ public class RemoteComposeState implements CollectionsAccess {
             return;
         }
         if (!mIntegerOverride[id]) {
-            int previous = mIntegerMap.get(id);
+            int previous = storeGetInteger(id);
             if (previous != value) {
-                mFloatMap.put(id, value);
-                mIntegerMap.put(id, value);
+                storePutFloat(id, value);
+                storePutInteger(id, value);
                 updateListeners(id);
             }
         }
@@ -316,13 +333,50 @@ public class RemoteComposeState implements CollectionsAccess {
         if (id < 0 || id >= mIntegerOverride.length) {
             return;
         }
-        int previous = mIntegerMap.get(id);
+        int previous = storeGetInteger(id);
         if (previous != value) {
-            mIntegerMap.put(id, value);
-            mFloatMap.put(id, value);
+            storePutInteger(id, value);
+            storePutFloat(id, value);
             mIntegerOverride[id] = true;
             updateListeners(id);
         }
+    }
+
+    // ---- Reactive scalar storage seam -------------------------------------------------------
+    // The float/integer/color caches are read and written exclusively through these protected
+    // accessors so a subclass can back them with a different store (e.g. Compose snapshot state in
+    // the embedded player, making reads observable and writes invalidating). The default
+    // implementation is exactly the original in-memory maps, so behavior is unchanged for callers
+    // that do not override them.
+
+    /** Read the stored float for [id] (0 if unset). */
+    protected float storeGetFloat(int id) {
+        return mFloatMap.get(id);
+    }
+
+    /** Write the stored float for [id]. */
+    protected void storePutFloat(int id, float value) {
+        mFloatMap.put(id, value);
+    }
+
+    /** Read the stored integer for [id] (0 if unset). */
+    protected int storeGetInteger(int id) {
+        return mIntegerMap.get(id);
+    }
+
+    /** Write the stored integer for [id]. */
+    protected void storePutInteger(int id, int value) {
+        mIntegerMap.put(id, value);
+    }
+
+    /** Read the stored color for [id] (0 if unset). */
+    protected int storeGetColor(int id) {
+        return mColorMap.get(id);
+    }
+
+    /** Write the stored color for [id]. */
+    protected void storePutColor(int id, int color) {
+        mColorMap.put(id, color);
     }
 
     /**
@@ -332,7 +386,7 @@ public class RemoteComposeState implements CollectionsAccess {
      * @return the float value
      */
     public float getFloat(int id) {
-        return mFloatMap.get(id);
+        return storeGetFloat(id);
     }
 
     /**
@@ -342,7 +396,7 @@ public class RemoteComposeState implements CollectionsAccess {
      * @return the integer
      */
     public int getInteger(int id) {
-        return mIntegerMap.get(id);
+        return storeGetInteger(id);
     }
 
     /**
@@ -352,7 +406,7 @@ public class RemoteComposeState implements CollectionsAccess {
      * @return The color
      */
     public int getColor(int id) {
-        return mColorMap.get(id);
+        return storeGetColor(id);
     }
 
     /**
@@ -365,12 +419,13 @@ public class RemoteComposeState implements CollectionsAccess {
         if (mColorOverride.contains(id)) {
             return;
         }
-        mColorMap.put(id, color);
+        storePutColor(id, color);
         updateListeners(id);
     }
 
     private void updateListeners(int id) {
         ArrayList<VariableSupport> v = mVarListeners.get(id);
+//        System.out.println("updating listeners for id: " + id + " " + v);
         if (v != null && mRemoteContext != null) {
             for (int i = 0; i < v.size(); i++) {
                 VariableSupport c = v.get(i);
@@ -387,7 +442,7 @@ public class RemoteComposeState implements CollectionsAccess {
      */
     public void overrideColor(int id, int color) {
         mColorOverride.put(id, 1);
-        mColorMap.put(id, color);
+        storePutColor(id, color);
         updateListeners(id);
     }
 
@@ -693,6 +748,10 @@ public class RemoteComposeState implements CollectionsAccess {
     public void setContext(@NonNull RemoteContext context) {
         mRemoteContext = context;
         mRemoteContext.clearLastOpCount();
+    }
+
+    public @Nullable RemoteContext getRemoteContext() {
+        return mRemoteContext;
     }
 
     /**

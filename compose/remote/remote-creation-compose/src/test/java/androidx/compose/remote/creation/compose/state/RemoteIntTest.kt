@@ -49,7 +49,7 @@ fun RemoteInt.computeValue(creationState: RemoteComposeCreationState): Int? {
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [Config.TARGET_SDK])
 class RemoteIntTest {
-    val context =
+    val context: AndroidRemoteContext =
         AndroidRemoteContext().apply {
             useCanvas(Canvas(Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)))
         }
@@ -799,7 +799,7 @@ class RemoteIntTest {
             getOperations()
                 .onEach {
                     if (it is VariableSupport) {
-                        it.updateVariables(context)
+                        it.updateVariables(this@RemoteIntTest.context)
                     }
                 }
                 .map { it.toString() }
@@ -815,7 +815,7 @@ class RemoteIntTest {
             val buffer = creationState.document.buffer
             buffer.buffer.index = 0
             initFromBuffer(buffer)
-            paint(context, 0)
+            paint(this@RemoteIntTest.context, 0)
         }
 
     private fun makeAndUpdateCoreDocument(runAfterInit: () -> Unit) =
@@ -823,15 +823,15 @@ class RemoteIntTest {
             val buffer = creationState.document.buffer
             buffer.buffer.index = 0
             initFromBuffer(buffer)
-            initializeContext(context)
+            initializeContext(this@RemoteIntTest.context)
 
             runAfterInit()
 
             for (op in operations) {
                 if (op is VariableSupport) {
-                    op.updateVariables(context)
+                    op.updateVariables(this@RemoteIntTest.context)
                 }
-                op.apply(context)
+                op.apply(this@RemoteIntTest.context)
             }
         }
 

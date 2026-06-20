@@ -42,7 +42,7 @@ import org.robolectric.annotation.Config
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [Config.TARGET_SDK])
 class RemoteMutableFloatArrayTest {
-    val context =
+    val context: AndroidRemoteContext =
         AndroidRemoteContext().apply {
             useCanvas(Canvas(Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)))
         }
@@ -235,8 +235,8 @@ class RemoteMutableFloatArrayTest {
             val buffer = cs.document.buffer
             buffer.buffer.index = 0
             initFromBuffer(buffer)
-            initializeContext(context)
-            paint(context, 0)
+            initializeContext(this@RemoteMutableFloatArrayTest.context)
+            paint(this@RemoteMutableFloatArrayTest.context, 0)
         }
 }
 

@@ -36,12 +36,12 @@ import java.util.List;
 public abstract class DrawBase3 extends PaintOperation implements VariableSupport, Serializable {
 
     @NonNull protected String mName = "DrawRectBase";
-    float mV1;
-    float mV2;
-    float mV3;
-    float mValue1;
-    float mValue2;
-    float mValue3;
+    public float mV1;
+    public float mV2;
+    public float mV3;
+    public float mValue1;
+    public float mValue2;
+    public float mValue3;
 
     public DrawBase3(float v1, float v2, float v3) {
         mValue1 = v1;

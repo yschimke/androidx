@@ -33,7 +33,7 @@ import org.robolectric.RobolectricTestRunner
 @RunWith(RobolectricTestRunner::class)
 @org.robolectric.annotation.Config(sdk = [org.robolectric.annotation.Config.TARGET_SDK])
 class RemoteFloatArrayTest {
-    val context =
+    val testContext =
         AndroidRemoteContext().apply {
             useCanvas(Canvas(Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)))
         }
@@ -48,7 +48,7 @@ class RemoteFloatArrayTest {
 
         makeAndPaintCoreDocument()
 
-        assertThat(context.getFloat(resultId)).isEqualTo(2f)
+        assertThat(testContext.getFloat(resultId)).isEqualTo(2f)
     }
 
     @Test
@@ -60,7 +60,7 @@ class RemoteFloatArrayTest {
 
         makeAndPaintCoreDocument()
 
-        assertThat(context.getFloat(resultId)).isEqualTo(2f)
+        assertThat(testContext.getFloat(resultId)).isEqualTo(2f)
     }
 
     @Test
@@ -73,7 +73,7 @@ class RemoteFloatArrayTest {
 
         makeAndPaintCoreDocument()
 
-        assertThat(context.getFloat(resultId)).isEqualTo(2f)
+        assertThat(testContext.getFloat(resultId)).isEqualTo(2f)
     }
 
     @Test
@@ -99,6 +99,6 @@ class RemoteFloatArrayTest {
             val buffer = creationState.document.buffer
             buffer.buffer.index = 0
             initFromBuffer(buffer)
-            paint(context, 0)
+            paint(this@RemoteFloatArrayTest.testContext, 0)
         }
 }

@@ -16,6 +16,7 @@
 package androidx.compose.remote.core;
 
 import androidx.annotation.RestrictTo;
+import androidx.compose.remote.core.operations.DrawTextOnCircle;
 import androidx.compose.remote.core.operations.layout.managers.LayoutManager;
 import androidx.compose.remote.core.operations.paint.PaintBundle;
 
@@ -252,6 +253,30 @@ public abstract class PaintContext {
      * @param vOffset vertical offset
      */
     public abstract void drawTextOnPath(int textId, int pathId, float hOffset, float vOffset);
+
+    /**
+     * Draw curved text along the circumference of a circle.
+     *
+     * @param textId The ID of the text string to draw.
+     * @param centerX The x coordinate of the center of the circle.
+     * @param centerY The y coordinate of the center of the circle.
+     * @param radius The radius of the circle.
+     * @param startAngle The starting angle on the circle in degrees.
+     * @param warpRadiusOffset The warp radius offset.
+     * @param alignment The alignment of the text on the circle.
+     * @param placement The placement of the text relative to the circle.
+     */
+    // Default no-op so PaintContext implementations added before this op (e.g. the legacy
+    // ComposePaintContext) still compile; the real players override it.
+    public void drawTextOnCircle(
+            int textId,
+            float centerX,
+            float centerY,
+            float radius,
+            float startAngle,
+            float warpRadiusOffset,
+            DrawTextOnCircle.Alignment alignment,
+            DrawTextOnCircle.Placement placement) {}
 
     /**
      * Return the dimensions (left, top, right, bottom). Relative to a drawTextRun x=0, y=0;

@@ -39,18 +39,18 @@ public class DrawBitmapScaled extends PaintOperation
         implements VariableSupport, AccessibleComponent {
     private static final int OP_CODE = Operations.DRAW_BITMAP_SCALED;
     private static final String CLASS_NAME = "DrawBitmapScaled";
-    int mImageId;
-    float mSrcLeft, mOutSrcLeft;
-    float mSrcTop, mOutSrcTop;
-    float mSrcRight, mOutSrcRight;
-    float mSrcBottom, mOutSrcBottom;
-    float mDstLeft, mOutDstLeft;
-    float mDstTop, mOutDstTop;
-    float mDstRight, mOutDstRight;
-    float mDstBottom, mOutDstBottom;
-    int mContentDescId;
-    float mScaleFactor, mOutScaleFactor;
-    int mScaleType;
+    public int mImageId;
+    public float mSrcLeft, mOutSrcLeft;
+    public float mSrcTop, mOutSrcTop;
+    public float mSrcRight, mOutSrcRight;
+    public float mSrcBottom, mOutSrcBottom;
+    public float mDstLeft, mOutDstLeft;
+    public float mDstTop, mOutDstTop;
+    public float mDstRight, mOutDstRight;
+    public float mDstBottom, mOutDstBottom;
+    public int mContentDescId;
+    public float mScaleFactor, mOutScaleFactor;
+    public int mScaleType;
 
     @NonNull ImageScaling mScaling = new ImageScaling();
     public static final int SCALE_NONE = ImageScaling.SCALE_NONE;

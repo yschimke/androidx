@@ -63,6 +63,7 @@ import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -117,9 +118,14 @@ public class CoreDocument implements Serializable {
     private static final int DEFAULT_FEATURE_TOUCH_VERSION = LayoutManager.DEFAULT_TOUCH_VERSION;
     private static final int DEFAULT_DENSITY_BEHAVIOR = DENSITY_BEHAVIOR_LEGACY;
 
+    @Nullable
+    public final RemoteContext getContext() {
+        return mRemoteComposeState.getRemoteContext();
+    }
+
     /// /////////////////////////////////////////////////////////////////////////////////////////
 
-    @NonNull ArrayList<Operation> mOperations = new ArrayList<>();
+    @NonNull public ArrayList<Operation> mOperations = new ArrayList<>();
 
     @Nullable RootLayoutComponent mRootLayoutComponent = null;
 
@@ -161,9 +167,9 @@ public class CoreDocument implements Serializable {
 
     @NonNull RemoteComposeBuffer mBuffer = new RemoteComposeBuffer();
 
-    private final HashMap<Long, IntegerExpression> mIntegerExpressions = new HashMap<>();
+    public final HashMap<Long, IntegerExpression> mIntegerExpressions = new HashMap<>();
 
-    private final HashMap<Integer, FloatExpression> mFloatExpressions = new HashMap<>();
+    public final HashMap<Integer, FloatExpression> mFloatExpressions = new HashMap<>();
 
     public final HashMap<Integer, String> mTextData = new HashMap<>();
 
@@ -378,6 +384,16 @@ public class CoreDocument implements Serializable {
 
     public void setRemoteComposeState(@NonNull RemoteComposeState remoteComposeState) {
         this.mRemoteComposeState = remoteComposeState;
+    }
+
+    /**
+     * Re-gather the document's collections (float arrays / lists) into the current
+     * {@link RemoteComposeState}. Collections are otherwise gathered only once, while loading, into
+     * the state created then. Call this after {@link #setRemoteComposeState} to repopulate a freshly
+     * swapped state (e.g. a snapshot-backed one) so array-backed expressions keep working.
+     */
+    public void recollectCollections() {
+        collectCollections(mOperations, mRemoteComposeState);
     }
 
     public int getContentScroll() {
@@ -1151,6 +1167,13 @@ public class CoreDocument implements Serializable {
             }
         }
         maxId += 10;
+
+        for (Operation op : mOperations) {
+            if (op instanceof BitmapData) {
+                BitmapData bitmap = (BitmapData) op;
+                mExtractedBitmaps.put(bitmap.mImageId, bitmap);
+            }
+        }
         boolean hasTouchOperations = false;
         mIntegerExpressions.clear();
         mFloatExpressions.clear();
@@ -1239,6 +1262,9 @@ public class CoreDocument implements Serializable {
             if (document != null && o instanceof BitmapData) {
                 document.onBitmapData((BitmapData) o);
             }
+            if (o instanceof androidx.compose.remote.core.operations.PathData) {
+                ops.add(o);
+            }
             if (o instanceof Container) {
                 if (containers.size() >= Limits.MAX_NESTING_DEPTH) {
                     throw new RuntimeException("Maximum container nesting depth of "
@@ -1315,6 +1341,9 @@ public class CoreDocument implements Serializable {
     @NonNull
     private final HashMap<Integer, Component> mComponentMap = new HashMap<Integer, Component>();
 
+    @NonNull
+    private final HashMap<Integer, BitmapData> mExtractedBitmaps = new HashMap<>();
+
     @NonNull private final HashSet<LayoutCompute> mLayoutComputeOperations = new HashSet<>();
 
     /**
@@ -1323,8 +1352,8 @@ public class CoreDocument implements Serializable {
      * @param context the context
      * @param list list of operations
      */
-    private void registerVariables(
-            @NonNull RemoteContext context, @NonNull ArrayList<Operation> list) {
+    public void registerVariables(@NonNull RemoteContext context,
+            @NonNull ArrayList<Operation> list) {
         for (Operation op : list) {
             if (op instanceof LayoutCompute) {
                 registerLayoutCompute((LayoutCompute) op);
@@ -1377,9 +1406,11 @@ public class CoreDocument implements Serializable {
      * @param context the context
      * @param list list of operations
      */
-    private void applyOperations(
-            @NonNull RemoteContext context, @NonNull ArrayList<Operation> list) {
+    public void applyOperations(@NonNull RemoteContext context,
+            @NonNull Collection<? extends Operation> list) {
         for (Operation op : list) {
+            // System.out.println("CoreDocument applyOperations op=" +
+            // op.getClass().getSimpleName());
             if (op instanceof VariableSupport) {
                 ((VariableSupport) op).updateVariables(context);
             }
@@ -1394,6 +1425,7 @@ public class CoreDocument implements Serializable {
                 }
                 applyOperations(context, ((Container) op).getList());
             } else {
+//                System.out.println("op.apply " + op);
                 op.apply(context);
             }
         }
@@ -1427,6 +1459,11 @@ public class CoreDocument implements Serializable {
             for (Integer i : bitmapMap.keySet()) {
                 mRemoteComposeState.cacheData(i, bitmapMap.get(i));
             }
+        }
+        for (Integer i : mExtractedBitmaps.keySet()) {
+            BitmapData bitmap = mExtractedBitmaps.get(i);
+            context.loadBitmap(i, bitmap.mEncoding, bitmap.mType,
+                    bitmap.mImageWidth, bitmap.mImageHeight, bitmap.mBitmap);
         }
         context.mDocument = this;
         context.mRemoteComposeState = mRemoteComposeState;
@@ -1901,11 +1938,12 @@ public class CoreDocument implements Serializable {
      * @param context the context
      * @param operations list of operations
      */
-    private void updateVariables(
-            @NonNull RemoteContext context, int theme, List<Operation> operations) {
+    public void updateVariables(@NonNull RemoteContext context, int theme,
+            List<Operation> operations) {
         for (int i = 0; i < operations.size(); i++) {
             Operation op = operations.get(i);
             if (op.isDirty() && op instanceof VariableSupport) {
+//                System.out.println("updating dirty " + op);
                 op.markNotDirty();
                 ((VariableSupport) op).updateVariables(context);
                 op.apply(context);

@@ -33,18 +33,18 @@ import java.util.List;
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public abstract class DrawBase6 extends PaintOperation implements VariableSupport, Serializable {
     @NonNull protected String mName = "DrawRectBase";
-    float mV1;
-    float mV2;
-    float mV3;
-    float mV4;
-    float mV5;
-    float mV6;
-    float mValue1;
-    float mValue2;
-    float mValue3;
-    float mValue4;
-    float mValue5;
-    float mValue6;
+    public float mV1;
+    public float mV2;
+    public float mV3;
+    public float mV4;
+    public float mV5;
+    public float mV6;
+    public float mValue1;
+    public float mValue2;
+    public float mValue3;
+    public float mValue4;
+    public float mValue5;
+    public float mValue6;
 
     public DrawBase6(float v1, float v2, float v3, float v4, float v5, float v6) {
         mValue1 = v1;

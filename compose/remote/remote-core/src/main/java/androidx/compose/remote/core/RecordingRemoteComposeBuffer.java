@@ -1779,6 +1779,11 @@ public class RecordingRemoteComposeBuffer extends RemoteComposeBuffer {
         }
 
         @Override
+        public int getVariableId(@NonNull String name) {
+            throw new UnsupportedOperationException("Not yet implemented");
+        }
+
+        @Override
         public void loadPathData(int instanceId, int winding, float @NonNull [] floatPath) {
             throw new UnsupportedOperationException("Not yet implemented");
         }

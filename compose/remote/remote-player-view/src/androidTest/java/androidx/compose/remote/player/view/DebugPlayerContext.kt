@@ -19,6 +19,7 @@ import androidx.compose.remote.core.PaintContext
 import androidx.compose.remote.core.RcPlatformServices
 import androidx.compose.remote.core.RemoteContext
 import androidx.compose.remote.core.VariableSupport
+import androidx.compose.remote.core.operations.DrawTextOnCircle
 import androidx.compose.remote.core.operations.FloatExpression
 import androidx.compose.remote.core.operations.PathData.CLOSE
 import androidx.compose.remote.core.operations.PathData.CONIC
@@ -335,6 +336,21 @@ class DebugPlayerContext : RemoteContext() {
                     vOffset: Float,
                 ) {
                     stringBuilder.append("drawTextOnPath($textId, $pathId, $hOffset, $vOffset)\n")
+                }
+
+                override fun drawTextOnCircle(
+                    textId: Int,
+                    centerX: Float,
+                    centerY: Float,
+                    radius: Float,
+                    startAngle: Float,
+                    warpRadiusOffset: Float,
+                    alignment: DrawTextOnCircle.Alignment,
+                    placement: DrawTextOnCircle.Placement,
+                ) {
+                    stringBuilder.append(
+                        "drawTextOnCircle($textId, $centerX, $centerY, $radius, $startAngle, $warpRadiusOffset, $alignment, $placement)\n"
+                    )
                 }
 
                 override fun getTextBounds(
@@ -687,5 +703,9 @@ class DebugPlayerContext : RemoteContext() {
     override fun setRootContentBehavior(scroll: Int, alignment: Int, sizing: Int, mode: Int) {
         stringBuilder.append("rootContentBehavior $scroll, $alignment, $sizing, $mode\n")
         super.setRootContentBehavior(scroll, alignment, sizing, mode)
+    }
+
+    override fun getVariableId(name: String): Int {
+        return varNamesMap[name] ?: -1
     }
 }

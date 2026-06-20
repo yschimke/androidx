@@ -42,7 +42,7 @@ import java.util.ArrayList;
  * <p>We also contain a PaintContext, so that any operation can draw as needed.
  */
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-public abstract class RemoteContext {
+public abstract class RemoteContext implements RemoteReadContext {
     private @NonNull RemoteClock mClock;
     protected @NonNull CoreDocument mDocument;
     public @NonNull RemoteComposeState mRemoteComposeState =
@@ -69,6 +69,7 @@ public abstract class RemoteContext {
     private boolean mAnimate = true;
 
     public @Nullable Component mLastComponent;
+    public Object variableStateMap;
     public long currentTime = 0L;
 
     private boolean mUseChoreographer = true;
@@ -165,6 +166,18 @@ public abstract class RemoteContext {
      * @return the a
      */
     public abstract float @Nullable [] getPathData(int instanceId);
+
+    /**
+     * Returns the numeric identifier associated with a given variable name.
+     *
+     * @param name the name of the variable to look up
+     * @return the id of the variable, or -1 if name resolution isn't supported by this context
+     */
+    // Default returns -1 (unresolved) so RemoteContext implementations that don't track a name->id
+    // table (e.g. the legacy ComposeRemoteContext) still compile; AndroidRemoteContext overrides it.
+    public int getVariableId(@NonNull String name) {
+        return -1;
+    }
 
     /**
      * Associate a name with a give id.

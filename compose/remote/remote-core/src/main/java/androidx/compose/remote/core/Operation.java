@@ -87,12 +87,14 @@ public abstract class Operation {
 
     /** Mark the operation as "dirty" to indicate it will need to be re-executed. */
     public void markDirty() {
+//        System.out.println("dirty " + this);
         mDirty = true;
     }
 
     /** Mark the operation as "not dirty" */
     public void markNotDirty() {
         if (ENABLE_DIRTY_FLAG_OPTIMIZATION) {
+//            System.out.println("Not dirty " + this);
             mDirty = false;
         }
     }

@@ -22,6 +22,7 @@ import android.view.ViewGroup.LayoutParams
 import android.widget.FrameLayout
 import androidx.activity.ComponentActivity
 import androidx.compose.remote.core.RcProfiles
+import androidx.compose.remote.core.operations.DrawTextOnCircle
 import androidx.compose.remote.core.operations.layout.managers.BoxLayout
 import androidx.compose.remote.core.operations.layout.managers.CoreText
 import androidx.compose.remote.core.operations.utilities.ImageScaling
@@ -365,6 +366,43 @@ class PlayerScreenshotTest {
         activityScenarioRule.scenario.onActivity { playerView.setDocument(remoteComposeDocument) }
 
         assertScreenshot("autosize3")
+    }
+
+    @Test
+    fun showDrawTextOnCircle() {
+        val androidContext = AndroidRemoteContext()
+        val remoteComposeDocument: RemoteDocument =
+            createDocument(
+                androidContext,
+                7,
+                RcProfiles.PROFILE_ANDROIDX or RcProfiles.PROFILE_EXPERIMENTAL,
+            ) { rcDoc ->
+                rcDoc.root {
+                    rcDoc.box(
+                        RecordingModifier().fillMaxSize().background(Color.WHITE),
+                        BoxLayout.CENTER,
+                        BoxLayout.CENTER,
+                    ) {
+                        rcDoc.canvas(RecordingModifier().fillMaxSize()) {
+                            rcDoc.painter.setColor(Color.BLACK).setTextSize(28f).commit()
+                            val textId = rcDoc.textId("Hello Remote Curved Layout!")
+                            rcDoc.drawTextOnCircle(
+                                textId,
+                                100f,
+                                100f,
+                                80f,
+                                180f,
+                                0f,
+                                DrawTextOnCircle.Alignment.CENTER,
+                                DrawTextOnCircle.Placement.OUTSIDE,
+                            )
+                        }
+                    }
+                }
+            }
+        activityScenarioRule.scenario.onActivity { playerView.setDocument(remoteComposeDocument) }
+
+        assertScreenshot("draw_text_on_circle")
     }
 
     fun assertScreenshot(filename: String) {

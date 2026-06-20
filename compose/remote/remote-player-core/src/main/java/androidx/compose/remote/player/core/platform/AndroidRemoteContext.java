@@ -215,6 +215,7 @@ public class AndroidRemoteContext extends RemoteContext {
      * @param name name of variable
      * @return id of variable
      */
+    @Override
     public int getVariableId(@NonNull String name) {
         ArrayList<VarName> list = mVarNameHashMap.get(name);
         if (list == null || list.isEmpty()) {

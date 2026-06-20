@@ -29,7 +29,6 @@ import androidx.compose.remote.creation.compose.layout.RemoteCanvas
 import androidx.compose.remote.creation.compose.layout.RemoteComposable
 import androidx.compose.remote.creation.compose.layout.RemoteComposeApplier
 import androidx.compose.remote.creation.compose.layout.RemoteRootNode
-import androidx.compose.remote.creation.compose.state.rf
 import androidx.compose.remote.creation.profile.Profile
 import androidx.compose.remote.creation.profile.RcPlatformProfiles
 import androidx.compose.runtime.BroadcastFrameClock
@@ -90,11 +89,10 @@ import kotlinx.coroutines.launch
 public suspend fun captureSingleRemoteDocument(
     context: Context,
     creationDisplayInfo: RemoteCreationDisplayInfo = createCreationDisplayInfo(context),
-    remoteDensity: RemoteDensity =
-        RemoteDensity(
-            creationDisplayInfo.density.density.rf,
-            creationDisplayInfo.density.fontScale.rf,
-        ),
+    // Default to the host (playback) density variable, not a baked creation-density constant, so dp
+    // values resolve at the playback display's density — i.e. the document is density-independent.
+    // Pass RemoteDensity.from(creationDisplayInfo) explicitly for fixed, creation-density pixels.
+    remoteDensity: RemoteDensity = RemoteDensity.Host,
     layoutDirection: LayoutDirection =
         toLayoutDirection(context.resources.configuration.layoutDirection),
     clock: RemoteClock = RemoteClock.SYSTEM,
@@ -220,11 +218,9 @@ public suspend fun captureSingleRemoteDocument(
 public fun captureRemoteDocument(
     context: Context,
     creationDisplayInfo: RemoteCreationDisplayInfo,
-    remoteDensity: RemoteDensity =
-        RemoteDensity(
-            creationDisplayInfo.density.density.rf,
-            creationDisplayInfo.density.fontScale.rf,
-        ),
+    // Default to the host (playback) density variable so the document is density-independent; see
+    // captureSingleRemoteDocument. Pass RemoteDensity.from(...) for fixed creation-density pixels.
+    remoteDensity: RemoteDensity = RemoteDensity.Host,
     layoutDirection: LayoutDirection? = null,
     writerEvents: WriterEvents = WriterEvents(),
     clock: RemoteClock = RemoteClock.SYSTEM,

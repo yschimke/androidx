@@ -31,6 +31,7 @@ import androidx.compose.remote.creation.compose.modifier.fillMaxSize
 import androidx.compose.remote.creation.compose.state.RemotePaint
 import androidx.compose.remote.creation.compose.state.rc
 import androidx.compose.remote.creation.compose.state.rf
+import androidx.compose.remote.creation.compose.state.rs
 import androidx.compose.remote.creation.platform.AndroidxRcPlatformServices
 import androidx.compose.remote.creation.profile.Profile
 import androidx.compose.ui.graphics.Color
@@ -108,8 +109,6 @@ class CaptureRemoteDocumentTest {
                                 color = Color.LightGray.rc
                                 textSize = 12f.rf
                             }
-
-                            /*
                             drawTextOnCircle(
                                 text = "10:09".rs,
                                 centerX = width / 2f,
@@ -119,7 +118,6 @@ class CaptureRemoteDocumentTest {
                                 warpRadiusOffset = 0f.rf,
                                 paint = textPaint,
                             )
-                            */
                         }
                     }
                     .bytes

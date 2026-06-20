@@ -37,16 +37,16 @@ import java.util.List;
 public class DrawBitmap extends PaintOperation implements VariableSupport {
     private static final int OP_CODE = Operations.DRAW_BITMAP;
     private static final String CLASS_NAME = "DrawBitmap";
-    float mLeft;
-    float mTop;
-    float mRight;
-    float mBottom;
-    float mOutputLeft;
-    float mOutputTop;
-    float mOutputRight;
-    float mOutputBottom;
-    int mId;
-    int mDescriptionId = 0;
+    public float mLeft;
+    public float mTop;
+    public float mRight;
+    public float mBottom;
+    public float mOutputLeft;
+    public float mOutputTop;
+    public float mOutputRight;
+    public float mOutputBottom;
+    public int mId;
+    public int mDescriptionId = 0;
 
     public DrawBitmap(
             int imageId, float left, float top, float right, float bottom, int descriptionId) {

@@ -53,7 +53,7 @@ import org.robolectric.annotation.Config
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [Config.TARGET_SDK])
 class RemoteFloatTest {
-    val context =
+    val context: AndroidRemoteContext =
         AndroidRemoteContext().apply {
             useCanvas(Canvas(Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)))
         }
@@ -1386,7 +1386,7 @@ class RemoteFloatTest {
             val buffer = creationState.document.buffer
             buffer.buffer.index = 0
             initFromBuffer(buffer)
-            paint(context, 0)
+            paint(this@RemoteFloatTest.context, 0)
         }
 
     private fun makeAndPaintCoreDocument(document: CoreDocument) =
@@ -1394,7 +1394,7 @@ class RemoteFloatTest {
             val buffer = document.buffer
             buffer.buffer.index = 0
             initFromBuffer(buffer)
-            paint(context, 0)
+            paint(this@RemoteFloatTest.context, 0)
         }
 
     private fun makeAndUpdateCoreDocument(
@@ -1405,15 +1405,15 @@ class RemoteFloatTest {
             val buffer = buffer ?: creationState.document.buffer
             buffer.buffer.index = 0
             initFromBuffer(buffer)
-            initializeContext(context)
+            initializeContext(this@RemoteFloatTest.context)
 
             runAfterInit(this)
 
             for (op in operations) {
                 if (op is VariableSupport) {
-                    op.updateVariables(context)
+                    op.updateVariables(this@RemoteFloatTest.context)
                 }
-                op.apply(context)
+                op.apply(this@RemoteFloatTest.context)
             }
         }
 

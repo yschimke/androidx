@@ -31,7 +31,7 @@ import org.junit.runners.JUnit4
 
 @RunWith(JUnit4::class)
 class RemoteMatrix3x3Test {
-    val context =
+    val context: AndroidRemoteContext =
         AndroidRemoteContext().apply {
             useCanvas(Canvas(Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)))
         }
@@ -229,6 +229,6 @@ class RemoteMatrix3x3Test {
             val buffer = creationState.document.buffer
             buffer.buffer.index = 0
             initFromBuffer(buffer)
-            paint(context, 0)
+            paint(this@RemoteMatrix3x3Test.context, 0)
         }
 }

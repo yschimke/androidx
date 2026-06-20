@@ -82,8 +82,15 @@ class DebugCreationContext : RemoteContext() {
         TODO("Not yet implemented")
     }
 
+    var varNamesMap = HashMap<String, Int>(200)
+
     override fun loadVariableName(varName: String, varId: Int, varType: Int) {
-        TODO("Not yet implemented")
+        varNamesMap[varName] = varId
+        stringBuilder.append("loadVariableName($varName)= [$varId] $varType\n")
+    }
+
+    override fun getVariableId(name: String): Int {
+        return varNamesMap[name] ?: -1
     }
 
     override fun loadColor(id: Int, color: Int) {

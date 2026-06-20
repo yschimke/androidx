@@ -836,7 +836,7 @@ class RemoteBooleanTest {
             val buffer = creationState.document.buffer
             buffer.buffer.index = 0
             initFromBuffer(buffer)
-            paint(context, 0)
+            paint(this@RemoteBooleanTest.context, 0)
         }
 
     private fun makeAndUpdateCoreDocument(

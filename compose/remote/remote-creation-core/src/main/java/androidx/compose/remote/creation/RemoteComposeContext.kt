@@ -22,6 +22,7 @@ import androidx.compose.remote.core.RcPlatformServices
 import androidx.compose.remote.core.RemoteComposeBuffer
 import androidx.compose.remote.core.RemoteContext
 import androidx.compose.remote.core.operations.BitmapFontData
+import androidx.compose.remote.core.operations.DrawTextOnCircle
 import androidx.compose.remote.core.operations.TouchExpression
 import androidx.compose.remote.core.operations.Utils
 import androidx.compose.remote.core.operations.layout.managers.BoxLayout
@@ -555,7 +556,6 @@ public open class RemoteComposeContext {
         mRemoteWriter.drawTextOnPath(textId, pathId, hOffset, vOffset)
     }
 
-    /*
     public fun drawTextOnCircle(
         textId: Int,
         centerX: Float,
@@ -577,7 +577,6 @@ public open class RemoteComposeContext {
             placement,
         )
     }
-    */
 
     public fun drawTextRun(
         text: String,

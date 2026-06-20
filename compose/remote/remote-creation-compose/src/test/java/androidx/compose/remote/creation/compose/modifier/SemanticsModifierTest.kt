@@ -80,7 +80,7 @@ class SemanticsModifierTest {
             boxLayout.componentModifiers.modifiersList.filterIsInstance<CoreSemantics>().first()
 
         assertThat(semantics).isNotNull()
-        assertThat(context.getText(semantics.contentDescriptionId)).isEqualTo("test description")
+        assertThat(context.getText(semantics.contentDescriptionId!!)).isEqualTo("test description")
         assertThat(context.getText(semantics.textId!!)).isEqualTo("test text")
         assertThat(context.getText(semantics.stateDescriptionId!!)).isEqualTo("test state")
         assertThat(semantics.mEnabled).isEqualTo(false)
@@ -115,13 +115,13 @@ class SemanticsModifierTest {
             val buffer = RemoteComposeBuffer.fromInputStream(ByteArrayInputStream(captured.bytes))
             buffer.buffer.index = 0
             initFromBuffer(buffer)
-            initializeContext(context)
+            initializeContext(this@SemanticsModifierTest.context)
 
             for (op in operations) {
                 if (op is VariableSupport) {
-                    op.updateVariables(context)
+                    op.updateVariables(this@SemanticsModifierTest.context)
                 }
-                op.apply(context)
+                op.apply(this@SemanticsModifierTest.context)
             }
         }
 }

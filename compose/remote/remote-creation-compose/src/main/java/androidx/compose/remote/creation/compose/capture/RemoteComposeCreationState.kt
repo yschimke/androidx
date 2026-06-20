@@ -94,7 +94,9 @@ public open class RemoteComposeCreationState : RemoteStateScope {
         creationDisplayInfo: RemoteCreationDisplayInfo,
         profile: Profile,
         writerEvents: WriterEvents?,
-        remoteDensity: RemoteDensity = RemoteDensity.from(creationDisplayInfo),
+        // Density-independent by default: dp resolves at the playback display's density (see
+        // captureSingleRemoteDocument). Pass RemoteDensity.from(...) for fixed creation-density px.
+        remoteDensity: RemoteDensity = RemoteDensity.Host,
         layoutDirection: LayoutDirection,
     ) {
         this.creationDisplayInfo = creationDisplayInfo
@@ -116,7 +118,7 @@ public open class RemoteComposeCreationState : RemoteStateScope {
         document =
             profile.create(creationDisplayInfo.toCreationDisplayInfo(), null)
                 as RemoteComposeWriterAndroid
-        this.remoteDensity = RemoteDensity.from(creationDisplayInfo)
+        this.remoteDensity = RemoteDensity.Host
         this.layoutDirection = LayoutDirection.Ltr
     }
 
@@ -133,7 +135,7 @@ public open class RemoteComposeCreationState : RemoteStateScope {
         this.creationDisplayInfo =
             RemoteCreationDisplayInfo(size.width.toInt(), size.height.toInt(), 160, 1.0f)
         document = RemoteComposeWriterAndroid(size.width.toInt(), size.height.toInt(), "", platform)
-        this.remoteDensity = RemoteDensity.from(creationDisplayInfo)
+        this.remoteDensity = RemoteDensity.Host
         this.layoutDirection = LayoutDirection.Ltr
     }
 
@@ -163,7 +165,7 @@ public open class RemoteComposeCreationState : RemoteStateScope {
                     platform,
                 )
         }
-        this.remoteDensity = RemoteDensity.from(creationDisplayInfo)
+        this.remoteDensity = RemoteDensity.Host
         this.layoutDirection = LayoutDirection.Ltr
     }
 
@@ -175,7 +177,7 @@ public open class RemoteComposeCreationState : RemoteStateScope {
         this.creationDisplayInfo = creationDisplayInfo
         this.profile = profile
         this.document = writer
-        this.remoteDensity = RemoteDensity.from(creationDisplayInfo)
+        this.remoteDensity = RemoteDensity.Host
         this.layoutDirection = LayoutDirection.Ltr
     }
 
@@ -184,7 +186,7 @@ public open class RemoteComposeCreationState : RemoteStateScope {
         this.creationDisplayInfo =
             RemoteCreationDisplayInfo(size.width.toInt(), size.height.toInt(), 160, 1.0f)
         this.document = profile.create(creationDisplayInfo.toCreationDisplayInfo(), null)
-        this.remoteDensity = RemoteDensity.from(creationDisplayInfo)
+        this.remoteDensity = RemoteDensity.Host
         this.layoutDirection = LayoutDirection.Ltr
     }
 

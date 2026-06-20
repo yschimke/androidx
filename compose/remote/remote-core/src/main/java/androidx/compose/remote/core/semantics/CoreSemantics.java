@@ -214,7 +214,7 @@ public final class CoreSemantics extends Operation implements AccessibilityModif
     }
 
     @Override
-    public @NonNull Integer getContentDescriptionId() {
+    public @Nullable Integer getContentDescriptionId() {
         return mContentDescriptionId != 0 ? mContentDescriptionId : null;
     }
 

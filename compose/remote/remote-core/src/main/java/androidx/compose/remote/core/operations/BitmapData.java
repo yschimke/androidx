@@ -43,11 +43,11 @@ public class BitmapData extends Operation
     private static final int OP_CODE = Operations.DATA_BITMAP;
     private static final String CLASS_NAME = "BitmapData";
     public int mImageId;
-    int mImageWidth;
-    int mImageHeight;
-    short mType;
-    short mEncoding;
-    byte @NonNull [] mBitmap;
+    public int mImageWidth;
+    public int mImageHeight;
+    public short mType;
+    public short mEncoding;
+    public byte @NonNull [] mBitmap;
 
     /** The data is encoded in the file (default) */
     public static final short ENCODING_INLINE = 0;

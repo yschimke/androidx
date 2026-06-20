@@ -39,9 +39,9 @@ import java.util.Map;
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class PaintBundle implements Serializable {
     private static final int MAX_PATH_EFFECT_LENGTH = 2028;
-    int @NonNull [] mArray = new int[200];
+    public int @NonNull [] mArray = new int[200];
     int @Nullable [] mOutArray = null;
-    int mPos = 0;
+    public int mPos = 0;
 
     /** Resolve ids in the paint bundle as they are read off the wire. */
     public void resolveIds(@NonNull WireBuffer buffer) {

@@ -34,9 +34,9 @@ import java.util.List;
 public class DrawPath extends PaintOperation implements Serializable {
     private static final int OP_CODE = Operations.DRAW_PATH;
     private static final String CLASS_NAME = "DrawPath";
-    int mId;
-    float mStart = 0;
-    float mEnd = 1;
+    public int mId;
+    public float mStart = 0;
+    public float mEnd = 1;
 
     public DrawPath(int pathId) {
         mId = pathId;
