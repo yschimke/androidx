@@ -61,4 +61,17 @@ public object RemoteComposePlayerFlags {
     @field:Suppress("MutableBareField")
     @JvmField
     public var shouldPlayerWrapContentSize: Boolean = false
+
+    /**
+     * Whether [RemoteDocumentPlayer] renders documents with the pure-Compose embedded player
+     * ([androidx.compose.remote.player.compose.embedded.RcPlayer]) instead of wrapping the legacy
+     * View-based [androidx.compose.remote.player.view.RemoteComposePlayer] in an `AndroidView`.
+     *
+     * When enabled, `onAction`/`onNamedAction` are wired through, but the other View-player-specific
+     * parameters of [RemoteDocumentPlayer] (`debugMode`, `init`, `update`, `bitmapLoader`) are not
+     * applied — the embedded player has its own setup. Set to `false` to fall back to the View player.
+     */
+    @field:Suppress("MutableBareField")
+    @JvmField
+    public var useEmbeddedPlayer: Boolean = true
 }
