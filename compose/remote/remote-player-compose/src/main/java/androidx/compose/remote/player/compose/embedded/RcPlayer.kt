@@ -96,6 +96,11 @@ import androidx.compose.ui.util.fastForEach
  * the embedded equivalent of the View player's `setColor(name, value)` — pass
  * [namedColorOverrides] (variable name -> ARGB int); each entry is applied via
  * `setNamedColorOverride` after the document's defaults.
+ *
+ * Custom components: a document's `Custom` (host-extension) components have no built-in rendering —
+ * supply [customContent], which is invoked per `Custom` with its config name + resolved properties
+ * ([RcCustomComponent]) to render app-specific content. This is the embedded equivalent of the View
+ * player's `setCustomSupport`/`CustomContext`.
  */
 @OptIn(ExperimentalRemotePlayerApi::class)
 @Composable
@@ -104,6 +109,7 @@ public fun RcPlayer(
     modifier: Modifier = Modifier,
     autoUpdate: Boolean = true,
     namedColorOverrides: Map<String, Int> = emptyMap(),
+    customContent: @Composable (RcCustomComponent) -> Unit = {},
     imageLoader: RcImageLoader? = null,
     isShaderValid: (shaderSource: String) -> Boolean = { true },
     onAction: (actionId: Int, value: String?) -> Unit = { _, _ -> },
@@ -353,6 +359,7 @@ public fun RcPlayer(
             LocalCurrentTimeMillis provides currentTimeMillisState,
             LocalGraphContext provides graphContext,
             LocalRcImageLoader provides resolvedImageLoader,
+            LocalRcCustomContent provides customContent,
             LocalRemoteActionHandler provides onAction,
             LocalRemoteNamedActionHandler provides { name, value ->
                 onNamedAction(name, value, stateUpdater)
@@ -476,6 +483,8 @@ internal fun RcPlayerComponent(component: Component, scopeModifier: Modifier = M
             is FitBoxLayout -> RcPlayerFitBoxLayout(component, modifier)
             is StateLayout -> RcPlayerStateLayout(component, modifier)
             is ImageLayout -> RcPlayerImageLayout(component, modifier)
+            is androidx.compose.remote.core.operations.layout.managers.Custom ->
+                RcPlayerCustom(component, modifier)
             // Last as others are often BoxLayout subclasses
             is BoxLayout -> RcPlayerBox(component, modifier)
             else -> {
