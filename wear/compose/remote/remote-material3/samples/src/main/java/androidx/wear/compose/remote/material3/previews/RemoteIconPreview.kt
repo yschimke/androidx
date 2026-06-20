@@ -28,7 +28,7 @@ import androidx.compose.remote.creation.compose.modifier.fillMaxSize
 import androidx.compose.remote.creation.compose.state.RemoteColor
 import androidx.compose.remote.creation.compose.state.rememberNamedRemoteColor
 import androidx.compose.remote.creation.compose.state.rf
-import androidx.compose.remote.creation.profile.Profile
+import androidx.compose.remote.tooling.preview.PlayerImpl
 import androidx.compose.remote.tooling.preview.RemoteContentPreview
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
@@ -37,7 +37,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.wear.compose.remote.material3.RemoteIcon
-import androidx.wear.compose.remote.material3.previews.utils.ProfilePreviewParameterProvider
+import androidx.wear.compose.remote.material3.previews.utils.PlayerImplPreviewParameterProvider
 import androidx.wear.compose.remote.material3.previews.utils.TestImageVectors
 import androidx.wear.compose.remote.material3.samples.R
 import androidx.wear.compose.ui.tooling.preview.WearPreviewDevices
@@ -51,8 +51,8 @@ fun RemoteIconDefault() {
 @WearPreviewDevices
 @Composable
 private fun RemoteIconPreview(
-    @PreviewParameter(ProfilePreviewParameterProvider::class) profile: Profile
-) = RemoteContentPreview(profile = profile) { Container { RemoteIconDefault() } }
+    @PreviewParameter(PlayerImplPreviewParameterProvider::class) playerImpl: PlayerImpl
+) = RemoteContentPreview(playerImpl = playerImpl) { Container { RemoteIconDefault() } }
 
 @Composable
 @RemoteComposable
@@ -66,8 +66,8 @@ fun RemoteIconFromResource() {
 @WearPreviewDevices
 @Composable
 private fun RemoteIconFromResourcePreview(
-    @PreviewParameter(ProfilePreviewParameterProvider::class) profile: Profile
-) = RemoteContentPreview(profile = profile) { Container { RemoteIconFromResource() } }
+    @PreviewParameter(PlayerImplPreviewParameterProvider::class) playerImpl: PlayerImpl
+) = RemoteContentPreview(playerImpl = playerImpl) { Container { RemoteIconFromResource() } }
 
 @Composable
 @RemoteComposable
@@ -79,8 +79,8 @@ fun RemoteIconColor() {
 @WearPreviewDevices
 @Composable
 private fun RemoteIconColorPreview(
-    @PreviewParameter(ProfilePreviewParameterProvider::class) profile: Profile
-) = RemoteContentPreview(profile = profile) { Container { RemoteIconColor() } }
+    @PreviewParameter(PlayerImplPreviewParameterProvider::class) playerImpl: PlayerImpl
+) = RemoteContentPreview(playerImpl = playerImpl) { Container { RemoteIconColor() } }
 
 @Composable
 @RemoteComposable

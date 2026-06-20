@@ -29,34 +29,34 @@ import androidx.compose.remote.creation.compose.modifier.fillMaxSize
 import androidx.compose.remote.creation.compose.modifier.padding
 import androidx.compose.remote.creation.compose.state.rdp
 import androidx.compose.remote.creation.compose.state.rs
-import androidx.compose.remote.creation.profile.Profile
+import androidx.compose.remote.tooling.preview.PlayerImpl
 import androidx.compose.remote.tooling.preview.RemoteContentPreview
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.wear.compose.remote.material3.RemoteAppCard
 import androidx.wear.compose.remote.material3.RemoteIcon
 import androidx.wear.compose.remote.material3.RemoteText
-import androidx.wear.compose.remote.material3.previews.utils.ProfilePreviewParameterProvider
+import androidx.wear.compose.remote.material3.previews.utils.PlayerImplPreviewParameterProvider
 import androidx.wear.compose.ui.tooling.preview.WearPreviewDevices
 
 @WearPreviewDevices
 @Composable
 fun RemoteAppCardPreview(
-    @PreviewParameter(ProfilePreviewParameterProvider::class) profile: Profile
-) = RemoteContentPreview(profile = profile) { Container { RemoteAppCardDefault() } }
+    @PreviewParameter(PlayerImplPreviewParameterProvider::class) playerImpl: PlayerImpl
+) = RemoteContentPreview(playerImpl = playerImpl) { Container { RemoteAppCardDefault() } }
 
 @WearPreviewDevices
 @Composable
 fun RemoteAppCardWithAppNameTimeTitlePreview(
-    @PreviewParameter(ProfilePreviewParameterProvider::class) profile: Profile
-) = RemoteContentPreview(profile = profile) { Container { RemoteAppCardWithAppNameTimeTitle() } }
+    @PreviewParameter(PlayerImplPreviewParameterProvider::class) playerImpl: PlayerImpl
+) = RemoteContentPreview(playerImpl = playerImpl) { Container { RemoteAppCardWithAppNameTimeTitle() } }
 
 @WearPreviewDevices
 @Composable
 fun RemoteAppCardWithAppNameTitleSubtitlePreview(
-    @PreviewParameter(ProfilePreviewParameterProvider::class) profile: Profile
+    @PreviewParameter(PlayerImplPreviewParameterProvider::class) playerImpl: PlayerImpl
 ) =
-    RemoteContentPreview(profile = profile) {
+    RemoteContentPreview(playerImpl = playerImpl) {
         Container { RemoteAppCardWithAppNameTitleSubtitle() }
     }
 

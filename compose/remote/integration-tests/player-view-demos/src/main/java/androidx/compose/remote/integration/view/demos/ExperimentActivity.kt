@@ -143,6 +143,8 @@ import androidx.compose.remote.integration.view.demos.examples.rcJsonTextDemo8
 import androidx.compose.remote.integration.view.demos.examples.rcJsonTicker
 import androidx.compose.remote.integration.view.demos.examples.shaderFireworks
 import androidx.compose.remote.integration.view.demos.utils.RCDoc
+import androidx.compose.remote.player.compose.ExperimentalRemotePlayerApi
+import androidx.compose.remote.player.compose.RemoteComposePlayerFlags
 import androidx.compose.remote.player.core.RemoteDocument
 import androidx.compose.remote.player.view.RemoteComposePlayer
 import androidx.compose.runtime.Composable
@@ -181,7 +183,6 @@ import kotlinx.coroutines.runBlocking
 
 const val DEFAULT_SHOW_REMOTE = true
 const val DEFAULT_SHOW_COMPOSE = false
-const val DEFAULT_SHOW_COMPOSE_PLAYER = true
 const val DEFAULT_DEBUG_REMOTE_COMPOSE = false
 const val DELAY_IN_MS = 2000L
 var INSTANT_RESIZE = false
@@ -1255,6 +1256,7 @@ interface RemoteComposeFunc {
     fun getBuildTime(): Float
 }
 
+@OptIn(ExperimentalRemotePlayerApi::class)
 @Suppress("RestrictedApiAndroidX")
 @Composable
 fun RemoteComposableMenu(
@@ -1271,7 +1273,10 @@ fun RemoteComposableMenu(
     Column(modifier = Modifier.fillMaxWidth().padding(10.dp)) {
         var showOrigami by remember { mutableStateOf(DEFAULT_SHOW_REMOTE) }
         var showCompose by remember { mutableStateOf(DEFAULT_SHOW_COMPOSE) }
-        var showComposePlayer by remember { mutableStateOf(DEFAULT_SHOW_COMPOSE_PLAYER) }
+        // The "Compose player" toggle drives RemoteComposePlayerFlags.useEmbeddedPlayer (the global
+        // flag that makes RemoteDocumentPlayer render with the embedded RcPlayer vs the View player).
+        // Seed from the flag so the checkbox reflects its current value.
+        var showComposePlayer by remember { mutableStateOf(RemoteComposePlayerFlags.useEmbeddedPlayer) }
         var debugCompose by remember { mutableStateOf(DEFAULT_DEBUG_REMOTE_COMPOSE) }
         LazyVerticalGrid(columns = GridCells.Adaptive(minSize = 170.dp)) {
             items(map.size) { i ->
@@ -1295,7 +1300,13 @@ fun RemoteComposableMenu(
         }
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text("Compose player:")
-            Checkbox(checked = showComposePlayer, onCheckedChange = { showComposePlayer = it })
+            Checkbox(
+                checked = showComposePlayer,
+                onCheckedChange = {
+                    showComposePlayer = it
+                    RemoteComposePlayerFlags.useEmbeddedPlayer = it
+                },
+            )
             Text("Debug:")
             Checkbox(checked = debugCompose, onCheckedChange = { debugCompose = it })
         }

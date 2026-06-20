@@ -30,7 +30,7 @@ import androidx.compose.remote.creation.compose.state.RemoteColor
 import androidx.compose.remote.creation.compose.state.rdp
 import androidx.compose.remote.creation.compose.state.rf
 import androidx.compose.remote.creation.compose.state.rs
-import androidx.compose.remote.creation.profile.Profile
+import androidx.compose.remote.tooling.preview.PlayerImpl
 import androidx.compose.remote.tooling.preview.RemoteContentPreview
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
@@ -39,7 +39,7 @@ import androidx.wear.compose.remote.material3.RemoteButtonDefaults
 import androidx.wear.compose.remote.material3.RemoteCompactButton
 import androidx.wear.compose.remote.material3.RemoteIcon
 import androidx.wear.compose.remote.material3.RemoteText
-import androidx.wear.compose.remote.material3.previews.utils.ProfilePreviewParameterProvider
+import androidx.wear.compose.remote.material3.previews.utils.PlayerImplPreviewParameterProvider
 import androidx.wear.compose.remote.material3.previews.utils.TestImageVectors
 import androidx.wear.compose.ui.tooling.preview.WearPreviewDevices
 
@@ -64,8 +64,8 @@ fun RemoteCompactButtonWithIcon() {
 @WearPreviewDevices
 @Composable
 private fun RemoteCompactButtonWithIconPreview(
-    @PreviewParameter(ProfilePreviewParameterProvider::class) profile: Profile
-) = RemoteContentPreview(profile = profile) { Container { RemoteCompactButtonWithIcon() } }
+    @PreviewParameter(PlayerImplPreviewParameterProvider::class) playerImpl: PlayerImpl
+) = RemoteContentPreview(playerImpl = playerImpl) { Container { RemoteCompactButtonWithIcon() } }
 
 @Composable
 @RemoteComposable
@@ -80,8 +80,8 @@ fun RemoteCompactButtonWithLabel() {
 @WearPreviewDevices
 @Composable
 private fun RemoteCompactButtonWithLabelPreview(
-    @PreviewParameter(ProfilePreviewParameterProvider::class) profile: Profile
-) = RemoteContentPreview(profile = profile) { Container { RemoteCompactButtonWithLabel() } }
+    @PreviewParameter(PlayerImplPreviewParameterProvider::class) playerImpl: PlayerImpl
+) = RemoteContentPreview(playerImpl = playerImpl) { Container { RemoteCompactButtonWithLabel() } }
 
 @Composable
 @RemoteComposable
@@ -104,8 +104,8 @@ fun RemoteCompactButtonWithIconAndLabel() {
 @WearPreviewDevices
 @Composable
 private fun RemoteCompactButtonWithIconAndLabelPreview(
-    @PreviewParameter(ProfilePreviewParameterProvider::class) profile: Profile
-) = RemoteContentPreview(profile = profile) { Container { RemoteCompactButtonWithIconAndLabel() } }
+    @PreviewParameter(PlayerImplPreviewParameterProvider::class) playerImpl: PlayerImpl
+) = RemoteContentPreview(playerImpl = playerImpl) { Container { RemoteCompactButtonWithIconAndLabel() } }
 
 @Composable
 @RemoteComposable
@@ -121,8 +121,8 @@ fun RemoteCompactButtonWithBorder() {
 @WearPreviewDevices
 @Composable
 private fun RemoteCompactButtonWithBorderPreview(
-    @PreviewParameter(ProfilePreviewParameterProvider::class) profile: Profile
-) = RemoteContentPreview(profile = profile) { Container { RemoteCompactButtonWithBorder() } }
+    @PreviewParameter(PlayerImplPreviewParameterProvider::class) playerImpl: PlayerImpl
+) = RemoteContentPreview(playerImpl = playerImpl) { Container { RemoteCompactButtonWithBorder() } }
 
 @Composable
 @RemoteComposable
@@ -137,8 +137,8 @@ fun RemoteCompactButtonWithShape() {
 @WearPreviewDevices
 @Composable
 private fun RemoteCompactButtonWithShapePreview(
-    @PreviewParameter(ProfilePreviewParameterProvider::class) profile: Profile
-) = RemoteContentPreview(profile = profile) { Container { RemoteCompactButtonWithShape() } }
+    @PreviewParameter(PlayerImplPreviewParameterProvider::class) playerImpl: PlayerImpl
+) = RemoteContentPreview(playerImpl = playerImpl) { Container { RemoteCompactButtonWithShape() } }
 
 @Composable
 @RemoteComposable

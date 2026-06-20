@@ -73,6 +73,14 @@ dependencies {
     androidTestImplementation(libs.junit)
     androidTestImplementation(libs.kotlinTest)
     androidTestImplementation(libs.truth)
-    androidTestImplementation(libs.kotlinCoroutinesTest)
+    androidTestImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.9.0")
     androidTestImplementation(libs.testParameterInjector)
+}
+
+configurations.all {
+    resolutionStrategy {
+        force("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.9.0")
+        force("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0")
+        force("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0")
+    }
 }

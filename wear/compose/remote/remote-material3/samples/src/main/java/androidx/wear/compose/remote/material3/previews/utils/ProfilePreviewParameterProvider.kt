@@ -19,9 +19,26 @@ package androidx.wear.compose.remote.material3.previews.utils
 import androidx.compose.remote.creation.ExperimentalRemoteCreationApi
 import androidx.compose.remote.creation.profile.Profile
 import androidx.compose.remote.creation.profile.RcPlatformProfiles
+import androidx.compose.remote.tooling.preview.PlayerImpl
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 
 class ProfilePreviewParameterProvider : PreviewParameterProvider<Profile> {
     @OptIn(ExperimentalRemoteCreationApi::class)
     override val values = sequenceOf(RcPlatformProfiles.ANDROIDX, RcPlatformProfiles.WEAR_WIDGETS)
+}
+
+/**
+ * Renders each preview twice: once with the legacy [PlayerImpl.JAVA] player and once with the new
+ * embedded [PlayerImpl.COMPOSE] player.
+ */
+class PlayerImplPreviewParameterProvider : PreviewParameterProvider<PlayerImpl> {
+    override val values = sequenceOf(PlayerImpl.JAVA, PlayerImpl.COMPOSE)
+
+    override fun getDisplayName(index: Int): String? {
+        return when (index) {
+            0 -> "Java"
+            1 -> "Compose"
+            else -> null
+        }
+    }
 }

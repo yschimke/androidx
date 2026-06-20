@@ -33,6 +33,7 @@ import androidx.compose.remote.creation.compose.modifier.clickable
 import androidx.compose.remote.creation.compose.modifier.clip
 import androidx.compose.remote.creation.compose.modifier.drawWithContent
 import androidx.compose.remote.creation.compose.modifier.fillMaxSize
+import androidx.compose.remote.creation.compose.modifier.fillMaxWidth
 import androidx.compose.remote.creation.compose.modifier.height
 import androidx.compose.remote.creation.compose.modifier.heightIn
 import androidx.compose.remote.creation.compose.modifier.padding
@@ -40,7 +41,6 @@ import androidx.compose.remote.creation.compose.modifier.role
 import androidx.compose.remote.creation.compose.modifier.semantics
 import androidx.compose.remote.creation.compose.modifier.size
 import androidx.compose.remote.creation.compose.modifier.width
-import androidx.compose.remote.creation.compose.modifier.widthIn
 import androidx.compose.remote.creation.compose.modifier.wrapContentSize
 import androidx.compose.remote.creation.compose.painter.RemotePainter
 import androidx.compose.remote.creation.compose.shaders.RemoteBrush
@@ -481,6 +481,7 @@ private fun RemoteButtonImpl(
         horizontalArrangement = RemoteArrangement.Center,
         modifier =
             modifier
+                .buttonSizeModifier()
                 .drawWithContent {
                     drawShapedBackground(
                         shape = shape,
@@ -918,7 +919,7 @@ private fun RemoteDrawScope.drawSolidColorShape(shape: RemoteShape, color: Remot
  * minimums.
  */
 public fun RemoteModifier.buttonSizeModifier(): RemoteModifier =
-    this.heightIn(min = RemoteButtonDefaults.Height).widthIn(min = RemoteButtonDefaults.Width)
+    this.heightIn(min = RemoteButtonDefaults.Height).fillMaxWidth()
 
 private fun RemoteModifier.compactButtonModifier(): RemoteModifier {
     return this.height(RemoteButtonDefaults.CompactButtonHeight)

@@ -60,7 +60,31 @@ public fun RemoteDocumentPlayer(
     onNamedAction: (name: String, value: Any?, stateUpdater: StateUpdater) -> Unit = { _, _, _ -> },
     bitmapLoader: BitmapLoader? = null,
     typefaceResolver: TypefaceResolver? = null,
+    useEmbeddedPlayer: Boolean = RemoteComposePlayerFlags.useEmbeddedPlayer,
 ) {
+    // Default path: render with the pure-Compose embedded player. onAction/onNamedAction are wired
+    // through; the View-specific params (debugMode/init/update/bitmapLoader) don't apply here.
+    // Defaults to the global RemoteComposePlayerFlags.useEmbeddedPlayer, but callers (e.g. the
+    // PlayerImpl.JAVA preview path) can pass an explicit value to force the View player regardless of
+    // the global flag.
+    if (useEmbeddedPlayer) {
+        val playerModifier =
+            modifier.then(
+                if (RemoteComposePlayerFlags.shouldPlayerWrapContentSize) {
+                    Modifier.wrapContentSize()
+                } else {
+                    Modifier.size(documentWidth.dp, documentHeight.dp)
+                }
+            )
+        androidx.compose.remote.player.compose.embedded.RcPlayer(
+            document = document,
+            modifier = playerModifier,
+            onAction = onAction,
+            onNamedAction = onNamedAction,
+        )
+        return
+    }
+
     var inDarkTheme by remember { mutableStateOf(false) }
     var playbackTheme by remember { mutableIntStateOf(Theme.UNSPECIFIED) }
 
@@ -87,9 +111,6 @@ public fun RemoteDocumentPlayer(
     val androidViewModifier =
         modifier.then(
             if (RemoteComposePlayerFlags.shouldPlayerWrapContentSize) {
-                // The modifier defaults to wrapContentSize, meaning the view will size itself to
-                // the content of the RemoteComposePlayer. However, this can be overridden by the
-                // external modifier provided to RemoteDocumentPlayer.
                 Modifier.wrapContentSize()
             } else {
                 Modifier.size(documentWidth.dp, documentHeight.dp)

@@ -28,15 +28,25 @@ import androidx.compose.remote.creation.compose.modifier.fillMaxSize
 import androidx.compose.remote.creation.compose.state.RemotePaint
 import androidx.compose.remote.creation.compose.state.rc
 import androidx.compose.remote.creation.compose.state.rf
+import androidx.compose.remote.tooling.preview.RemoteContentPreview
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 
 @Preview
 @Composable
-@RemoteComposable
 @SuppressLint("RestrictedApiAndroidX")
 fun AnimatedChangesDemo() {
+    // The body is RemoteCompose content, which needs the RemoteCompose applier. Render it through the
+    // capture host rather than composing the RemoteColumn directly under the @Preview's default Compose
+    // applier (which throws "Invalid applier").
+    RemoteContentPreview { AnimatedChanges() }
+}
+
+@RemoteComposable
+@Composable
+@SuppressLint("RestrictedApiAndroidX")
+private fun AnimatedChanges() {
     RemoteColumn(
         modifier = RemoteModifier.fillMaxSize(),
         verticalArrangement = RemoteArrangement.Center,

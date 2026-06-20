@@ -34,7 +34,7 @@ import androidx.compose.remote.creation.compose.modifier.widthIn
 import androidx.compose.remote.creation.compose.state.rb
 import androidx.compose.remote.creation.compose.state.rf
 import androidx.compose.remote.creation.compose.state.rs
-import androidx.compose.remote.creation.profile.Profile
+import androidx.compose.remote.tooling.preview.PlayerImpl
 import androidx.compose.remote.tooling.preview.RemoteContentPreview
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -46,7 +46,7 @@ import androidx.wear.compose.remote.material3.RemoteIcon
 import androidx.wear.compose.remote.material3.RemoteIconButton
 import androidx.wear.compose.remote.material3.RemoteIconButtonDefaults
 import androidx.wear.compose.remote.material3.RemoteMaterialTheme
-import androidx.wear.compose.remote.material3.previews.utils.ProfilePreviewParameterProvider
+import androidx.wear.compose.remote.material3.previews.utils.PlayerImplPreviewParameterProvider
 import androidx.wear.compose.ui.tooling.preview.WearPreviewDevices
 
 @Composable
@@ -62,8 +62,8 @@ fun RemoteButtonGroupThreeButtons() {
 @WearPreviewDevices
 @Composable
 private fun RemoteButtonGroupThreeButtonsPreview(
-    @PreviewParameter(ProfilePreviewParameterProvider::class) profile: Profile
-) = RemoteContentPreview(profile = profile) { Container { RemoteButtonGroupThreeButtons() } }
+    @PreviewParameter(PlayerImplPreviewParameterProvider::class) playerImpl: PlayerImpl
+) = RemoteContentPreview(playerImpl = playerImpl) { Container { RemoteButtonGroupThreeButtons() } }
 
 @Composable
 @RemoteComposable
@@ -77,8 +77,8 @@ fun RemoteButtonGroupTwoButtons() {
 @WearPreviewDevices
 @Composable
 private fun RemoteButtonGroupTwoButtonsPreview(
-    @PreviewParameter(ProfilePreviewParameterProvider::class) profile: Profile
-) = RemoteContentPreview(profile = profile) { Container { RemoteButtonGroupTwoButtons() } }
+    @PreviewParameter(PlayerImplPreviewParameterProvider::class) playerImpl: PlayerImpl
+) = RemoteContentPreview(playerImpl = playerImpl) { Container { RemoteButtonGroupTwoButtons() } }
 
 @Composable
 @RemoteComposable

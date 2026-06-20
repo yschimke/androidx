@@ -16,10 +16,12 @@
 package androidx.compose.remote.tooling.preview
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.remote.creation.compose.capture.captureSingleRemoteDocument
 import androidx.compose.remote.creation.compose.layout.RemoteComposable
 import androidx.compose.remote.creation.profile.Profile
 import androidx.compose.remote.creation.profile.RcPlatformProfiles
+import androidx.compose.remote.player.compose.embedded.RcPlayer
 import androidx.compose.remote.player.core.RemoteDocument
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -27,6 +29,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import kotlinx.coroutines.runBlocking
+
+/** Selects which player implementation renders the captured [RemoteDocument] in the preview. */
+public enum class PlayerImpl {
+    /** The legacy player, [androidx.compose.remote.player.compose.RemoteDocumentPlayer]. */
+    JAVA,
+    /** The new embedded Compose player, [RcPlayer]. */
+    COMPOSE,
+}
 
 /**
  * Displays a Remote Compose Composable in the Android Studio Preview.
@@ -36,6 +46,9 @@ import kotlinx.coroutines.runBlocking
  *
  * @param profile The [Profile] defining the target environment for the remote content. Defaults to
  *   [RcPlatformProfiles.ANDROIDX].
+ * @param playerImpl Selects which player renders the captured document: the legacy
+ *   [PlayerImpl.JAVA] player or the new embedded [PlayerImpl.COMPOSE] player. Defaults to
+ *   [PlayerImpl.JAVA] to match the legacy preview behavior.
  * @param modifier The modifier to be applied to the box containing the preview.
  * @param content The Composable content to be captured and previewed. It does not have be annotated
  *   with [@RemoteComposable].
@@ -44,6 +57,7 @@ import kotlinx.coroutines.runBlocking
 public fun RemoteContentPreview(
     modifier: Modifier = Modifier,
     profile: Profile = RcPlatformProfiles.ANDROIDX,
+    playerImpl: PlayerImpl = PlayerImpl.JAVA,
     content: @RemoteComposable @Composable () -> Unit,
 ) {
     val context = LocalContext.current
@@ -59,5 +73,19 @@ public fun RemoteContentPreview(
 
     LaunchedEffect(Unit) {}
 
-    Box(modifier = modifier) { RemoteDocumentPreview(document) }
+    Box(modifier = modifier) {
+        when (playerImpl) {
+            PlayerImpl.COMPOSE ->
+                RcPlayer(document = document.document, modifier = Modifier.fillMaxSize())
+            // Force the View player regardless of the global RemoteComposePlayerFlags.useEmbeddedPlayer
+            // flag (which otherwise short-circuits RemoteDocumentPlayer to the embedded player, making
+            // the JAVA preview silently render COMPOSE).
+            PlayerImpl.JAVA ->
+                RemoteDocumentPreview(
+                    document,
+                    modifier = Modifier.fillMaxSize(),
+                    useEmbeddedPlayer = false,
+                )
+        }
+    }
 }

@@ -27,7 +27,7 @@ import androidx.compose.remote.creation.compose.state.RemoteColor
 import androidx.compose.remote.creation.compose.state.rs
 import androidx.compose.remote.creation.compose.state.rsp
 import androidx.compose.remote.creation.compose.text.RemoteTextStyle
-import androidx.compose.remote.creation.profile.Profile
+import androidx.compose.remote.tooling.preview.PlayerImpl
 import androidx.compose.remote.tooling.preview.RemoteContentPreview
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
@@ -35,15 +35,15 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.wear.compose.remote.material3.RemoteText
-import androidx.wear.compose.remote.material3.previews.utils.ProfilePreviewParameterProvider
+import androidx.wear.compose.remote.material3.previews.utils.PlayerImplPreviewParameterProvider
 import androidx.wear.compose.ui.tooling.preview.WearPreviewDevices
 
 @WearPreviewDevices
 @Composable
 private fun RemoteTextStylePreview(
-    @PreviewParameter(ProfilePreviewParameterProvider::class) profile: Profile
+    @PreviewParameter(PlayerImplPreviewParameterProvider::class) playerImpl: PlayerImpl
 ) =
-    RemoteContentPreview(profile = profile) {
+    RemoteContentPreview(playerImpl = playerImpl) {
         Container {
             val text = "textWithStyle".rs
 
@@ -57,9 +57,9 @@ private fun RemoteTextStylePreview(
 @WearPreviewDevices
 @Composable
 private fun RemoteTextOverflowPreview(
-    @PreviewParameter(ProfilePreviewParameterProvider::class) profile: Profile
+    @PreviewParameter(PlayerImplPreviewParameterProvider::class) playerImpl: PlayerImpl
 ) =
-    RemoteContentPreview(profile = profile) {
+    RemoteContentPreview(playerImpl = playerImpl) {
         Container {
             val text =
                 "a piece of writing in which the expression of feelings and ideas is given intensity by particular attention to diction (sometimes involving rhyme), rhythm, and imagery."

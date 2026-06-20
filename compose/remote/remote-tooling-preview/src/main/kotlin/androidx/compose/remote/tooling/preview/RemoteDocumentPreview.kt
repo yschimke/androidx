@@ -17,6 +17,8 @@ package androidx.compose.remote.tooling.preview
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.remote.player.compose.ExperimentalRemotePlayerApi
+import androidx.compose.remote.player.compose.RemoteComposePlayerFlags
 import androidx.compose.remote.player.compose.RemoteDocumentPlayer
 import androidx.compose.remote.player.core.RemoteDocument
 import androidx.compose.runtime.Composable
@@ -31,9 +33,18 @@ import androidx.compose.ui.platform.LocalWindowInfo
  *
  * @param remoteDocument The [RemoteDocument] containing the content to be displayed.
  * @param modifier The modifier to be applied to the box containing the preview.
+ * @param useEmbeddedPlayer Which player to render with. Defaults to the global
+ *   [RemoteComposePlayerFlags.useEmbeddedPlayer]; pass `false` to force the legacy View player
+ *   regardless of the flag (so the JAVA preview path renders the View player even when the embedded
+ *   player is globally enabled).
  */
+@OptIn(ExperimentalRemotePlayerApi::class)
 @Composable
-public fun RemoteDocumentPreview(remoteDocument: RemoteDocument, modifier: Modifier = Modifier) {
+public fun RemoteDocumentPreview(
+    remoteDocument: RemoteDocument,
+    modifier: Modifier = Modifier,
+    useEmbeddedPlayer: Boolean = RemoteComposePlayerFlags.useEmbeddedPlayer,
+) {
     Box(modifier = modifier) {
         val windowInfo = LocalWindowInfo.current
         RemoteDocumentPlayer(
@@ -43,6 +54,7 @@ public fun RemoteDocumentPreview(remoteDocument: RemoteDocument, modifier: Modif
             modifier = Modifier.fillMaxSize(),
             debugMode = 0,
             onNamedAction = { _, _, _ -> },
+            useEmbeddedPlayer = useEmbeddedPlayer,
         )
     }
 }

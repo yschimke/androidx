@@ -23,6 +23,8 @@ import androidx.compose.remote.creation.compose.layout.RemoteBox
 import androidx.compose.remote.creation.compose.layout.RemoteText
 import androidx.compose.remote.creation.compose.modifier.RemoteModifier
 import androidx.compose.remote.creation.compose.modifier.fillMaxSize
+import androidx.compose.remote.player.compose.ExperimentalRemotePlayerApi
+import androidx.compose.remote.player.compose.RemoteComposePlayerFlags
 import androidx.compose.remote.player.core.RemoteDocument
 import androidx.compose.remote.tooling.preview.RemoteContentPreview
 import androidx.compose.remote.tooling.preview.RemoteDocumentPreview
@@ -33,24 +35,36 @@ import androidx.compose.ui.platform.LocalResources
 
 /**
  * Build a [RemoteDocument] from a [RemoteComposeContext] display it in the Android Studio Preview.
+ *
+ * [useEmbeddedPlayer] selects the player implementation — the new embedded `RcPlayer` (the default,
+ * following [RemoteComposePlayerFlags.useEmbeddedPlayer]) or the legacy View player (`false`) — so a
+ * demo preview can be flipped between the two without touching the document builder.
  */
 @Composable
 @Suppress("RestrictedApiAndroidX")
-internal fun RemoteDocumentPreview(remoteComposeContext: RemoteComposeContext) {
-    val doc = remoteComposeContext.writer
-    RemoteDocumentPreview(doc)
+@OptIn(ExperimentalRemotePlayerApi::class)
+internal fun RemoteDocumentPreview(
+    remoteComposeContext: RemoteComposeContext,
+    useEmbeddedPlayer: Boolean = RemoteComposePlayerFlags.useEmbeddedPlayer,
+) {
+    RemoteDocumentPreview(remoteComposeContext.writer, useEmbeddedPlayer)
 }
 
 /**
  * Build a [RemoteDocument] from a [RemoteComposeWriter] display it in the Android Studio Preview.
+ * [useEmbeddedPlayer] selects the embedded `RcPlayer` (default) vs the legacy View player.
  */
 @Composable
 @Suppress("RestrictedApiAndroidX")
-internal fun RemoteDocumentPreview(remoteComposeWriter: RemoteComposeWriter) {
+@OptIn(ExperimentalRemotePlayerApi::class)
+internal fun RemoteDocumentPreview(
+    remoteComposeWriter: RemoteComposeWriter,
+    useEmbeddedPlayer: Boolean = RemoteComposePlayerFlags.useEmbeddedPlayer,
+) {
     val buffer = remoteComposeWriter.buffer.buffer.cloneBytes()
     val remoteDocument = RemoteDocument(buffer)
 
-    RemoteDocumentPreview(remoteDocument)
+    RemoteDocumentPreview(remoteDocument, useEmbeddedPlayer = useEmbeddedPlayer)
 }
 
 /** Build a [RemoteDocument] from a raw resource id and display it in the Android Studio Preview. */
