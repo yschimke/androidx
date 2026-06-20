@@ -174,8 +174,8 @@ public class Component extends PaintOperation
      *
      * @param context the current context
      */
-    protected void updateComponentValues(
-            @NonNull RemoteContext context, float width, float height) {
+    public void updateComponentValues(@NonNull RemoteContext context, float width,
+            float height) {
         if (DEBUG) {
             System.out.println(
                     "UPDATE COMPONENT VALUES ("
@@ -255,6 +255,15 @@ public class Component extends PaintOperation
                 }
             }
         }
+    }
+
+    /**
+     * Returns true if this component has component values registered.
+     *
+     * @return true if component values are registered, false otherwise
+     */
+    public boolean hasComponentValues() {
+        return !mComponentValues.isEmpty();
     }
 
     public void setComponentId(int id) {

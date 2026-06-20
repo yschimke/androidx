@@ -66,20 +66,20 @@ public class TextLayout extends LayoutManager implements VariableSupport, Access
 
     private final boolean mIsDynamicColorEnabled;
 
-    private int mTextId = -1;
-    private int mColor = 0;
-    private int mColorValue = -1;
-    private float mFontSize = 16f;
-    private float mFontSizeValue = 16f;
-    private int mFontStyle = 0;
-    private float mFontWeight = 400f;
-    private int mFontFamilyId = -1;
-    private int mTextAlign = -1;
-    private int mTextAlignValue = -1;
-    private int mOverflow = 1;
-    private int mMaxLines = Integer.MAX_VALUE;
+    public int mTextId = -1;
+    public int mColor = 0;
+    public int mColorValue = -1;
+    public float mFontSize = 16f;
+    public float mFontSizeValue = 16f;
+    public int mFontStyle = 0;
+    public float mFontWeight = 400f;
+    public int mFontFamilyId = -1;
+    public int mTextAlign = -1;
+    public int mTextAlignValue = -1;
+    public int mOverflow = 1;
+    public int mMaxLines = Integer.MAX_VALUE;
 
-    private int mType = -1;
+    public int mType = -1;
     private float mTextX;
     private float mTextY;
     private float mTextW = -1;

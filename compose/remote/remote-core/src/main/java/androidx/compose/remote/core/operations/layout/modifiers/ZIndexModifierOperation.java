@@ -39,7 +39,7 @@ import java.util.List;
 public class ZIndexModifierOperation extends DecoratorModifierOperation {
     private static final int OP_CODE = Operations.MODIFIER_ZINDEX;
     public static final String CLASS_NAME = "ZIndexModifierOperation";
-    float mValue;
+    public float mValue;
     float mCurrentValue;
 
     public ZIndexModifierOperation(float value) {

@@ -43,6 +43,14 @@ public class ValueFloatExpressionChangeActionOperation extends Operation
     int mTargetValueId = -1;
     int mValueExpressionId = -1;
 
+    public int getTargetValueId() {
+        return mTargetValueId;
+    }
+
+    public int getValueExpressionId() {
+        return mValueExpressionId;
+    }
+
     public ValueFloatExpressionChangeActionOperation(int id, int valueId) {
         mTargetValueId = id;
         mValueExpressionId = valueId;

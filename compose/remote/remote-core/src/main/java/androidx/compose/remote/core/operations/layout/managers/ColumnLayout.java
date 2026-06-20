@@ -607,6 +607,14 @@ public class ColumnLayout extends LayoutManager {
         return Math.max(height, childrenHeight);
     }
 
+    public int getHorizontalPositioning() {
+        return mHorizontalPositioning;
+    }
+
+    public int getVerticalPositioning() {
+        return mVerticalPositioning;
+    }
+
     @Override
     public void write(@NonNull WireBuffer buffer) {
         apply(

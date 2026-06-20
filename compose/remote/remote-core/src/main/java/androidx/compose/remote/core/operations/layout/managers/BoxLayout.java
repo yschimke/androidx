@@ -288,6 +288,14 @@ public class BoxLayout extends LayoutManager {
                 .possibleValues("BOTTOM", BoxLayout.BOTTOM);
     }
 
+    public int getHorizontalPositioning() {
+        return mHorizontalPositioning;
+    }
+
+    public int getVerticalPositioning() {
+        return mVerticalPositioning;
+    }
+
     @Override
     public void write(@NonNull WireBuffer buffer) {
         apply(buffer, mComponentId, mAnimationId, mHorizontalPositioning, mVerticalPositioning);

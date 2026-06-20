@@ -45,7 +45,7 @@ public class ComponentVisibilityOperation extends Operation
 
     private static final String CLASS_NAME = "ComponentVisibilityOperation";
 
-    int mVisibilityId;
+    public int mVisibilityId;
     int mVisibility = Component.Visibility.VISIBLE;
     private LayoutComponent mParent;
 

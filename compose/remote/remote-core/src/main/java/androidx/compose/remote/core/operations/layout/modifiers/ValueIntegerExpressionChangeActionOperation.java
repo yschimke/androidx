@@ -41,8 +41,16 @@ public class ValueIntegerExpressionChangeActionOperation extends Operation
     private static final int OP_CODE = Operations.VALUE_INTEGER_EXPRESSION_CHANGE_ACTION;
     private static final String CLASS_NAME = "ValueIntegerExpressionChangeActionOperation";
 
-    long mTargetValueId = -1;
-    long mValueExpressionId = -1;
+    public long mTargetValueId = -1;
+    public long mValueExpressionId = -1;
+
+    public long getTargetValueId() {
+        return mTargetValueId;
+    }
+
+    public long getValueExpressionId() {
+        return mValueExpressionId;
+    }
 
     public ValueIntegerExpressionChangeActionOperation(long id, long value) {
         mTargetValueId = id;

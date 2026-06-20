@@ -67,6 +67,10 @@ public class AlignByModifierOperation extends DecoratorModifierOperation {
         mFlags = flags;
     }
 
+    public float getLine() {
+        return mLine;
+    }
+
     @Override
     public void write(@NonNull WireBuffer buffer) {
         apply(buffer, mLine, mFlags);

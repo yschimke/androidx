@@ -80,7 +80,7 @@ public class GraphicsLayerModifierOperation extends DecoratorModifierOperation {
     /** The object is an float */
     private static final short DATA_TYPE_FLOAT = 1;
 
-    AttributeValue[] mValues = {
+    public AttributeValue[] mValues = {
         new AttributeValue(SCALE_X, "SCALE_X", 1f),
         new AttributeValue(SCALE_Y, "SCALE_Y", 1f),
         new AttributeValue(ROTATION_X, "ROTATION_X", 0f),
@@ -120,7 +120,7 @@ public class GraphicsLayerModifierOperation extends DecoratorModifierOperation {
     static final int INT_VALUE = 1;
 
     /** Utility class to manage attributes */
-    static class AttributeValue {
+    public static class AttributeValue {
         String mName;
         int mId;
         @Nullable AnimatableValue mAnimatableValue;

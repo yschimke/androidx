@@ -93,29 +93,29 @@ public class CoreText extends LayoutManager implements VariableSupport, Accessib
 
     private boolean mIsDynamicColorEnabled;
 
-    private float mLetterSpacing = 0f;
-    private float mLineHeightAdd = 0f;
-    private float mLineHeightMultiplier = 1f;
-    private boolean mAutosize = false;
-    private boolean mUnderline = false;
-    private boolean mStrikethrough = false;
+    public float mLetterSpacing = 0f;
+    public float mLineHeightAdd = 0f;
+    public float mLineHeightMultiplier = 1f;
+    public boolean mAutosize = false;
+    public boolean mUnderline = false;
+    public boolean mStrikethrough = false;
 
-    private int mTextId = -1;
-    private int mColor = 0;
-    private int mColorId = -1;
-    private int mColorValue = -1;
-    private float mFontSize = TextStyle.DEFAULT_FONT_SIZE;
-    private float mMinFontSize = -1f;
-    private float mMaxFontSize = -1f;
-    private float mFontSizeValue = TextStyle.DEFAULT_FONT_SIZE;
-    private int mFontStyle = 0;
-    private float mFontWeight = TextStyle.DEFAULT_FONT_WEIGHT;
-    private float mFontWeightValue = TextStyle.DEFAULT_FONT_WEIGHT;
-    private int mFontFamilyId = -1;
-    private int mTextAlign = 1;
-    private int mTextAlignValue = -1;
-    private int mOverflow = 1;
-    private int mMaxLines = Integer.MAX_VALUE;
+    public int mTextId = -1;
+    public int mColor = 0;
+    public int mColorId = -1;
+    public int mColorValue = -1;
+    public float mFontSize = TextStyle.DEFAULT_FONT_SIZE;
+    public float mMinFontSize = -1f;
+    public float mMaxFontSize = -1f;
+    public float mFontSizeValue = TextStyle.DEFAULT_FONT_SIZE;
+    public int mFontStyle = 0;
+    public float mFontWeight = TextStyle.DEFAULT_FONT_WEIGHT;
+    public float mFontWeightValue = TextStyle.DEFAULT_FONT_WEIGHT;
+    public int mFontFamilyId = -1;
+    public int mTextAlign = 1;
+    public int mTextAlignValue = -1;
+    public int mOverflow = 1;
+    public int mMaxLines = Integer.MAX_VALUE;
 
     private int mLineBreakStrategy = 0;
     private int mHyphenationFrequency = 0;
@@ -123,7 +123,7 @@ public class CoreText extends LayoutManager implements VariableSupport, Accessib
 
     private int mTextStyleId = -1;
 
-    private int mType = -1;
+    public int mType = -1;
     private float mTextX;
     private float mTextY;
     private float mTextW = -1;

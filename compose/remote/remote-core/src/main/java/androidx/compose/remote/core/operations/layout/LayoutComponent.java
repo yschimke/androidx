@@ -91,7 +91,7 @@ public class LayoutComponent extends Component {
     protected ArrayList<Component> mChildrenComponents = new ArrayList<>(); // members are not null
 
     protected boolean mChildrenHaveZIndex = false;
-    private CanvasOperations mDrawContentOperations;
+    public CanvasOperations mDrawContentOperations;
 
     /** Get the horizontal scroll delegate */
     public @Nullable ScrollDelegate getHorizontalScrollDelegate() {
@@ -312,6 +312,7 @@ public class LayoutComponent extends Component {
         mList.clear();
         mList.addAll(data);
         mList.addAll(supportedOperations);
+
         for (Operation op : mList) {
             // TODO: this probably should be moved to a setParent call
             if (op instanceof ComponentValue) {

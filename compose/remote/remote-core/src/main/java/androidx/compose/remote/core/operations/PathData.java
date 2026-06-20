@@ -82,6 +82,10 @@ public class PathData extends Operation implements VariableSupport, Serializable
         }
     }
 
+    public float @NonNull [] getOutputPath() {
+        return mOutputPath;
+    }
+
     @Override
     public void registerListening(@NonNull RemoteContext context) {
         for (float v : mFloatPath) {

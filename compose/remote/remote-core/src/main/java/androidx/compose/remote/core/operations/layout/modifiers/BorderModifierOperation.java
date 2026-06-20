@@ -49,17 +49,17 @@ public class BorderModifierOperation extends DecoratorModifierOperation implemen
     float mY;
     float mWidth;
     float mHeight;
-    float mBorderWidth;
+    public float mBorderWidth;
     float mBorderWidthValue;
-    float mRoundedCorner;
+    public float mRoundedCorner;
     float mRoundedCornerValue;
-    float mR;
-    float mG;
-    float mB;
-    float mA;
-    boolean mUseColorId = false;
-    int mColorId;
-    int mShapeType = ShapeType.RECTANGLE;
+    public float mR;
+    public float mG;
+    public float mB;
+    public float mA;
+    public boolean mUseColorId = false;
+    public int mColorId;
+    public int mShapeType = ShapeType.RECTANGLE;
     boolean mUseLegacyDrawing;
 
     /** Color is through and ID */

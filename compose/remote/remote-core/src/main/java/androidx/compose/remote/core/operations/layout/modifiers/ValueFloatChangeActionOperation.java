@@ -43,6 +43,14 @@ public class ValueFloatChangeActionOperation extends Operation implements Action
     int mTargetValueId = -1;
     float mValue = -1;
 
+    public int getTargetValueId() {
+        return mTargetValueId;
+    }
+
+    public float getValue() {
+        return mValue;
+    }
+
     public ValueFloatChangeActionOperation(int id, float value) {
         mTargetValueId = id;
         mValue = value;

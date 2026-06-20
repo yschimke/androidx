@@ -44,21 +44,21 @@ public class BackgroundModifierOperation extends DecoratorModifierOperation
         implements VariableSupport {
     private static final int OP_CODE = Operations.MODIFIER_BACKGROUND;
     private static final String CLASS_NAME = "BackgroundModifierOperation";
-    float mX;
-    float mY;
-    float mWidth;
-    float mHeight;
-    float mR;
-    float mRId;
-    float mG;
-    float mGId;
-    float mB;
-    float mBId;
-    float mA;
-    float mAId;
-    boolean mUseColorId = false;
-    int mColorId;
-    int mShapeType = ShapeType.RECTANGLE;
+    public float mX;
+    public float mY;
+    public float mWidth;
+    public float mHeight;
+    public float mR;
+    public float mRId;
+    public float mG;
+    public float mGId;
+    public float mB;
+    public float mBId;
+    public float mA;
+    public float mAId;
+    public boolean mUseColorId = false;
+    public int mColorId;
+    public int mShapeType = ShapeType.RECTANGLE;
 
     public static final int COLOR_REF = 2;
     @NonNull public PaintBundle mPaint = new PaintBundle();

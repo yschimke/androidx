@@ -43,6 +43,14 @@ public class ValueIntegerChangeActionOperation extends Operation implements Acti
     int mTargetValueId = -1;
     int mValue = -1;
 
+    public int getTargetValueId() {
+        return mTargetValueId;
+    }
+
+    public int getValue() {
+        return mValue;
+    }
+
     public ValueIntegerChangeActionOperation(int id, int value) {
         mTargetValueId = id;
         mValue = value;

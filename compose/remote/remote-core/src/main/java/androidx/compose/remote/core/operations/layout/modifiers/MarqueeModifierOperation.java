@@ -43,12 +43,12 @@ public class MarqueeModifierOperation extends DecoratorModifierOperation impleme
     private static final int OP_CODE = Operations.MODIFIER_MARQUEE;
     public static final String CLASS_NAME = "MarqueeModifierOperation";
 
-    int mIterations;
-    int mAnimationMode;
-    float mRepeatDelayMillis;
-    float mInitialDelayMillis;
-    float mSpacing;
-    float mVelocity;
+    public int mIterations;
+    public int mAnimationMode;
+    public float mRepeatDelayMillis;
+    public float mInitialDelayMillis;
+    public float mSpacing;
+    public float mVelocity;
 
     private float mComponentWidth;
     private float mComponentHeight;

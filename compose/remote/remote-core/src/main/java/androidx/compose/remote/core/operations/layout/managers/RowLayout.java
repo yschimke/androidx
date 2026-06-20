@@ -677,6 +677,14 @@ public class RowLayout extends LayoutManager {
                 .field(FLOAT, "spacedBy", "Horizontal spacing between components");
     }
 
+    public int getHorizontalPositioning() {
+        return mHorizontalPositioning;
+    }
+
+    public int getVerticalPositioning() {
+        return mVerticalPositioning;
+    }
+
     @Override
     public void write(@NonNull WireBuffer buffer) {
         apply(

@@ -52,7 +52,7 @@ public class StateLayout extends LayoutManager {
     public int measuredLayoutIndex = 0;
     public int currentLayoutIndex = 0;
     public int previousLayoutIndex = 0;
-    private int mIndexId = 0;
+    public int mIndexId = 0;
 
     // This keep track of all the components associated with a given Id,
     // (the key being the id), and the set of components corresponds to the set of states

@@ -43,6 +43,14 @@ public class ValueStringChangeActionOperation extends Operation implements Actio
     int mTargetValueId = -1;
     int mValueId = -1;
 
+    public int getTargetValueId() {
+        return mTargetValueId;
+    }
+
+    public int getValueId() {
+        return mValueId;
+    }
+
     public ValueStringChangeActionOperation(int id, int value) {
         mTargetValueId = id;
         mValueId = value;
