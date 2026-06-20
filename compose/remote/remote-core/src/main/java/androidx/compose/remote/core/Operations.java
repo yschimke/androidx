@@ -57,6 +57,7 @@ import androidx.compose.remote.core.operations.DrawRoundRect;
 import androidx.compose.remote.core.operations.DrawSector;
 import androidx.compose.remote.core.operations.DrawText;
 import androidx.compose.remote.core.operations.DrawTextAnchored;
+import androidx.compose.remote.core.operations.DrawTextOnCircle;
 import androidx.compose.remote.core.operations.DrawTextOnPath;
 import androidx.compose.remote.core.operations.DrawToBitmap;
 import androidx.compose.remote.core.operations.DrawTweenPath;
@@ -500,9 +501,7 @@ public class Operations {
         if (sMapV7AndroidXExperimental == null) {
             sMapV7AndroidXExperimental = new UniqueIntMap<>();
             // add experimental operations for this profile here
-            sMapV7AndroidXExperimental.put(MODIFIER_ALIGN_BY, AlignByModifierOperation::read);
             sMapV7AndroidXExperimental.put(LAYOUT_COMPUTE, LayoutComputeOperation::read);
-            sMapV7AndroidXExperimental.put(LAYOUT_FLOW, FlowLayout::read);
             sMapV7AndroidXExperimental.put(MODIFIER_MULTI_CLICK, MultiClickModifier::read);
             sMapV7AndroidXExperimental.put(
                     MODIFIER_DIMENSION_CONSTRAINTS, DimensionConstraintsModifierOperation::read);
@@ -560,9 +559,7 @@ public class Operations {
         if (sMapV7WidgetsExperimental == null) {
             sMapV7WidgetsExperimental = new UniqueIntMap<>();
             // add experimental operations for this profile here
-            sMapV7WidgetsExperimental.put(MODIFIER_ALIGN_BY, AlignByModifierOperation::read);
             sMapV7WidgetsExperimental.put(LAYOUT_COMPUTE, LayoutComputeOperation::read);
-            sMapV7WidgetsExperimental.put(LAYOUT_FLOW, FlowLayout::read);
             sMapV7WidgetsExperimental.put(MODIFIER_MULTI_CLICK, MultiClickModifier::read);
             sMapV7WidgetsExperimental.put(
                     MODIFIER_DIMENSION_CONSTRAINTS, DimensionConstraintsModifierOperation::read);
@@ -712,7 +709,7 @@ public class Operations {
         map.put(DRAW_RECT, DrawRect::read);
         map.put(DRAW_ROUND_RECT, DrawRoundRect::read);
         map.put(DRAW_TEXT_ON_PATH, DrawTextOnPath::read);
-        // map.put(DRAW_TEXT_ON_CIRCLE, DrawTextOnCircle::read);
+        map.put(DRAW_TEXT_ON_CIRCLE, DrawTextOnCircle::read);
         map.put(DRAW_TEXT_RUN, DrawText::read);
         map.put(DRAW_BITMAP_FONT_TEXT_RUN, DrawBitmapFontText::read);
         map.put(DRAW_TWEEN_PATH, DrawTweenPath::read);
@@ -799,12 +796,14 @@ public class Operations {
         map.put(LAYOUT_COLLAPSIBLE_COLUMN, CollapsibleColumnLayout::read);
         map.put(LAYOUT_ROW, RowLayout::read);
         map.put(LAYOUT_COLLAPSIBLE_ROW, CollapsibleRowLayout::read);
+        map.put(LAYOUT_FLOW, FlowLayout::read);
         map.put(LAYOUT_CANVAS, CanvasLayout::read);
         map.put(LAYOUT_CANVAS_CONTENT, CanvasContent::read);
         map.put(LAYOUT_TEXT, TextLayout::read);
         map.put(LAYOUT_IMAGE, ImageLayout::read);
         map.put(LAYOUT_STATE, StateLayout::read);
         map.put(DRAW_CONTENT, DrawContent::read);
+        map.put(MODIFIER_ALIGN_BY, AlignByModifierOperation::read);
 
         map.put(COMPONENT_VALUE, ComponentValue::read);
         map.put(DRAW_ARC, DrawArc::read);

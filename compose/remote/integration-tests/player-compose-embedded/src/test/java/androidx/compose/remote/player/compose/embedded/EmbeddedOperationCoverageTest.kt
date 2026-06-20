@@ -93,6 +93,9 @@ class EmbeddedOperationCoverageTest {
                 54,
                 55,
                 56,
+                // 57 (DRAW_TEXT_ON_CIRCLE) registers in the base map since the duplicate-opcode
+                // fix; the embedded draw dispatch handles DrawTextOnCircle.
+                57,
                 58,
                 59,
                 63,
