@@ -16,6 +16,7 @@
 
 package androidx.compose.remote.player.compose.embedded
 
+import androidx.compose.remote.core.operations.layout.ClickModifierOperation
 import androidx.compose.remote.core.operations.layout.Component
 import androidx.compose.remote.core.operations.layout.modifiers.BackgroundModifierOperation
 import androidx.compose.remote.core.operations.layout.modifiers.BorderModifierOperation
@@ -32,12 +33,15 @@ import androidx.compose.remote.core.operations.layout.modifiers.HeightInModifier
 import androidx.compose.remote.core.operations.layout.modifiers.HeightModifierOperation
 import androidx.compose.remote.core.operations.layout.modifiers.OffsetModifierOperation
 import androidx.compose.remote.core.operations.layout.modifiers.PaddingModifierOperation
+import androidx.compose.remote.core.operations.layout.modifiers.RippleModifierOperation
 import androidx.compose.remote.core.operations.layout.modifiers.RoundedClipRectModifierOperation
+import androidx.compose.remote.core.operations.layout.modifiers.ScrollModifierOperation
 import androidx.compose.remote.core.operations.layout.modifiers.WidthInModifierOperation
 import androidx.compose.remote.core.operations.layout.modifiers.WidthModifierOperation
 import androidx.compose.remote.core.operations.layout.modifiers.ZIndexModifierOperation
 import androidx.compose.remote.player.compose.embedded.modifier.background
 import androidx.compose.remote.player.compose.embedded.modifier.border
+import androidx.compose.remote.player.compose.embedded.modifier.click
 import androidx.compose.remote.player.compose.embedded.modifier.clipRect
 import androidx.compose.remote.player.compose.embedded.modifier.dimensionConstraints
 import androidx.compose.remote.player.compose.embedded.modifier.graphicsLayer
@@ -45,7 +49,9 @@ import androidx.compose.remote.player.compose.embedded.modifier.height
 import androidx.compose.remote.player.compose.embedded.modifier.heightIn
 import androidx.compose.remote.player.compose.embedded.modifier.offset
 import androidx.compose.remote.player.compose.embedded.modifier.padding
+import androidx.compose.remote.player.compose.embedded.modifier.ripple
 import androidx.compose.remote.player.compose.embedded.modifier.roundedClipRect
+import androidx.compose.remote.player.compose.embedded.modifier.scroll
 import androidx.compose.remote.player.compose.embedded.modifier.width
 import androidx.compose.remote.player.compose.embedded.modifier.widthIn
 import androidx.compose.remote.player.compose.embedded.modifier.zIndex
@@ -74,9 +80,12 @@ internal fun ComponentModifiers.toModifier(): Modifier {
                 is RoundedClipRectModifierOperation -> modifier.roundedClipRect(op)
                 is ZIndexModifierOperation -> modifier.zIndex(op)
                 is GraphicsLayerModifierOperation -> modifier.graphicsLayer(op)
+                is RippleModifierOperation -> modifier.ripple(op)
+                is ScrollModifierOperation -> modifier.scroll(op)
                 is WidthInModifierOperation -> modifier.widthIn(op)
                 is HeightInModifierOperation -> modifier.heightIn(op)
                 is DimensionConstraintsModifierOperation -> modifier.dimensionConstraints(op)
+                is ClickModifierOperation -> modifier.click(op)
                 is ComponentVisibilityOperation -> modifier.visible(op)
                 is DrawContentOperation -> modifier
                 // AlignBy is applied per-child inside Row/Column scope (RcPlayerRow), where the
