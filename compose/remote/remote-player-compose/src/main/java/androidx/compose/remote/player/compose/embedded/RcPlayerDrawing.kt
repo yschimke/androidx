@@ -184,6 +184,17 @@ internal fun DrawScope.executeOperations(
             }
             is ColorConstant -> op.apply(remoteContext)
             is NamedVariable -> op.apply(remoteContext)
+            is androidx.compose.remote.core.operations.ParticlesLoop -> {
+                // Particle system: step + draw each particle (Compose-native engine). Needs the
+                // graph for state + frame-clock observation; without it (no snapshot state) skip.
+                if (graph != null) drawParticles(op, remoteContext, paintState, graph, onDrawContent)
+            }
+            is androidx.compose.remote.core.operations.ParticlesCompare -> {
+                // Particle interaction pass: compare particles and run the conditional update + child
+                // draw (Compose-native engine). Like ParticlesLoop, needs the graph.
+                if (graph != null)
+                    drawParticlesCompare(op, remoteContext, paintState, graph, onDrawContent)
+            }
             is androidx.compose.remote.core.operations.layout.ImpulseProcess,
             is androidx.compose.remote.core.operations.layout.ImpulseOperation -> {
                 // Impulse containers wrap their children (commonly the particle loop). The trigger /
