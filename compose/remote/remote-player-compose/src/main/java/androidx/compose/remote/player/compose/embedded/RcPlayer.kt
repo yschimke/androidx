@@ -39,9 +39,12 @@ import androidx.compose.remote.core.operations.layout.LayoutComponent
 import androidx.compose.remote.core.operations.layout.RootLayoutComponent
 import androidx.compose.remote.core.operations.layout.managers.BoxLayout
 import androidx.compose.remote.core.operations.layout.managers.CanvasLayout
+import androidx.compose.remote.core.operations.layout.managers.CollapsibleColumnLayout
+import androidx.compose.remote.core.operations.layout.managers.CollapsibleRowLayout
 import androidx.compose.remote.core.operations.layout.managers.ColumnLayout
 import androidx.compose.remote.core.operations.layout.managers.CoreText
 import androidx.compose.remote.core.operations.layout.managers.FitBoxLayout
+import androidx.compose.remote.core.operations.layout.managers.FlowLayout
 import androidx.compose.remote.core.operations.layout.managers.ImageLayout
 import androidx.compose.remote.core.operations.layout.managers.RowLayout
 import androidx.compose.remote.core.operations.layout.managers.StateLayout
@@ -53,8 +56,11 @@ import androidx.compose.remote.core.operations.utilities.easing.Easing as Remote
 import androidx.compose.remote.core.types.IntegerConstant
 import androidx.compose.remote.player.compose.ExperimentalRemotePlayerApi
 import androidx.compose.remote.player.compose.embedded.layout.RcPlayerBox
+import androidx.compose.remote.player.compose.embedded.layout.RcPlayerCollapsibleColumn
+import androidx.compose.remote.player.compose.embedded.layout.RcPlayerCollapsibleRow
 import androidx.compose.remote.player.compose.embedded.layout.RcPlayerColumn
 import androidx.compose.remote.player.compose.embedded.layout.RcPlayerFitBoxLayout
+import androidx.compose.remote.player.compose.embedded.layout.RcPlayerFlowLayout
 import androidx.compose.remote.player.compose.embedded.layout.RcPlayerImageLayout
 import androidx.compose.remote.player.compose.embedded.layout.RcPlayerRow
 import androidx.compose.remote.player.compose.embedded.layout.RcPlayerStateLayout
@@ -475,7 +481,10 @@ internal fun RcPlayerComponent(component: Component, scopeModifier: Modifier = M
         }
 
         when (component) {
+            is CollapsibleColumnLayout -> RcPlayerCollapsibleColumn(component, modifier)
+            is CollapsibleRowLayout -> RcPlayerCollapsibleRow(component, modifier)
             is CanvasLayout -> RcPlayerCanvas(component, modifier)
+            is FlowLayout -> RcPlayerFlowLayout(component, modifier)
             is ColumnLayout -> RcPlayerColumn(component, modifier)
             is RowLayout -> RcPlayerRow(component, modifier)
             is CoreText -> RcPlayerText(component, modifier)
