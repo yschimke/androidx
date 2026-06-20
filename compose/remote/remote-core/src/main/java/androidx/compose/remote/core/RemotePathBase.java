@@ -387,9 +387,46 @@ public class RemotePathBase implements RcPlatformServices.RcPathArrayCreator {
             float startAngle,
             float sweepAngle,
             boolean forceMoveTo) {
-        // TODO: Implement arc serialization if needed, or rely on platform implementation via
-        // extensions
-        throw new UnsupportedOperationException("Not implemented in Java Base");
+        // The path format has no arc primitive, so approximate the arc with cubic Béziers (the same
+        // technique a platform Path uses internally). Each <= 90-degree segment is a cubic whose
+        // control-point length is k = 4/3 * tan(segment/4); this matches a circular/elliptical arc to
+        // well under a pixel for typical radii.
+        float cx = (left + right) / 2f;
+        float cy = (top + bottom) / 2f;
+        float rx = (right - left) / 2f;
+        float ry = (bottom - top) / 2f;
+        double start = Math.toRadians(startAngle);
+        double sweep = Math.toRadians(sweepAngle);
+        double startX = cx + rx * Math.cos(start);
+        double startY = cy + ry * Math.sin(start);
+        // Begin a new contour at the arc start, or connect to it from the current point.
+        if (forceMoveTo || isEmpty()) {
+            moveTo((float) startX, (float) startY);
+        } else {
+            lineTo((float) startX, (float) startY);
+        }
+        int segments = (int) Math.ceil(Math.abs(sweep) / (Math.PI / 2.0));
+        if (segments == 0) {
+            return;
+        }
+        double segAngle = sweep / segments;
+        double k = 4.0 / 3.0 * Math.tan(segAngle / 4.0);
+        double a = start;
+        for (int i = 0; i < segments; i++) {
+            double b = a + segAngle;
+            double cosA = Math.cos(a);
+            double sinA = Math.sin(a);
+            double cosB = Math.cos(b);
+            double sinB = Math.sin(b);
+            cubicTo(
+                    (float) (cx + rx * (cosA - k * sinA)),
+                    (float) (cy + ry * (sinA + k * cosA)),
+                    (float) (cx + rx * (cosB + k * sinB)),
+                    (float) (cy + ry * (sinB - k * cosB)),
+                    (float) (cx + rx * cosB),
+                    (float) (cy + ry * sinB));
+            a = b;
+        }
     }
 
     private void parsePathData(@NonNull String pathData) {
