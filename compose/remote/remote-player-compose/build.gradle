@@ -37,10 +37,31 @@ androidXMultiplatform {
         minSdk { version = release(29) }
     }
     jvm()
+    wasmJs()
 
     defaultPlatform(PlatformIdentifier.ANDROID)
 
     sourceSets {
+        // commonMain compiles against Compose as compileOnly (for the common metadata compilation)
+        // using the JetBrains CMP multiplatform artifacts, which expose the androidx.compose.* API for
+        // every target. Each leaf supplies the real implementation: AndroidX compose on android, CMP
+        // -desktop on jvm, CMP wasm on web. compileOnly keeps the artifact off the leaf classpaths.
+        commonMain.dependencies {
+            def cmp = "1.8.2"
+            compileOnly("org.jetbrains.compose.runtime:runtime:$cmp")
+            compileOnly("org.jetbrains.compose.foundation:foundation:$cmp")
+            compileOnly("org.jetbrains.compose.ui:ui:$cmp")
+        }
+
+        // Non-JVM (web/native) targets can't use the Java remote-core, so they render with JetBrains
+        // Compose Multiplatform and supply their own actuals for the operations/draw expect layer.
+        nonJvmMain.dependencies {
+            def cmp = "1.8.2"
+            implementation("org.jetbrains.compose.runtime:runtime:$cmp")
+            implementation("org.jetbrains.compose.foundation:foundation:$cmp")
+            implementation("org.jetbrains.compose.ui:ui:$cmp")
+        }
+
         jvmAndAndroidMain.dependencies {
             implementation(project(":compose:remote:remote-core"))
             // Compose APIs for shared code are compileOnly here so the shared-metadata compilation
