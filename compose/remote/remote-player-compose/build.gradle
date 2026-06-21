@@ -74,6 +74,39 @@ androidXMultiplatform {
             implementation("org.jetbrains.compose.material3:material3-desktop:$cmp")
             implementation("org.jetbrains.compose.ui:ui-desktop:$cmp")
         }
+
+        androidHostTest.dependencies {
+            implementation(project(":compose:ui:ui-test"))
+            implementation(project(":compose:ui:ui-test-junit4"))
+            implementation(project(":compose:remote:remote-creation"))
+            implementation(project(":compose:remote:remote-creation-compose"))
+            implementation(project(":wear:compose:remote:remote-material3"))
+            implementation(project(":wear:compose:remote:remote-material3-samples"))
+            implementation(libs.robolectric)
+            implementation(libs.junit)
+            implementation(libs.truth)
+            implementation(project(":compose:ui:ui-test-manifest"))
+        }
+
+        androidDeviceTest.dependencies {
+            implementation(project(":compose:remote:remote-testing"))
+            implementation(project(":compose:ui:ui-test"))
+            implementation(project(":compose:ui:ui-test-junit4"))
+            implementation(project(":compose:remote:remote-creation"))
+            implementation(project(":compose:remote:remote-creation-compose"))
+            implementation(project(":compose:remote:remote-player-compose-testutils"))
+            implementation(project(":compose:remote:remote-core-testutils"))
+            implementation(project(":compose:test-utils"))
+            implementation(project(":test:screenshot:screenshot"))
+            implementation(libs.testExtJunit)
+            implementation(libs.testRules)
+            implementation(libs.testRunner)
+            implementation(libs.espressoCore)
+            implementation(libs.junit)
+            implementation(libs.kotlinTest)
+            implementation(libs.truth)
+            implementation(libs.testParameterInjector)
+        }
     }
 }
 
