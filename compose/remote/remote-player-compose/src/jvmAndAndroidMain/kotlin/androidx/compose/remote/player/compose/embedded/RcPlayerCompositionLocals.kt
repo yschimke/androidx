@@ -17,13 +17,8 @@
 package androidx.compose.remote.player.compose.embedded
 
 import androidx.compose.remote.core.CoreDocument
-import androidx.compose.remote.core.Operation
 import androidx.compose.remote.core.RemoteContext
-import androidx.compose.remote.core.VariableProvider
-import androidx.compose.remote.core.VariableSupport
 import androidx.compose.remote.core.operations.ComponentValue
-import androidx.compose.remote.core.operations.FloatExpression
-import androidx.compose.remote.core.operations.layout.Container
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.ProvidableCompositionLocal
 import androidx.compose.runtime.State
@@ -41,29 +36,6 @@ internal val LocalCoreDocument: ProvidableCompositionLocal<CoreDocument> = compo
  */
 internal val LocalGraphContext: ProvidableCompositionLocal<GraphContext?> = compositionLocalOf {
     null
-}
-
-/**
- * Index of computed-value operations by the id they produce — `VariableSupport`+`VariableProvider`
- * ops that compute from other variables. Animation/spring-bearing `FloatExpression`s are excluded
- * (those are displayed via `rememberAnimatedRemoteFloat`); everything else, including plain
- * `FloatExpression`/`IntegerExpression`, is included so the graph can resolve them when a derived op
- * reads them as an input (chains).
- */
-internal fun buildComputedOpIndex(operations: Collection<Operation>): Map<Int, Operation> {
-    val map = HashMap<Int, Operation>()
-    fun walk(ops: Collection<Operation>) {
-        for (op in ops) {
-            if (op is VariableSupport && op is VariableProvider) {
-                val animated = op is FloatExpression && op.mFloatAnimation != null
-                val id = op.id
-                if (!animated && id > 0 && !map.containsKey(id)) map[id] = op
-            }
-            if (op is Container) walk(op.getList())
-        }
-    }
-    walk(operations)
-    return map
 }
 
 internal val LocalRemoteContext: ProvidableCompositionLocal<RemoteContext> = compositionLocalOf {
