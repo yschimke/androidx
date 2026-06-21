@@ -65,7 +65,6 @@ import androidx.compose.remote.player.compose.embedded.layout.RcPlayerImageLayou
 import androidx.compose.remote.player.compose.embedded.layout.RcPlayerRow
 import androidx.compose.remote.player.compose.embedded.layout.RcPlayerStateLayout
 import androidx.compose.remote.player.compose.embedded.state.rememberRemoteIntAsState
-import androidx.compose.remote.player.core.platform.AndroidRemoteContext
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
@@ -123,7 +122,7 @@ public fun RcPlayer(
         (
             name: String,
             value: Any?,
-            stateUpdater: androidx.compose.remote.player.core.state.StateUpdater,
+            stateUpdater: RcStateUpdater,
         ) -> Unit =
         { _, _, _ -> },
 ) {
@@ -138,7 +137,7 @@ public fun RcPlayer(
     val density = LocalDensity.current
     val remoteContext = remember {
         // Consider a Compose Clock
-        AndroidRemoteContext(clock).also {
+        PlayerRemoteContext(clock).also {
             // Back the document's reactive scalar state (float/int/color) with Compose snapshot
             // state, so those variables resolve reactively without a per-id listener bridge (see
             // SnapshotRemoteComposeState / rememberRemoteFloatAsState). Swap before initializeContext
@@ -347,7 +346,7 @@ public fun RcPlayer(
 
         val stateUpdater =
             remember(remoteContext) {
-                androidx.compose.remote.player.core.state.StateUpdaterImpl(remoteContext)
+                RcStateUpdaterImpl(remoteContext)
             }
         // The image loader: the caller-supplied one, or the default that wraps embedded bitmaps.
         val resolvedImageLoader =

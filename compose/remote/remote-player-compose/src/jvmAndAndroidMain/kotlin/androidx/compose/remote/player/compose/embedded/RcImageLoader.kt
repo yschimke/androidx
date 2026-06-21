@@ -16,61 +16,64 @@
 
 package androidx.compose.remote.player.compose.embedded
 
-import android.content.res.Resources
-import android.graphics.Bitmap
-import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.Drawable
 import androidx.compose.remote.core.RemoteContext
 import androidx.compose.runtime.ProvidableCompositionLocal
-import androidx.compose.runtime.State
 import androidx.compose.runtime.Stable
+import androidx.compose.runtime.State
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.staticCompositionLocalOf
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.painter.BitmapPainter
+import androidx.compose.ui.graphics.painter.Painter
 
 /**
  * Pluggable image loader so the embedded player doesn't depend on any specific image-loading library.
  *
- * The player resolves a document image reference (a `BitmapData` id) to a [Drawable] through this
- * interface. The default ([EmbeddedRcImageLoader]) wraps the document's embedded, already-decoded
+ * The player resolves a document image reference (a `BitmapData` id) to a Compose [Painter] through
+ * this interface. The default ([EmbeddedRcImageLoader]) wraps the document's embedded, already-decoded
  * bitmaps; a host can supply its own loader — backed by Coil, Glide, a disk cache, etc. — to resolve
  * ids the document doesn't carry pixels for (e.g. a host-substituted or remotely-fetched image).
  *
  * [loadImage] returns a [State] rather than a plain value so the result works in both worlds:
- * - in a `@Composable` (the `Image` recomposes when an asynchronously-loaded drawable arrives), and
+ * - in a `@Composable` (the `Image` recomposes when an asynchronously-loaded painter arrives), and
  * - on the canvas draw path, read imperatively via `state.value`.
  *
  * Implementations must return a **stable** [State] for a given [bitmapId] (cache per id) so the
  * composable and the canvas observe the same value, and so an async completion updates both.
+ *
+ * Using a Compose [Painter] (rather than an Android `Drawable`) keeps this multiplatform: the android
+ * player can wrap a host `Drawable` via `DrawablePainter`, and the desktop player uses Skia-backed
+ * painters directly.
  */
 @Stable
 public fun interface RcImageLoader {
-    /** A reactive holder for the [Drawable] of [bitmapId]; `null` until/unless one is available. */
-    public fun loadImage(bitmapId: Int): State<Drawable?>
+    /** A reactive holder for the [Painter] of [bitmapId]; `null` until/unless one is available. */
+    public fun loadImage(bitmapId: Int): State<Painter?>
 }
 
 /**
  * Default [RcImageLoader]: resolves the document's embedded `BitmapData` for an id to a
- * [BitmapDrawable]. Decoding is lazy (on first request) and the result tracks the snapshot-backed
+ * [BitmapPainter]. Decoding is lazy (on first request) and the result tracks the snapshot-backed
  * bitmap store, so a host swap of the underlying bitmap updates the returned [State]. States are
  * cached per id so repeated requests (composable + canvas) share one instance.
  */
 internal class EmbeddedRcImageLoader(private val context: RemoteContext) : RcImageLoader {
-    private val cache = HashMap<Int, State<Drawable?>>()
+    private val cache = HashMap<Int, State<Painter?>>()
 
-    override fun loadImage(bitmapId: Int): State<Drawable?> =
+    override fun loadImage(bitmapId: Int): State<Painter?> =
         cache.getOrPut(bitmapId) {
             // Trigger the lazy decode (a snapshot write, done outside any derived read), then expose
-            // the store-backed bitmap reactively as a Drawable.
+            // the store-backed image reactively as a Painter.
             resolveBitmap(context, bitmapId)
-            var lastBitmap: Bitmap? = null
-            var lastDrawable: Drawable? = null
+            var lastBitmap: ImageBitmap? = null
+            var lastPainter: Painter? = null
             derivedStateOf {
-                val bitmap = context.mRemoteComposeState.getFromId(bitmapId) as? Bitmap
+                val bitmap = context.mRemoteComposeState.getFromId(bitmapId) as? ImageBitmap
                 if (bitmap !== lastBitmap) {
                     lastBitmap = bitmap
-                    lastDrawable = bitmap?.let { BitmapDrawable(Resources.getSystem(), it) }
+                    lastPainter = bitmap?.let { BitmapPainter(it) }
                 }
-                lastDrawable
+                lastPainter
             }
         }
 }

@@ -31,6 +31,8 @@ import androidx.compose.remote.player.core.action.StateUpdaterActionCallback
 import androidx.compose.remote.player.core.platform.BitmapLoader
 import androidx.compose.remote.player.core.platform.TypefaceResolver
 import androidx.compose.remote.player.core.state.StateUpdater
+import androidx.compose.remote.player.compose.embedded.RcStateUpdater
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.remote.player.view.RemoteComposePlayer
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -80,7 +82,9 @@ public fun RemoteDocumentPlayer(
             document = document,
             modifier = playerModifier,
             onAction = onAction,
-            onNamedAction = onNamedAction,
+            onNamedAction = { name, value, rcUpdater ->
+                onNamedAction(name, value, rcUpdater.asLegacyStateUpdater())
+            },
         )
         return
     }
@@ -158,4 +162,31 @@ public fun RemoteDocumentPlayer(
             update(remoteComposePlayer)
         },
     )
+}
+
+/**
+ * Adapts the embedded player's [RcStateUpdater] to the legacy [StateUpdater] so
+ * [RemoteDocumentPlayer]'s onNamedAction keeps its View-player contract while routing through the
+ * embedded [androidx.compose.remote.player.compose.embedded.RcPlayer].
+ */
+private fun RcStateUpdater.asLegacyStateUpdater(): StateUpdater {
+    val rc = this
+    return object : StateUpdater {
+        override fun setNamedLong(name: String, value: Long?) = rc.setNamedLong(name, value)
+
+        override fun setUserLocalFloat(floatName: String, value: Float?) =
+            rc.setUserLocalFloat(floatName, value)
+
+        override fun setUserLocalInt(integerName: String, value: Int?) =
+            rc.setUserLocalInt(integerName, value)
+
+        override fun setUserLocalColor(name: String, value: Int?) =
+            rc.setUserLocalColor(name, value)
+
+        override fun setUserLocalBitmap(name: String, content: android.graphics.Bitmap?) =
+            rc.setUserLocalBitmap(name, content?.asImageBitmap())
+
+        override fun setUserLocalString(stringName: String, value: String?) =
+            rc.setUserLocalString(stringName, value)
+    }
 }

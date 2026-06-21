@@ -21,12 +21,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.remote.core.operations.layout.managers.ImageLayout
 import androidx.compose.remote.core.operations.utilities.ImageScaling
-import androidx.compose.remote.player.compose.embedded.DrawablePainter
 import androidx.compose.remote.player.compose.embedded.LocalRcImageLoader
 import androidx.compose.remote.player.compose.embedded.state.rememberRemoteFloatAsState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 
@@ -34,14 +32,14 @@ import androidx.compose.ui.layout.ContentScale
 internal fun RcPlayerImageLayout(layout: ImageLayout, modifier: Modifier) {
     // Resolve the image through the pluggable RcImageLoader (default: the document's embedded bitmap;
     // a host can override to load from elsewhere) — no image-loading library dependency.
-    val drawable by LocalRcImageLoader.current.loadImage(layout.bitmapId)
+    val painter by LocalRcImageLoader.current.loadImage(layout.bitmapId)
     val alpha by rememberRemoteFloatAsState(layout.alpha)
 
     Box(modifier = modifier) {
-        val resolved = drawable
+        val resolved = painter
         if (resolved != null) {
             Image(
-                painter = remember(resolved) { DrawablePainter(resolved) },
+                painter = resolved,
                 contentDescription = null,
                 modifier = Modifier.fillMaxSize(),
                 contentScale =

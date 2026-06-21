@@ -23,7 +23,6 @@ import androidx.compose.remote.core.VariableSupport
 import androidx.compose.remote.core.operations.FloatExpression
 import androidx.compose.remote.core.operations.ShaderData
 import androidx.compose.remote.core.operations.utilities.ArrayAccess
-import androidx.compose.remote.player.core.platform.AndroidRemoteContext
 import androidx.compose.runtime.State
 import androidx.compose.runtime.derivedStateOf
 
@@ -55,7 +54,7 @@ internal class GraphContext(
     private val computedOps: Map<Int, Operation>,
     private val timeMillis: State<Float>,
     clock: RemoteClock,
-) : AndroidRemoteContext(clock) {
+) : PlayerRemoteContext(clock) {
 
     init {
         // Share the leaf store so collections/objects/paths and plain variables resolve against the

@@ -16,19 +16,16 @@
 
 package androidx.compose.remote.player.compose.utils
 
-import android.os.Build
-import android.util.Log
 import androidx.compose.remote.core.operations.PathData
 import androidx.compose.remote.core.operations.Utils.idFromNan
-import androidx.compose.ui.graphics.AndroidPath
+import androidx.compose.remote.player.compose.embedded.platformConicTo
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.PathMeasure
 import kotlin.math.max
 import kotlin.math.min
 
-/** Utility class to convert a float array representation of a path into a Compose [Path] object. */
+/** Utility to convert a float-array representation of a path into a Compose [Path] object. */
 internal object FloatsToPath {
-    private const val TAG = "FloatsToPath"
 
     /**
      * Converts a float array representing a path into a Path object.
@@ -68,19 +65,15 @@ internal object FloatsToPath {
 
                 PathData.CONIC -> {
                     i += 3
-                    if (Build.VERSION.SDK_INT >= 34) {
-                        // TODO(b/434130226): Conic operation not available in
-                        // androidx.compose.ui.graphics
-                        (path as AndroidPath)
-                            .internalPath
-                            .conicTo(
-                                floatPath[i + 0],
-                                floatPath[i + 1],
-                                floatPath[i + 2],
-                                floatPath[i + 3],
-                                floatPath[i + 4],
-                            )
-                    }
+                    // Compose's common Path has no conicTo; delegate to the platform path.
+                    platformConicTo(
+                        path,
+                        floatPath[i + 0],
+                        floatPath[i + 1],
+                        floatPath[i + 2],
+                        floatPath[i + 3],
+                        floatPath[i + 4],
+                    )
                     i += 5
                 }
 
@@ -103,14 +96,14 @@ internal object FloatsToPath {
                 }
 
                 PathData.DONE -> i++
-                else -> Log.w(TAG, " Odd command " + idFromNan(floatPath[i]))
+                else -> println("FloatsToPath: odd command ${idFromNan(floatPath[i])}")
             }
         }
 
         retPath.reset()
         if (start > 0f || stop < 1f) {
             if (start < stop) {
-                val measure: PathMeasure = PathMeasure() // todo cached
+                val measure = PathMeasure() // todo cached
                 measure.setPath(path, false)
                 val len: Float = measure.length
                 val scaleStart = (max(start.toDouble(), 0.0) * len).toFloat()

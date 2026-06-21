@@ -16,7 +16,6 @@
 
 package androidx.compose.remote.player.compose.embedded
 
-import android.graphics.Bitmap
 import androidx.compose.remote.core.Operation
 import androidx.compose.remote.core.PaintOperation
 import androidx.compose.remote.core.RemoteContext
@@ -64,14 +63,14 @@ import androidx.compose.remote.player.compose.utils.getTweenPath
 import androidx.compose.runtime.State
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Canvas
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.asAndroidPath
 import androidx.compose.ui.graphics.ClipOp
-import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.graphics.nativeCanvas
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Fill
@@ -96,14 +95,14 @@ private fun derefId(rawId: Int, context: RemoteContext): Int =
  * composes. The decoded bitmap is cached in the state's data map (`getFromId`), so later lookups are
  * cheap. Returns null if there is no bitmap or metadata for the id.
  */
-internal fun resolveBitmap(remoteContext: RemoteContext, id: Int): Bitmap? {
+internal fun resolveBitmap(remoteContext: RemoteContext, id: Int): ImageBitmap? {
     val cached = remoteContext.mRemoteComposeState.getFromId(id)
-    if (cached is Bitmap) return cached
+    if (cached is ImageBitmap) return cached
     // Not decoded yet: find the registered BitmapData and decode it now (apply = putObject +
-    // loadBitmap, which caches the decoded Bitmap under the id).
+    // loadBitmap, which caches the decoded ImageBitmap under the id).
     val data = remoteContext.mRemoteComposeState.getObject(id) as? BitmapData ?: return null
     data.apply(remoteContext)
-    return remoteContext.mRemoteComposeState.getFromId(id) as? Bitmap
+    return remoteContext.mRemoteComposeState.getFromId(id) as? ImageBitmap
 }
 
 /**
@@ -116,12 +115,11 @@ internal fun resolveBitmap(remoteContext: RemoteContext, id: Int): Bitmap? {
  * the embedded bitmap. (The composable Image layout, by contrast, can render any Drawable.)
  */
 internal fun resolveCanvasBitmap(
-    graph: GraphContext?,
+    @Suppress("UNUSED_PARAMETER") graph: GraphContext?,
     remoteContext: RemoteContext,
     id: Int,
-): Bitmap? {
-    val loaded = graph?.imageLoader?.loadImage(id)?.value
-    if (loaded is android.graphics.drawable.BitmapDrawable) return loaded.bitmap
+): ImageBitmap? {
+    // Canvas blits use the embedded decode; host-supplied (loader) images render via the Image layout.
     return resolveBitmap(remoteContext, id)
 }
 
@@ -514,7 +512,7 @@ internal fun DrawScope.executeOperations(
 
                 val bitmap = resolveCanvasBitmap(graph, remoteContext, op.mId)
                 if (bitmap != null) {
-                    val image = bitmap.asImageBitmap()
+                    val image = bitmap
                     val dstW = right - left
                     val dstH = bottom - top
                     if (dstW > 0f && dstH > 0f) {
@@ -599,7 +597,7 @@ internal fun DrawScope.executeOperations(
             is MatrixSkew -> {
                 val sx = resolveFloat(op.mValue1, op.mV1, read)
                 val sy = resolveFloat(op.mValue2, op.mV2, read)
-                drawContext.canvas.nativeCanvas.skew(sx, sy)
+                drawContext.canvas.skew(sx, sy)
             }
             is ClipRect -> {
                 // Imperative clip on the underlying canvas (bounded by the surrounding
@@ -635,12 +633,7 @@ internal fun DrawScope.executeOperations(
                     val text = full.substring(start, end)
                     val x = resolveFloat(op.mX, op.mOutX, read)
                     val y = resolveFloat(op.mY, op.mOutY, read)
-                    drawContext.canvas.nativeCanvas.drawText(
-                        text,
-                        x,
-                        y,
-                        paintState.toNativeTextPaint(),
-                    )
+                    drawPlatformText(text, x, y, paintState)
                 }
             }
             is DrawTextOnPath -> {
@@ -654,13 +647,7 @@ internal fun DrawScope.executeOperations(
                     val hOffset = dtopOutHOffsetField.getFloat(op)
                     val vOffset = dtopOutVOffsetField.getFloat(op)
                     val path = remoteContext.mRemoteComposeState.getPath(pathId, 0f, 1f)
-                    drawContext.canvas.nativeCanvas.drawTextOnPath(
-                        full,
-                        path.asAndroidPath(),
-                        hOffset,
-                        vOffset,
-                        paintState.toNativeTextPaint(),
-                    )
+                    drawPlatformTextOnPath(full, path, hOffset, vOffset, paintState)
                 }
             }
             is DrawTextAnchored -> {
@@ -671,17 +658,15 @@ internal fun DrawScope.executeOperations(
                 val textId = dtaTextIdField.getInt(op)
                 val full = read.getText(textId)
                 if (full != null && !paintState.textSize.isNaN()) {
-                    val nativePaint = paintState.toNativeTextPaint()
                     val flags = dtaFlagsField.getInt(op)
                     val baseline = (flags and DrawTextAnchored.BASELINE_RELATIVE) != 0
-                    val bounds = android.graphics.Rect()
-                    nativePaint.getTextBounds(full, 0, full.length, bounds)
+                    val bounds = paintState.measurePlatformTextBounds(full)
                     val outX = dtaOutXField.getFloat(op)
                     val outY = dtaOutYField.getFloat(op)
                     val outPanX = dtaOutPanXField.getFloat(op)
                     val outPanY = dtaOutPanYField.getFloat(op)
-                    val textWidth = (bounds.right - bounds.left).toFloat()
-                    val textHeight = (bounds.bottom - bounds.top).toFloat()
+                    val textWidth = bounds.right - bounds.left
+                    val textHeight = bounds.bottom - bounds.top
                     val hOffset = (0f - textWidth) * (1f + outPanX) / 2f - bounds.left
                     val x = outX + hOffset
                     val y =
@@ -690,9 +675,9 @@ internal fun DrawScope.executeOperations(
                         } else {
                             outY +
                                 (0f - textHeight) * (1f - outPanY) / 2f +
-                                (if (baseline) textHeight / 2f else -bounds.top.toFloat())
+                                (if (baseline) textHeight / 2f else -bounds.top)
                         }
-                    drawContext.canvas.nativeCanvas.drawText(full, x, y, nativePaint)
+                    drawPlatformText(full, x, y, paintState)
                 }
             }
             is DrawBitmapScaled -> {
@@ -733,7 +718,7 @@ internal fun DrawScope.executeOperations(
                     drawContext.canvas.save()
                     drawContext.canvas.clipRect(dstLeft, dstTop, dstRight, dstBottom)
                     drawImage(
-                        image = bitmap.asImageBitmap(),
+                        image = bitmap,
                         srcOffset = IntOffset(srcLeft.toInt(), srcTop.toInt()),
                         srcSize =
                             IntSize((srcRight - srcLeft).toInt(), (srcBottom - srcTop).toInt()),
@@ -773,7 +758,7 @@ internal fun DrawScope.executeOperations(
                     val dstH = dstBottom - dstTop
                     if (dstW > 0 && dstH > 0) {
                         drawImage(
-                            image = bitmap.asImageBitmap(),
+                            image = bitmap,
                             srcOffset = IntOffset(srcLeft, srcTop),
                             srcSize = IntSize(srcRight - srcLeft, srcBottom - srcTop),
                             dstOffset = IntOffset(dstLeft, dstTop),
@@ -848,18 +833,11 @@ internal fun DrawScope.executeOperations(
                         // The target must be a mutable bitmap to back a Canvas. Decoded document
                         // bitmaps are immutable, so draw into a mutable copy and store it back under
                         // the same id, so a later DRAW_BITMAP of this id reads the rendered content.
-                        val target =
-                            if (stored.isMutable) {
-                                stored
-                            } else {
-                                stored.copy(Bitmap.Config.ARGB_8888, true).also {
-                                    remoteContext.mRemoteComposeState.cacheData(bitmapId, it)
-                                }
-                            }
-                        if ((mode and DrawToBitmap.MODE_NO_INITIALIZE) == 0) {
-                            target.eraseColor(color)
-                        }
-                        drawContext.canvas = Canvas(target.asImageBitmap())
+                        val eraseColor =
+                            if ((mode and DrawToBitmap.MODE_NO_INITIALIZE) == 0) color else null
+                        val target = mutablePlayerCanvasBitmap(stored, eraseColor)
+                        remoteContext.mRemoteComposeState.cacheData(bitmapId, target)
+                        drawContext.canvas = Canvas(target)
                     }
                 }
             }
@@ -877,8 +855,7 @@ internal fun DrawScope.executeOperations(
                     val warpRadiusOffset = dtocWarpRadiusOffsetField.getFloat(op)
                     val alignment = dtocAlignmentField.get(op) as? DrawTextOnCircle.Alignment
                     val placement = dtocPlacementField.get(op) as? DrawTextOnCircle.Placement
-                    val nativePaint = paintState.toNativeTextPaint()
-                    val textWidth = nativePaint.measureText(full)
+                    val textWidth = paintState.measurePlatformTextWidth(full)
                     val finalRadius = radius + warpRadiusOffset
                     val clockwise = placement == DrawTextOnCircle.Placement.OUTSIDE
                     var sweepDegrees =
@@ -903,17 +880,19 @@ internal fun DrawScope.executeOperations(
                         }
                     }
                     val textPath =
-                        android.graphics.Path().apply {
+                        Path().apply {
                             addArc(
-                                centerX - finalRadius,
-                                centerY - finalRadius,
-                                centerX + finalRadius,
-                                centerY + finalRadius,
+                                Rect(
+                                    centerX - finalRadius,
+                                    centerY - finalRadius,
+                                    centerX + finalRadius,
+                                    centerY + finalRadius,
+                                ),
                                 finalStartAngle,
                                 sweepDegrees,
                             )
                         }
-                    drawContext.canvas.nativeCanvas.drawTextOnPath(full, textPath, 0f, 0f, nativePaint)
+                    drawPlatformTextOnPath(full, textPath, 0f, 0f, paintState)
                 }
             }
             is DrawBitmapFontText -> {
@@ -959,7 +938,7 @@ internal fun DrawScope.executeOperations(
                         val glyphBitmap = resolveBitmap(remoteContext, glyph.mBitmapId)
                         if (glyphBitmap != null && glyph.mBitmapWidth > 0 && glyph.mBitmapHeight > 0) {
                             drawImage(
-                                image = glyphBitmap.asImageBitmap(),
+                                image = glyphBitmap,
                                 srcOffset = IntOffset.Zero,
                                 srcSize = IntSize(glyphBitmap.width, glyphBitmap.height),
                                 dstOffset = IntOffset(xPos.toInt(), (y + glyph.mMarginTop).toInt()),
@@ -1045,7 +1024,7 @@ internal fun DrawScope.executeOperations(
                         val glyphBitmap = resolveBitmap(remoteContext, glyph.mBitmapId)
                         if (glyphBitmap != null && glyph.mBitmapWidth > 0 && glyph.mBitmapHeight > 0) {
                             drawImage(
-                                image = glyphBitmap.asImageBitmap(),
+                                image = glyphBitmap,
                                 srcOffset = IntOffset.Zero,
                                 srcSize = IntSize(glyphBitmap.width, glyphBitmap.height),
                                 dstOffset = IntOffset(xPos.toInt(), (yPos + glyph.mMarginTop).toInt()),
@@ -1104,19 +1083,9 @@ internal fun DrawScope.executeOperations(
                         }
                     }
                     val pathId = derefId(dbfopPathIdField.getInt(op), read)
-                    val androidPath =
-                        remoteContext.mRemoteComposeState.getPath(pathId, 0f, 1f).asAndroidPath()
-                    val pathMeasure = android.graphics.PathMeasure(androidPath, false)
-                    val pathLength = pathMeasure.length
+                    val glyphPath = remoteContext.mRemoteComposeState.getPath(pathId, 0f, 1f)
+                    val pathLength = platformPathLength(glyphPath)
                     if (width > 0f && pathLength > 0f) {
-                        val matrix = android.graphics.Matrix()
-                        val canvas = drawContext.canvas.nativeCanvas
-                        val nativePaint =
-                            android.graphics.Paint().apply {
-                                isAntiAlias = true
-                                isFilterBitmap = true
-                                alpha = (paintState.alpha * 255f).toInt().coerceIn(0, 255)
-                            }
                         var progress = 0f
                         var pos = 0
                         var prevGlyph = ""
@@ -1143,33 +1112,15 @@ internal fun DrawScope.executeOperations(
                                     glyph.mBitmapWidth > 0 &&
                                     glyph.mBitmapHeight > 0
                             ) {
-                                pathMeasure.getMatrix(
-                                    fraction * pathLength,
-                                    matrix,
-                                    android.graphics.PathMeasure.POSITION_MATRIX_FLAG or
-                                        android.graphics.PathMeasure.TANGENT_MATRIX_FLAG,
-                                )
-                                canvas.save()
-                                canvas.concat(matrix)
-                                val dst =
-                                    android.graphics.RectF(
-                                        -halfGlyphWidth,
-                                        yAdj + glyph.mMarginTop,
-                                        halfGlyphWidth,
-                                        yAdj + glyph.mBitmapHeight + glyph.mMarginTop,
-                                    )
-                                canvas.drawBitmap(
+                                drawImageOnPath(
                                     glyphBitmap,
-                                    android.graphics.Rect(
-                                        0,
-                                        0,
-                                        glyphBitmap.width,
-                                        glyphBitmap.height,
-                                    ),
-                                    dst,
-                                    nativePaint,
+                                    glyphPath,
+                                    fraction * pathLength,
+                                    halfGlyphWidth,
+                                    yAdj + glyph.mMarginTop,
+                                    yAdj + glyph.mBitmapHeight + glyph.mMarginTop,
+                                    paintState.alpha,
                                 )
-                                canvas.restore()
                             }
                             progress += glyph.mBitmapWidth + glyph.mMarginRight + glyphSpacing
                             prevGlyph = glyph.mChars!!

@@ -16,7 +16,6 @@
 
 package androidx.compose.remote.player.compose.embedded.state
 
-import android.graphics.Bitmap
 import androidx.compose.remote.core.RemoteContext
 import androidx.compose.remote.core.VariableSupport
 import androidx.compose.remote.core.operations.Utils
@@ -35,6 +34,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.toArgb
 
 public class DirectUpdateVariableSupport(public val id: Int, public val update: () -> Unit) :
@@ -199,7 +199,7 @@ internal fun rememberRemoteColorAsState(id: Int): State<Color> {
 }
 
 @Composable
-internal fun rememberRemoteBitmapAsState(id: Int): State<Bitmap?> {
+internal fun rememberRemoteBitmapAsState(id: Int): State<ImageBitmap?> {
     val document = LocalCoreDocument.current
     val remoteContext = LocalRemoteContext.current
     // Lazy decode: an Image component composing here is the "drawn" trigger. Decode once in a keyed
@@ -207,7 +207,7 @@ internal fun rememberRemoteBitmapAsState(id: Int): State<Bitmap?> {
     // snapshot-backed data store so a later host swap of the bitmap recomposes — no listener bridge.
     remember(document, id) { resolveBitmap(remoteContext, id) }
     return remember(document, id) {
-        derivedStateOf { remoteContext.mRemoteComposeState.getFromId(id) as? Bitmap }
+        derivedStateOf { remoteContext.mRemoteComposeState.getFromId(id) as? ImageBitmap }
     }
 }
 

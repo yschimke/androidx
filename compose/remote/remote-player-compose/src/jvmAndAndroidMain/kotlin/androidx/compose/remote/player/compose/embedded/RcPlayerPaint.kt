@@ -16,28 +16,23 @@
 
 package androidx.compose.remote.player.compose.embedded
 
-import android.graphics.Bitmap
 import androidx.compose.remote.core.RemoteContext
 import androidx.compose.remote.core.RemoteReadContext
-import androidx.compose.remote.core.operations.ShaderData
-import androidx.compose.remote.core.operations.Utils
 import androidx.compose.remote.core.operations.paint.PaintBundle
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ShaderBrush
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.TileMode
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.text.font.FontStyle
 
 /*
- * Paint state + PaintBundle decoding for the embedded player's canvas draw path. Splits the paint
- * concerns (ComposeLocalPaint, stroke/blend/tile mappers, shader-brush builders, updatePaintFromBundle)
- * out of RcPlayerDrawing. Shares the snapshot store via the passed RemoteContext and resolveBitmap.
+ * Paint state + PaintBundle decoding for the embedded player's canvas draw path. The paint state and
+ * the PaintBundle decoding (stroke/blend/tile mappers, gradients) are platform-agnostic. The
+ * platform-specific concerns — building the AGSL/texture shader brush and rendering canvas text — are
+ * factored into expect/actual (`applyPlatformShader` etc. and the text draws in RcPlayerDrawing).
  */
 
 internal class ComposeLocalPaint {
@@ -58,9 +53,10 @@ internal class ComposeLocalPaint {
     var fontWeight: Int = 400
     var fontStyle: FontStyle = FontStyle.Normal
     var brush: Brush? = null
-    // The framework shader backing [brush] (SHADER/TEXTURE), kept so SHADER_MATRIX can set a local
-    // matrix on it.
-    var nativeShader: android.graphics.Shader? = null
+    // The platform shader object backing [brush] (SHADER/TEXTURE), kept so SHADER_MATRIX can set a
+    // local matrix on it. Holds an android.graphics.Shader on Android; null on platforms without a
+    // native shader (desktop falls back to the solid color). Opaque to the shared code.
+    var platformShader: Any? = null
     var colorFilter: androidx.compose.ui.graphics.ColorFilter? = null
     var blendMode: androidx.compose.ui.graphics.BlendMode =
         androidx.compose.ui.graphics.BlendMode.SrcOver
@@ -71,28 +67,6 @@ internal class ComposeLocalPaint {
 
     /** The fill color with the paint's [alpha] folded into its alpha channel. */
     fun effectiveColor(): Color = Color(color).let { it.copy(alpha = it.alpha * alpha) }
-
-    /**
-     * Build a framework [android.graphics.Paint] for the canvas text draw ops (DRAW_TEXT and its
-     * on-path/anchored variants) from the current paint state: anti-aliased, the effective color,
-     * the text size, and a bold/italic [android.graphics.Typeface] derived from font weight/style.
-     */
-    fun toNativeTextPaint(): android.graphics.Paint {
-        val style =
-            when {
-                fontStyle == FontStyle.Italic && fontWeight >= 600 ->
-                    android.graphics.Typeface.BOLD_ITALIC
-                fontStyle == FontStyle.Italic -> android.graphics.Typeface.ITALIC
-                fontWeight >= 600 -> android.graphics.Typeface.BOLD
-                else -> android.graphics.Typeface.NORMAL
-            }
-        return android.graphics.Paint().apply {
-            isAntiAlias = true
-            color = effectiveColor().toArgb()
-            textSize = this@ComposeLocalPaint.textSize
-            typeface = android.graphics.Typeface.create(android.graphics.Typeface.DEFAULT, style)
-        }
-    }
 }
 
 internal fun mapStrokeCap(cap: Int): StrokeCap =
@@ -116,96 +90,26 @@ internal fun mapTileMode(mode: Int): TileMode =
         else -> TileMode.Clamp
     }
 
-/** Maps a packed tile-mode index to a framework [android.graphics.Shader.TileMode]. */
-private fun nativeTileMode(index: Int): android.graphics.Shader.TileMode =
-    when (index) {
-        1 -> android.graphics.Shader.TileMode.REPEAT
-        2 -> android.graphics.Shader.TileMode.MIRROR
-        else -> android.graphics.Shader.TileMode.CLAMP
-    }
-
-/** Wraps a framework [android.graphics.Shader] as a Compose [Brush] for the DrawScope paint path. */
-private fun nativeShaderBrush(shader: android.graphics.Shader): Brush =
-    object : ShaderBrush() {
-        override fun createShader(size: Size): android.graphics.Shader = shader
-    }
-
 /**
- * Builds the AGSL [android.graphics.RuntimeShader] for a PaintBundle `SHADER` op (from a
- * [ShaderData], with its float/int/bitmap uniforms applied), mirroring the View player's
- * `AndroidPaintContext.setShader`. Returns null — for id 0, a missing [ShaderData] or shader text,
- * or below API 33 (RuntimeShader is API 33+); the caller then falls back to the solid color. The
- * caller wraps it as a Compose [Brush] (and keeps it for SHADER_MATRIX).
+ * Build the AGSL/native shader for a PaintBundle `SHADER` op and store it on the paint (sets
+ * [ComposeLocalPaint.brush] + [ComposeLocalPaint.platformShader]); a missing/invalid shader clears
+ * them so the caller falls back to the solid color. Android uses an AGSL `RuntimeShader` (API 33+);
+ * desktop has no AGSL, so it is a no-op (solid color).
  */
-private fun buildRuntimeShader(shaderId: Int, remoteContext: RemoteContext): android.graphics.Shader? {
-    if (shaderId == 0) return null
-    if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.TIRAMISU) return null
-    val data = remoteContext.mRemoteComposeState.getFromId(shaderId) as? ShaderData ?: return null
-    val text = remoteContext.getText(data.shaderTextId) ?: return null
-    // A shader that fails to compile or bind its uniforms (e.g. malformed AGSL, or a runtime that
-    // doesn't fully support RuntimeShader such as a host without GPU shader compilation) must not
-    // crash the whole document draw — fall back to no shader so the rest of the frame still renders.
-    return try {
-        val shader = android.graphics.RuntimeShader(text)
-        for (name in data.uniformFloatNames) {
-            shader.setFloatUniform(name, data.getUniformFloats(name))
-        }
-        for (name in data.uniformIntegerNames) {
-            shader.setIntUniform(name, data.getUniformInts(name))
-        }
-        for (name in data.uniformBitmapNames) {
-            val bitmap = resolveBitmap(remoteContext, data.getUniformBitmapId(name))
-            if (bitmap != null) {
-                shader.setInputShader(
-                    name,
-                    android.graphics.BitmapShader(
-                        bitmap,
-                        android.graphics.Shader.TileMode.CLAMP,
-                        android.graphics.Shader.TileMode.CLAMP,
-                    ),
-                )
-            }
-        }
-        shader
-    } catch (e: RuntimeException) {
-        null
-    }
-}
+internal expect fun ComposeLocalPaint.applyPlatformShader(shaderId: Int, remoteContext: RemoteContext)
 
-/**
- * Applies a PaintBundle `SHADER_MATRIX` op: sets a local matrix on the current shader. [matrixWord]
- * is the NaN-encoded id (as raw bits) of a [MatrixAccess] object; id 0 clears the local matrix.
- * Mirrors the View player's `AndroidPaintContext.setShaderMatrix`.
- */
-private fun applyShaderMatrix(paintState: ComposeLocalPaint, matrixWord: Int, read: RemoteReadContext) {
-    val shader = paintState.nativeShader ?: return
-    val id = Utils.idFromNan(Float.fromBits(matrixWord))
-    if (id == 0) {
-        shader.setLocalMatrix(null)
-        return
-    }
-    val matrix = read.getObject(id) as? androidx.compose.remote.core.MatrixAccess ?: return
-    val values = matrix.get()
-    // MatrixAccess.to3x3: a 4x4 (16) collapses to the 3x3 (9) android Matrix layout; a 9 is as-is.
-    val m3x3 =
-        when (values.size) {
-            9 -> values
-            16 ->
-                floatArrayOf(
-                    values[0],
-                    values[1],
-                    values[3],
-                    values[4],
-                    values[5],
-                    values[7],
-                    values[8],
-                    values[9],
-                    values[15],
-                )
-            else -> return
-        }
-    shader.setLocalMatrix(android.graphics.Matrix().apply { setValues(m3x3) })
-}
+/** Build a bitmap-texture shader brush for a PaintBundle `TEXTURE` op (see [applyPlatformShader]). */
+internal expect fun ComposeLocalPaint.applyPlatformTexture(
+    bitmapId: Int,
+    tileModes: Int,
+    remoteContext: RemoteContext,
+)
+
+/** Apply a PaintBundle `SHADER_MATRIX` op: set a local matrix on the current platform shader. */
+internal expect fun ComposeLocalPaint.applyPlatformShaderMatrix(
+    matrixWord: Int,
+    read: RemoteReadContext,
+)
 
 internal fun mapBlendMode(mode: Int): androidx.compose.ui.graphics.BlendMode =
     when (mode) {
@@ -317,32 +221,17 @@ internal fun updatePaintFromBundle(
                 paintState.colorFilter = null
             }
             PaintBundle.SHADER -> {
-                // AGSL RuntimeShader on the paint, wrapped as a Compose Brush (mirrors the View
-                // player's AndroidPaintContext.setShader). Null (id 0 / missing data / pre-API-33)
-                // clears it. Keep the native shader so SHADER_MATRIX can set a local matrix.
-                val shaderId = array[i++]
-                val shader = buildRuntimeShader(shaderId, remoteContext)
-                paintState.nativeShader = shader
-                paintState.brush = shader?.let { nativeShaderBrush(it) }
+                // AGSL shader brush (mirrors the View player's AndroidPaintContext.setShader); a
+                // null/missing/unsupported shader clears it so the solid color is used.
+                paintState.applyPlatformShader(array[i++], remoteContext)
             }
             PaintBundle.TEXTURE -> {
                 // Bitmap texture shader. Layout (PaintBundle): bitmapId, tileModes (tileX=&0xF,
-                // tileY=>>16), filter (unused here). Wrapped as a Compose Brush; mirrors
-                // AndroidPaintContext.setTextureShader.
+                // tileY=>>16), filter (unused here).
                 val bitmapId = array[i++]
                 val tileModes = array[i++]
                 i++ // filter/maxAnisotropy word (filtering managed by Compose; consumed to stay synced)
-                val bitmap = resolveBitmap(remoteContext, bitmapId)
-                val shader =
-                    bitmap?.let {
-                        android.graphics.BitmapShader(
-                            it,
-                            nativeTileMode(tileModes and 0xF),
-                            nativeTileMode((tileModes shr 16) and 0xF),
-                        )
-                    }
-                paintState.nativeShader = shader
-                paintState.brush = shader?.let { nativeShaderBrush(it) }
+                paintState.applyPlatformTexture(bitmapId, tileModes, remoteContext)
             }
             PaintBundle.ALPHA -> {
                 // 1 float word (see PaintBundle.resolveIds). Folded into the draw color via
@@ -357,7 +246,7 @@ internal fun updatePaintFromBundle(
             }
             PaintBundle.SHADER_MATRIX -> {
                 // Local matrix on the current shader (1 word: NaN-encoded MatrixAccess id).
-                applyShaderMatrix(paintState, array[i++], read)
+                paintState.applyPlatformShaderMatrix(array[i++], read)
             }
             PaintBundle.STROKE_MITER,
             PaintBundle.FALLBACK_TYPEFACE -> {
