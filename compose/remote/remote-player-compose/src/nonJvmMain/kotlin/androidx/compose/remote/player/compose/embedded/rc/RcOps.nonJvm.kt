@@ -33,3 +33,9 @@ internal actual fun childOperations(op: Operation): List<Operation>? = null
 internal actual fun isParticleOp(op: Operation): Boolean = false
 
 internal actual fun isWakeInOp(op: Operation): Boolean = false
+
+internal actual interface RemoteReadContext
+
+internal actual fun rcReadFloat(read: RemoteReadContext, id: Int): Float = 0f
+
+internal actual fun rcIdFromNan(value: Float): Int = -1

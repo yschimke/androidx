@@ -42,3 +42,10 @@ internal actual fun isParticleOp(op: Operation): Boolean =
     op is ParticlesLoop || op is ParticlesCompare
 
 internal actual fun isWakeInOp(op: Operation): Boolean = op is WakeIn
+
+internal actual typealias RemoteReadContext = androidx.compose.remote.core.RemoteReadContext
+
+internal actual fun rcReadFloat(read: RemoteReadContext, id: Int): Float = read.getFloat(id)
+
+internal actual fun rcIdFromNan(value: Float): Int =
+    androidx.compose.remote.core.operations.Utils.idFromNan(value)

@@ -126,14 +126,6 @@ internal fun resolveCanvasBitmap(
 /** Backstop on [LoopOperation] iterations so a malformed bound can't hang the draw thread. */
 private const val MAX_LOOP_ITERATIONS = 100_000
 
-internal fun resolveFloat(value: Float, fallback: Float, context: RemoteReadContext): Float {
-    // A NaN-encoded value is a variable reference. [context] is the draw read context — normally the
-    // GraphContext, which resolves time ids from the Compose frame clock and computed ids through
-    // their derivedStateOf (so a time/variable-driven value re-runs this draw when it changes), and
-    // a plain leaf id through the shared snapshot store. There is no separate draw-path variable map.
-    return if (value.isNaN()) context.getFloat(Utils.idFromNan(value)) else fallback
-}
-
 internal fun DrawScope.executeOperations(
     operations: List<Operation>,
     remoteContext: RemoteContext,

@@ -46,3 +46,12 @@ internal expect fun isParticleOp(op: Operation): Boolean
 
 /** True if [op] is a `WakeIn` op (requests a future repaint). */
 internal expect fun isWakeInOp(op: Operation): Boolean
+
+/** Read-only view of resolved variables (remote-core `RemoteReadContext`). Opaque in common code. */
+internal expect interface RemoteReadContext
+
+/** The current float value of variable [id] in [read]. */
+internal expect fun rcReadFloat(read: RemoteReadContext, id: Int): Float
+
+/** Decode a NaN-encoded variable reference [value] to its variable id (remote-core `Utils.idFromNan`). */
+internal expect fun rcIdFromNan(value: Float): Int
