@@ -19,6 +19,9 @@ package androidx.compose.remote.player.compose.embedded.rc
 import androidx.compose.remote.core.VariableProvider
 import androidx.compose.remote.core.VariableSupport
 import androidx.compose.remote.core.operations.FloatExpression
+import androidx.compose.remote.core.operations.ParticlesCompare
+import androidx.compose.remote.core.operations.ParticlesLoop
+import androidx.compose.remote.core.operations.WakeIn
 import androidx.compose.remote.core.operations.layout.Container
 
 // On JVM/Android the operations layer is the Java remote-core model verbatim (zero-cost).
@@ -34,3 +37,8 @@ internal actual fun computedOpId(op: Operation): Int {
 
 internal actual fun childOperations(op: Operation): List<Operation>? =
     if (op is Container) op.list else null
+
+internal actual fun isParticleOp(op: Operation): Boolean =
+    op is ParticlesLoop || op is ParticlesCompare
+
+internal actual fun isWakeInOp(op: Operation): Boolean = op is WakeIn

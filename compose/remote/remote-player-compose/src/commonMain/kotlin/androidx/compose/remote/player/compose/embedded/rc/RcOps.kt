@@ -40,3 +40,9 @@ internal expect fun computedOpId(op: Operation): Int
 
 /** The child operations of [op] if it is a layout `Container`, else null. */
 internal expect fun childOperations(op: Operation): List<Operation>?
+
+/** True if [op] is a particle loop/compare op (drives the frame-loop keepalive). */
+internal expect fun isParticleOp(op: Operation): Boolean
+
+/** True if [op] is a `WakeIn` op (requests a future repaint). */
+internal expect fun isWakeInOp(op: Operation): Boolean
