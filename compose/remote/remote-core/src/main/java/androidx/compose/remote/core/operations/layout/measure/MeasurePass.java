@@ -91,6 +91,18 @@ public class MeasurePass {
     }
 
     /**
+     * Remove the ComponentMeasure for the given id, if present, returning it to the pool.
+     *
+     * @param id the component id
+     */
+    public void remove(int id) {
+        ComponentMeasure measure = mList.remove(id);
+        if (measure != null) {
+            recycle(measure);
+        }
+    }
+
+    /**
      * return the ComponentMeasure associated with a given component
      *
      * @param c the Component

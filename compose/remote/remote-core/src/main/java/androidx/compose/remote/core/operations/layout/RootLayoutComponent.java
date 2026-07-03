@@ -72,9 +72,26 @@ public class RootLayoutComponent extends Component {
         m.setVisibility(component.mVisibility);
         m.clearCache();
 
+        // Evict all descendants from the measure pass so that measuring the boundary
+        // behaves like a full pass over its subtree. The pass persists across frames,
+        // so stale entries would otherwise satisfy freshness checks (e.g.
+        // MeasurePass.contains() in CollapsibleColumnLayout) and cached constraints,
+        // skipping the re-measure the invalidation asked for.
         for (Operation op : component.getList()) {
             if (op instanceof Component) {
-                resetSubTreeMeasureState((Component) op, measure);
+                evictSubTreeMeasureState((Component) op, measure);
+            }
+        }
+    }
+
+    private void evictSubTreeMeasureState(
+            @NonNull Component component, @NonNull MeasurePass measure) {
+        component.mNeedsMeasure = true;
+        measure.remove(component.getComponentId());
+
+        for (Operation op : component.getList()) {
+            if (op instanceof Component) {
+                evictSubTreeMeasureState((Component) op, measure);
             }
         }
     }
