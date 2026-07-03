@@ -126,6 +126,7 @@ public fun RcPlayer(
     isShaderValid: (shaderSource: String) -> Boolean = { true },
     onAction: (actionId: Int, value: String?) -> Unit = { _, _ -> },
     onNamedAction: (name: String, value: Any?, stateUpdater: StateUpdater) -> Unit = { _, _, _ -> },
+    customContent: @Composable (RcCustomComponent) -> Unit = {},
 ) {
     val clock = remember {
         if (document.clock is SystemClock) {
@@ -390,6 +391,7 @@ public fun RcPlayer(
                 { name, value ->
                     onNamedAction(name, value, stateUpdater)
                 },
+            LocalRcCustomContent provides customContent,
         ) {
             val rootSize =
                 androidx.compose.ui.unit.IntSize(constraints.maxWidth, constraints.maxHeight)
@@ -514,10 +516,12 @@ internal fun RcPlayerComponent(component: Component, modifier: Modifier = Modifi
             is FitBoxLayout -> RcPlayerFitBoxLayout(component, modifier)
             is StateLayout -> RcPlayerStateLayout(component, modifier)
             is ImageLayout -> RcPlayerImageLayout(component, modifier)
+            is androidx.compose.remote.core.operations.layout.managers.Custom ->
+                RcPlayerCustom(component, modifier)
             // Last as others are often BoxLayout subclasses
             is BoxLayout -> RcPlayerBox(component, modifier)
             else -> {
-                // Unsupported layout type (e.g. Custom). Render nothing rather than crash; see
+                // Unsupported layout type. Render nothing rather than crash; see
                 // operation_coverage.md. The modifier (incl. any drawContent) was still applied
                 // above.
                 println(
