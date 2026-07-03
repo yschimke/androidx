@@ -71,6 +71,13 @@ internal class ComposeLocalPaint {
      */
     var alpha: Float = 1f
 
+    /**
+     * The [PaintBundle]s applied to this paint state, in application order. Replayed into a core
+     * [androidx.compose.remote.core.PaintContext] when a draw op is bridged to the View player
+     * implementation (see RcPlayerParticles), so paint set outside that subtree still applies.
+     */
+    val sourceBundles: MutableList<PaintBundle> = mutableListOf()
+
     /** The fill color with the paint's [alpha] folded into its alpha channel. */
     fun effectiveColor(): Color = Color(color).let { it.copy(alpha = it.alpha * alpha) }
 
@@ -255,6 +262,7 @@ internal fun updatePaintFromBundle(
     remoteContext: RemoteContext,
     read: RemoteContext = remoteContext,
 ) {
+    paintState.sourceBundles.add(bundle)
     val array = bundle.getArrayReflection()
     var i = 0
     while (i < bundle.getPosReflection()) {

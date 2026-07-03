@@ -246,11 +246,17 @@ public fun RcPlayer(
             }
         }
 
+    // Particle systems advance their simulation once per draw, so the frame loop must keep
+    // ticking (and re-invalidating the particle draw) even if no expression is otherwise
+    // time-dependent.
+    val hasParticles =
+        remember(document) { containsParticles(document.getOperationsReflection()) }
+
     // A WakeIn requests a future repaint; with no one-shot scheduler we keep the loop alive
     // instead.
     val hasWakeIn = remember(document) { containsWakeIn(document.getOperationsReflection()) }
 
-    LaunchedEffect(document, hasAnimations, isTimeDependent, hasWakeIn) {
+    LaunchedEffect(document, hasAnimations, isTimeDependent, hasParticles, hasWakeIn) {
         val startMillis = withFrameMillis { it }
         while (true) {
             val frameMillis = withFrameMillis { it } - startMillis
@@ -271,7 +277,7 @@ public fun RcPlayer(
             // continuously-changing time variable. Animated / time-driven documents keep looping.
             // TODO: also idle animated documents between animations and re-arm on host-driven
             // variable writes (see HISTORY.md, "Plan 1").
-            if (!hasAnimations && !isTimeDependent && !hasWakeIn) break
+            if (!hasAnimations && !isTimeDependent && !hasParticles && !hasWakeIn) break
         }
     }
 
@@ -542,6 +548,14 @@ internal fun RcPlayerChildren(
         children.fastForEach { op -> RcPlayerComponent(op) }
     }
 }
+
+/** True if the op tree contains a particle loop (drives the frame-loop keepalive). */
+private fun containsParticles(operations: Collection<Operation>): Boolean =
+    operations.any { op ->
+        op is androidx.compose.remote.core.operations.ParticlesLoop ||
+            op is androidx.compose.remote.core.operations.ParticlesCompare ||
+            (op is Container && containsParticles(op.getList()))
+    }
 
 /**
  * True if the op tree contains a [WakeIn], which asks the runtime to repaint after a delay. The
