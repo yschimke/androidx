@@ -1132,7 +1132,7 @@ public class CoreDocument implements Serializable {
 
     public final LoomManager mLoomManager = new LoomManager();
 
-    private void collectCollections(
+    public void collectCollections(
             @NonNull ArrayList<Operation> operations, @NonNull RemoteComposeState state) {
         for (Operation op : operations) {
             if (op instanceof DataListIds) {
@@ -1384,7 +1384,7 @@ public class CoreDocument implements Serializable {
      * @param context the context
      * @param list list of operations
      */
-    private void registerVariables(
+    public void registerVariables(
             @NonNull RemoteContext context, @NonNull ArrayList<Operation> list) {
         for (Operation op : list) {
             if (op instanceof LayoutCompute) {
@@ -1438,7 +1438,7 @@ public class CoreDocument implements Serializable {
      * @param context the context
      * @param list list of operations
      */
-    private void applyOperations(
+    public void applyOperations(
             @NonNull RemoteContext context, @NonNull ArrayList<Operation> list) {
         for (Operation op : list) {
             if (op instanceof VariableSupport) {
@@ -1962,7 +1962,7 @@ public class CoreDocument implements Serializable {
      * @param context the context
      * @param operations list of operations
      */
-    private void updateVariables(
+    public void updateVariables(
             @NonNull RemoteContext context, int theme, List<Operation> operations) {
         for (int i = 0; i < operations.size(); i++) {
             Operation op = operations.get(i);
@@ -2445,5 +2445,10 @@ public class CoreDocument implements Serializable {
      */
     public boolean isUpdateDoc() {
         return mIsUpdateDoc;
+    }
+
+    /** Returns {@code mFloatExpressions}. */
+    public HashMap<Integer, FloatExpression> getFloatExpressions() {
+        return mFloatExpressions;
     }
 }

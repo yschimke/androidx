@@ -147,4 +147,14 @@ public class ValueIntegerExpressionChangeActionOperation extends Operation
                 .add("targetValueId", mTargetValueId)
                 .add("valueExpressionId", mValueExpressionId);
     }
+
+    /** Returns {@code mTargetValueId}. */
+    public long getTargetValueId() {
+        return mTargetValueId;
+    }
+
+    /** Returns {@code mValueExpressionId}. */
+    public long getValueExpressionId() {
+        return mValueExpressionId;
+    }
 }

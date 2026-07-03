@@ -265,4 +265,34 @@ public class DrawTextAnchored extends PaintOperation implements VariableSupport,
                 .add("panY", mPanY, mOutPanY)
                 .add("flags", mFlags);
     }
+
+    /** Returns {@code mTextID}. */
+    public int getTextID() {
+        return mTextID;
+    }
+
+    /** Returns {@code mOutX}. */
+    public float getOutX() {
+        return mOutX;
+    }
+
+    /** Returns {@code mOutY}. */
+    public float getOutY() {
+        return mOutY;
+    }
+
+    /** Returns {@code mOutPanX}. */
+    public float getOutPanX() {
+        return mOutPanX;
+    }
+
+    /** Returns {@code mOutPanY}. */
+    public float getOutPanY() {
+        return mOutPanY;
+    }
+
+    /** Returns {@code mFlags}. */
+    public int getFlags() {
+        return mFlags;
+    }
 }

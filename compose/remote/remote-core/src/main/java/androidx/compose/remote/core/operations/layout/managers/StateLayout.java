@@ -652,4 +652,9 @@ public class StateLayout extends LayoutManager {
         super.serialize(serializer);
         serializer.add("indexId", mIndexId);
     }
+
+    /** Returns {@code mIndexId}. */
+    public int getIndexId() {
+        return mIndexId;
+    }
 }

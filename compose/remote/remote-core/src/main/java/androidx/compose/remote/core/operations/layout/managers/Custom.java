@@ -442,4 +442,19 @@ public class Custom extends LayoutManager implements VariableSupport {
 
         operations.add(new Custom(null, componentId, animationId, configId, null, properties));
     }
+
+    /** Returns {@code mConfig}. */
+    public String getConfig() {
+        return mConfig;
+    }
+
+    /** Returns {@code mConfigId}. */
+    public int getConfigId() {
+        return mConfigId;
+    }
+
+    /** Returns {@code mProperties}. */
+    public ArrayList<CustomProperty> getProperties() {
+        return mProperties;
+    }
 }

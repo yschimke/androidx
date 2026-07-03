@@ -79,7 +79,7 @@ public class CollapsiblePriority {
      * @param components the children components
      * @return list of components sorted by their priority in decreasing order
      */
-    static ArrayList<Component> sortWithPriorities(
+    public static ArrayList<Component> sortWithPriorities(
             ArrayList<Component> components, int orientation) {
         ArrayList<Component> sorted = new ArrayList<>(components);
         sorted.sort(

@@ -333,4 +333,9 @@ public class ParticlesLoop extends PaintOperation implements VariableSupport, Co
     public void serialize(@NonNull MapSerializer serializer) {
         serializer.addType(CLASS_NAME).add("id", mId);
     }
+
+    /** Returns {@code mParticlesSource}. */
+    public ParticlesCreate getParticlesSource() {
+        return mParticlesSource;
+    }
 }

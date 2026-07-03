@@ -723,4 +723,9 @@ public class RemoteComposeState implements CollectionsAccess {
     public void markVariableDirty(int id) {
         updateListeners(id);
     }
+
+    /** Returns {@code mRemoteContext}. */
+    public RemoteContext getRemoteContext() {
+        return mRemoteContext;
+    }
 }

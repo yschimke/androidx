@@ -379,4 +379,24 @@ public class BitmapData extends Operation
                 return "TYPE_INVALID";
         }
     }
+
+    /** Returns {@code mImageWidth}. */
+    public int getImageWidth() {
+        return mImageWidth;
+    }
+
+    /** Returns {@code mImageHeight}. */
+    public int getImageHeight() {
+        return mImageHeight;
+    }
+
+    /** Returns {@code mEncoding}. */
+    public short getEncoding() {
+        return mEncoding;
+    }
+
+    /** Returns {@code mBitmap}. */
+    public byte [] getBitmap() {
+        return mBitmap;
+    }
 }

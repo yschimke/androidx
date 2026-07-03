@@ -120,9 +120,19 @@ public class GraphicsLayerModifierOperation extends DecoratorModifierOperation {
     static final int INT_VALUE = 1;
 
     /** Utility class to manage attributes */
-    static class AttributeValue {
+    public static class AttributeValue {
         String mName;
         int mId;
+
+        /** Returns {@code mName}. */
+        public String getName() {
+            return mName;
+        }
+
+        /** Returns {@code mId}. */
+        public int getId() {
+            return mId;
+        }
         @Nullable AnimatableValue mAnimatableValue;
         float mDefaultValue = 0f;
         int mIntValue = 0;
@@ -411,5 +421,10 @@ public class GraphicsLayerModifierOperation extends DecoratorModifierOperation {
                 .add("compositingStrategy", mValues[COMPOSITING_STRATEGY].getIntValue())
                 .add("spotShadowColorId", mValues[SPOT_SHADOW_COLOR].getIntValue())
                 .add("ambientShadowColorId", mValues[AMBIENT_SHADOW_COLOR].getIntValue());
+    }
+
+    /** Returns {@code mValues}. */
+    public AttributeValue[] getValues() {
+        return mValues;
     }
 }

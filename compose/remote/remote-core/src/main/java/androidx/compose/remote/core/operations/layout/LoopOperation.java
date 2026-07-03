@@ -226,4 +226,24 @@ public class LoopOperation extends PaintOperation
                 .add("step", mStep, mStepOut)
                 .add("list", mList);
     }
+
+    /** Returns {@code mFromOut}. */
+    public float getFromOut() {
+        return mFromOut;
+    }
+
+    /** Returns {@code mUntilOut}. */
+    public float getUntilOut() {
+        return mUntilOut;
+    }
+
+    /** Returns {@code mStepOut}. */
+    public float getStepOut() {
+        return mStepOut;
+    }
+
+    /** Returns {@code mIndexVariableId}. */
+    public int getIndexVariableId() {
+        return mIndexVariableId;
+    }
 }

@@ -199,4 +199,9 @@ public abstract class DimensionModifierOperation extends Operation
     public String toString() {
         return "DimensionModifierOperation(" + mValue + ")";
     }
+
+    /** Returns the raw (possibly NaN-encoded variable id) {@code mValue}. */
+    public float getRawValue() {
+        return mValue;
+    }
 }

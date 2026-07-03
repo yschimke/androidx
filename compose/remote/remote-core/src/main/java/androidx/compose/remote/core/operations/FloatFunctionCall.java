@@ -196,4 +196,14 @@ public class FloatFunctionCall extends PaintOperation implements VariableSupport
                 .add("args", Collections.singletonList(mArgs))
                 .add("outArgs", Collections.singletonList(mOutArgs));
     }
+
+    /** Returns {@code mFunction}. */
+    public FloatFunctionDefine getFunction() {
+        return mFunction;
+    }
+
+    /** Returns {@code mOutArgs}. */
+    public float[] getOutArgs() {
+        return mOutArgs;
+    }
 }

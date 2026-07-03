@@ -172,4 +172,19 @@ public class DrawTextOnPath extends PaintOperation implements VariableSupport, S
                 .add("vOffset", mVOffset, mOutVOffset)
                 .add("hOffset", mHOffset, mOutHOffset);
     }
+
+    /** Returns {@code mPathId}. */
+    public int getPathId() {
+        return mPathId;
+    }
+
+    /** Returns {@code mOutHOffset}. */
+    public float getOutHOffset() {
+        return mOutHOffset;
+    }
+
+    /** Returns {@code mOutVOffset}. */
+    public float getOutVOffset() {
+        return mOutVOffset;
+    }
 }

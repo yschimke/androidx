@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-@file:Suppress("RestrictedApiAndroidX", "BanUncheckedReflection")
+@file:Suppress("RestrictedApiAndroidX")
 
 package androidx.compose.remote.player.compose.embedded.layout
 
@@ -92,7 +92,7 @@ internal fun RcPlayerCollapsible(
         val kept = BooleanArray(n)
         var used = 0
         var overflow = false
-        for (child in sortWithPriorities(children, orientation)) {
+        for (child in CollapsiblePriority.sortWithPriorities(children, orientation)) {
             val index = indexOfChild[child] ?: continue
             if (index >= n) continue
             val childSize = mainSize(placeables[index])
@@ -129,20 +129,4 @@ internal fun RcPlayerCollapsible(
             }
         }
     }
-}
-
-// CollapsiblePriority.sortWithPriorities is package-private in remote-core (left unchanged); call
-// it reflectively so the ordering semantics live in exactly one place.
-private val sortWithPrioritiesMethod =
-    CollapsiblePriority::class
-        .java
-        .getDeclaredMethod("sortWithPriorities", ArrayList::class.java, Int::class.javaPrimitiveType)
-        .apply { isAccessible = true }
-
-private fun sortWithPriorities(
-    children: ArrayList<Component>,
-    orientation: Int,
-): List<Component> {
-    @Suppress("UNCHECKED_CAST")
-    return sortWithPrioritiesMethod.invoke(null, children, orientation) as ArrayList<Component>
 }
