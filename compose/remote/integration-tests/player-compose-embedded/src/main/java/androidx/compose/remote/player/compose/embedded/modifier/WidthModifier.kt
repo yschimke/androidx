@@ -68,9 +68,10 @@ internal fun Modifier.width(op: WidthModifierOperation): Modifier {
 
 @Composable
 internal fun Modifier.widthIn(op: WidthInModifierOperation): Modifier {
-    val widthMinDp = rememberRemoteFloatAsState(op.min).value.dp
-    val widthMaxDp = rememberRemoteFloatAsState(op.max).value.dp
-    return this.widthIn(widthMinDp.minusOneUnspecified(), widthMaxDp.minusOneUnspecified())
+    val density = LocalDensity.current.density
+    val widthMinDp = rememberRemoteFloatAsState(op.min).value.constraintPxToDp(density)
+    val widthMaxDp = rememberRemoteFloatAsState(op.max).value.constraintPxToDp(density)
+    return this.widthIn(widthMinDp, widthMaxDp)
 }
 
 internal fun Dp.minusOneUnspecified(): Dp =
@@ -81,6 +82,22 @@ internal fun Dp.minusOneUnspecified(): Dp =
     }
 
 /**
+ * Converts a core-resolved size constraint (min/max for `widthIn`/`heightIn`) to a Compose [Dp].
+ *
+ * remote-core resolves these fields into *pixels* honoring the document's `DENSITY_BEHAVIOR` header:
+ * `DimensionInModifierOperation.updateVariables` multiplies min/max by the display density for the
+ * DP and LEGACY behaviors and leaves them as raw pixels for PIXELS, so `getMin`/`getMax` are pixels
+ * in every behavior. The player context is fed that same display density (see `RcPlayer`), so the
+ * reader simply divides by [density] to recover Compose dp — no per-behavior branch is needed here
+ * (unlike [rawDimensionDp], which reads *unfolded* op values and must consult the header itself).
+ * Passing the pixel value straight to `.dp` re-multiplied the density and made a
+ * `heightIn(min = 64.dp)` card ~`density`× too tall. The -1 sentinel means "unspecified" and must be
+ * preserved rather than scaled.
+ */
+internal fun Float.constraintPxToDp(density: Float): Dp =
+    if (this == -1f) Dp.Unspecified else (this / density).dp
+
+/**
  * Maps a [DimensionConstraintsModifierOperation] (emitted by `widthIn`/`heightIn`) to a Compose
  * width/height-in constraint. Without this, such constraints were silently dropped (the dispatch
  * `when` only matched the [WidthInModifierOperation]/[HeightInModifierOperation] siblings). Min/max
@@ -88,8 +105,9 @@ internal fun Dp.minusOneUnspecified(): Dp =
  */
 @Composable
 internal fun Modifier.dimensionConstraints(op: DimensionConstraintsModifierOperation): Modifier {
-    val minDp = rememberRemoteFloatAsState(op.min).value.dp.minusOneUnspecified()
-    val maxDp = rememberRemoteFloatAsState(op.max).value.dp.minusOneUnspecified()
+    val density = LocalDensity.current.density
+    val minDp = rememberRemoteFloatAsState(op.min).value.constraintPxToDp(density)
+    val maxDp = rememberRemoteFloatAsState(op.max).value.constraintPxToDp(density)
     return when (dimensionConstraintsType(op)) {
         DimensionConstraintsModifierOperation.HORIZONTAL_CONSTRAINTS,
         DimensionConstraintsModifierOperation.REQUIRED_HORIZONTAL_CONSTRAINTS ->

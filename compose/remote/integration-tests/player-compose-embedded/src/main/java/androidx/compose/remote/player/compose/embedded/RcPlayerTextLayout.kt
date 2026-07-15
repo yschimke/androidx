@@ -32,8 +32,8 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.em
-import androidx.compose.ui.unit.sp
 
 @Composable
 internal fun RcPlayerText(layout: CoreText, modifier: Modifier) {
@@ -92,7 +92,20 @@ internal fun RcPlayerText(layout: CoreText, modifier: Modifier) {
             },
         maxLines = data.maxLines,
         letterSpacing = data.letterSpacing.em,
-        lineHeight = (data.fontSizeValue * data.lineHeightMultiplier + data.lineHeightAdd).sp,
+        // remote-core stores font size / line-height-add in *pixels* (hence fontSizeSp's toSp()
+        // above) and only overrides the platform default line spacing when the multiplier/add are
+        // non-default (see CoreText#textLayout -> StaticLayout.setLineSpacing). Mirror that: leave
+        // the line height Unspecified for defaults so Compose uses the font's natural spacing, and
+        // convert pixels -> sp when an override is present. Passing the raw pixel value straight to
+        // .sp double-applied the display density and inflated line spacing ~2-3x.
+        lineHeight =
+            if (data.lineHeightMultiplier != 1f || data.lineHeightAdd != 0f) {
+                with(LocalDensity.current) {
+                    (data.fontSizeValue * data.lineHeightMultiplier + data.lineHeightAdd).toSp()
+                }
+            } else {
+                TextUnit.Unspecified
+            },
     )
 }
 
