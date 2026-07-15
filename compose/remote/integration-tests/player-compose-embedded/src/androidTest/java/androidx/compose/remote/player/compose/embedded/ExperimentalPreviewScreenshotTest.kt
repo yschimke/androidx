@@ -26,9 +26,15 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.remote.creation.compose.layout.RemoteBox
 import androidx.compose.remote.creation.compose.layout.RemoteColumn
 import androidx.compose.remote.creation.compose.layout.RemoteRow
+import androidx.compose.remote.creation.compose.layout.RemoteText
 import androidx.compose.remote.creation.compose.modifier.RemoteModifier
 import androidx.compose.remote.creation.compose.modifier.background
+import androidx.compose.remote.creation.compose.modifier.fillMaxWidth
+import androidx.compose.remote.creation.compose.modifier.heightIn
 import androidx.compose.remote.creation.compose.modifier.padding
+import androidx.compose.remote.creation.compose.capture.RemoteCreationDisplayInfo
+import androidx.compose.remote.creation.compose.capture.RemoteDensityBehavior
+import androidx.compose.remote.creation.compose.modifier.widthIn
 import androidx.compose.remote.creation.compose.modifier.size
 import androidx.compose.remote.creation.compose.state.rdp
 import androidx.compose.remote.player.compose.embedded.integration.previews.ExperimentalRemoteDocumentPreview
@@ -183,5 +189,193 @@ class ExperimentalPreviewScreenshotTest {
             PreviewUnderTest(document, PlayerImpl.JAVA, "view")
             PreviewUnderTest(document, PlayerImpl.COMPOSE, "embedded")
         }
+    }
+
+    /**
+     * A document with multi-line text — exercises the text line-height path. The View player uses
+     * the font's natural line spacing; the embedded Compose player must match it. Regression guard
+     * for the RcPlayerText line-height fix (raw pixel font size was previously passed straight to
+     * `.sp`, double-applying the display density and inflating line spacing ~2-3x).
+     */
+    private fun multilineTextDocument(): RemoteDocument = runBlocking {
+        val context = ApplicationProvider.getApplicationContext<Context>()
+        val coreDoc =
+            captureRule.captureDocument(
+                context = context,
+                content = {
+                    RemoteColumn(modifier = RemoteModifier.size(120.rdp).background(Color.White)) {
+                        RemoteText(text = "Line one\nLine two\nLine three\nLine four")
+                    }
+                },
+            )
+        RemoteDocument(coreDoc)
+    }
+
+    /**
+     * A card-like document using the same size modifier as Material RemoteCard —
+     * `heightIn(min = 64.rdp).fillMaxWidth()`. The min height is a density-dependent value; the
+     * embedded player must not double-apply the display density to it (which made cards ~2.6x too
+     * tall). Captured under an explicit [behavior] so we can verify the constraint sizing honors
+     * the document's `DENSITY_BEHAVIOR` header: remote-core folds density into the widthIn/heightIn
+     * min/max per that header (via DimensionInModifierOperation.updateVariables), so the embedded
+     * player divides getMin/getMax by density regardless of behavior and must match the View player.
+     */
+    private fun cardSizeDocument(behavior: RemoteDensityBehavior): RemoteDocument = runBlocking {
+        val context = ApplicationProvider.getApplicationContext<Context>()
+        val metrics = context.resources.displayMetrics
+        val displayInfo =
+            RemoteCreationDisplayInfo(
+                width = metrics.widthPixels,
+                height = metrics.heightPixels,
+                densityDpi = metrics.densityDpi,
+                densityBehavior = behavior,
+            )
+        val coreDoc =
+            captureRule.captureDocument(
+                context = context,
+                creationDisplayInfo = displayInfo,
+                content = {
+                    RemoteColumn(modifier = RemoteModifier.size(200.rdp).background(Color.White)) {
+                        RemoteColumn(
+                            modifier =
+                                RemoteModifier.heightIn(min = 64.rdp)
+                                    .fillMaxWidth()
+                                    .background(Color(0xFFCCCCCC))
+                                    .padding(8.rdp)
+                        ) {
+                            RemoteText(text = "This is a basic card")
+                        }
+                    }
+                },
+            )
+        RemoteDocument(coreDoc)
+    }
+
+    /** A button-like document using RemoteButton's size modifier: heightIn(min).widthIn(min). */
+    private fun buttonSizeDocument(): RemoteDocument = runBlocking {
+        val context = ApplicationProvider.getApplicationContext<Context>()
+        val coreDoc =
+            captureRule.captureDocument(
+                context = context,
+                content = {
+                    RemoteColumn(modifier = RemoteModifier.size(220.rdp).background(Color.White)) {
+                        RemoteColumn(
+                            modifier =
+                                RemoteModifier.heightIn(min = 52.rdp)
+                                    .widthIn(min = 12.rdp)
+                                    .background(Color(0xFFCCCCCC))
+                                    .padding(16.rdp)
+                        ) {
+                            RemoteText(text = "Button")
+                        }
+                    }
+                },
+            )
+        RemoteDocument(coreDoc)
+    }
+
+    @Test
+    fun viewAndEmbeddedPlayersRenderButtonSizeTheSame() {
+        val document = buttonSizeDocument()
+        rule.setContent { RemotePlayersSideBySide(document) }
+        rule.waitForIdle()
+        val viewBitmap = rule.onNodeWithTag("view").captureToImage().asAndroidBitmap()
+        val embeddedBitmap = rule.onNodeWithTag("embedded").captureToImage().asAndroidBitmap()
+
+        val viewPixels = IntArray(viewBitmap.width * viewBitmap.height)
+        viewBitmap.getPixels(
+            viewPixels, 0, viewBitmap.width, 0, 0, viewBitmap.width, viewBitmap.height)
+        val embeddedPixels = IntArray(embeddedBitmap.width * embeddedBitmap.height)
+        embeddedBitmap.getPixels(
+            embeddedPixels, 0, embeddedBitmap.width, 0, 0, embeddedBitmap.width, embeddedBitmap.height)
+
+        val result =
+            MSSIMMatcher(threshold = 0.98)
+                .compareBitmaps(viewPixels, embeddedPixels, viewBitmap.width, viewBitmap.height)
+        assertTrue(
+            "View and embedded player button-size renders diverge: ${result.comparisonStatistics}",
+            result.matches,
+        )
+    }
+
+    private fun assertPlayersRenderSame(document: RemoteDocument, message: String) {
+        rule.setContent { RemotePlayersSideBySide(document) }
+        rule.waitForIdle()
+        val viewBitmap = rule.onNodeWithTag("view").captureToImage().asAndroidBitmap()
+        val embeddedBitmap = rule.onNodeWithTag("embedded").captureToImage().asAndroidBitmap()
+
+        val viewPixels = IntArray(viewBitmap.width * viewBitmap.height)
+        viewBitmap.getPixels(
+            viewPixels, 0, viewBitmap.width, 0, 0, viewBitmap.width, viewBitmap.height)
+        val embeddedPixels = IntArray(embeddedBitmap.width * embeddedBitmap.height)
+        embeddedBitmap.getPixels(
+            embeddedPixels, 0, embeddedBitmap.width, 0, 0, embeddedBitmap.width, embeddedBitmap.height)
+
+        val result =
+            MSSIMMatcher(threshold = 0.98)
+                .compareBitmaps(viewPixels, embeddedPixels, viewBitmap.width, viewBitmap.height)
+        assertTrue("$message: ${result.comparisonStatistics}", result.matches)
+    }
+
+    @Test
+    fun viewAndEmbeddedPlayersRenderCardSizeTheSame_legacyBehavior() {
+        assertPlayersRenderSame(
+            cardSizeDocument(RemoteDensityBehavior.Legacy),
+            "card-size renders diverge (LEGACY density behavior)",
+        )
+    }
+
+    @Test
+    fun viewAndEmbeddedPlayersRenderCardSizeTheSame_dpBehavior() {
+        assertPlayersRenderSame(
+            cardSizeDocument(RemoteDensityBehavior.Dp),
+            "card-size renders diverge (DP density behavior)",
+        )
+    }
+
+    @Test
+    fun viewAndEmbeddedPlayersRenderCardSizeTheSame_pixelsBehavior() {
+        assertPlayersRenderSame(
+            cardSizeDocument(RemoteDensityBehavior.Pixels),
+            "card-size renders diverge (PIXELS density behavior)",
+        )
+    }
+
+    @Test
+    fun viewAndEmbeddedPlayersRenderMultilineTextTheSame() {
+        val document = multilineTextDocument()
+        rule.setContent { RemotePlayersSideBySide(document) }
+        rule.waitForIdle()
+        val viewBitmap = rule.onNodeWithTag("view").captureToImage().asAndroidBitmap()
+        val embeddedBitmap = rule.onNodeWithTag("embedded").captureToImage().asAndroidBitmap()
+
+        val viewPixels = IntArray(viewBitmap.width * viewBitmap.height)
+        viewBitmap.getPixels(
+            viewPixels,
+            0,
+            viewBitmap.width,
+            0,
+            0,
+            viewBitmap.width,
+            viewBitmap.height,
+        )
+        val embeddedPixels = IntArray(embeddedBitmap.width * embeddedBitmap.height)
+        embeddedBitmap.getPixels(
+            embeddedPixels,
+            0,
+            embeddedBitmap.width,
+            0,
+            0,
+            embeddedBitmap.width,
+            embeddedBitmap.height,
+        )
+
+        val result =
+            MSSIMMatcher(threshold = 0.98)
+                .compareBitmaps(viewPixels, embeddedPixels, viewBitmap.width, viewBitmap.height)
+        assertTrue(
+            "View and embedded player text renders diverge: ${result.comparisonStatistics}",
+            result.matches,
+        )
     }
 }
